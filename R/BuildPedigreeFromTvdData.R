@@ -14,6 +14,8 @@ lFormatBorder <- list(TierId = list(lower=79, upper=92),
 ### # init result
 lResultPedigree <- NULL
 
+### # new stuff comes here
+
 sSplitChar <- ""   # character, welcher Felder trennt
 sInputFile <- "data/KLDAT_20170524_20.txt"
 # check that input file exists
