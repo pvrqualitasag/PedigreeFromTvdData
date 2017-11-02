@@ -9,12 +9,18 @@
 
 ### # constants about format
 lFormatBorder <- list(TierId = list(lower=79, upper=92),
-                      MutterId = list(lower=23, upper=36))
+                      MutterId = list(lower=23, upper=36),
+                      VaterId = list(lower=98, upper=111),
+                      GeburtsJahr = list(lower=71, upper=74),
+                      Geburtsdatum = list(lower=71, upper=78),
+                      TierRassecode = list(lower=93, upper=95),
+                      MutterRassecode = list(lower=37, upper=39),
+                      VaterRassecode = list(lower=112, upper=114))
 
 ### # init result
 lResultPedigree <- NULL
 
-### # new stuff comes here
+
 
 sSplitChar <- ""   # character, welcher Felder trennt
 sInputFile <- "data/KLDAT_20170524_20.txt"
@@ -39,9 +45,36 @@ while (length(curLine  <- readLines(con = conInput, n = 1)) > 0) {
                       start = lFormatBorder$MutterId$lower,
                       stop  = lFormatBorder$MutterId$upper)
   cat("Line: ", nrLine, " MutterId: ", sMutterId, "\n")
+  sVaterId <- substr(x = curLine, 
+                    start = lFormatBorder$VaterId$lower,
+                    stop  = lFormatBorder$VaterId$upper)
+  cat("Line: ", nrLine, " VaterId: ", sVaterId, "\n")
+  sGeburtsJahr <- substr(x = curLine, 
+                     start = lFormatBorder$GeburtsJahr$lower,
+                     stop  = lFormatBorder$GeburtsJahr$upper)
+  cat("Line: ", nrLine, " GeburtsJahr: ", sGeburtsJahr, "\n")
+  sGeburtsdatum <- substr(x = curLine, 
+                         start = lFormatBorder$Geburtsdatum$lower,
+                         stop  = lFormatBorder$Geburtsdatum$upper)
+  cat("Line: ", nrLine, " Geburtsdatum: ", sGeburtsdatum, "\n")
+  sTierRassecode <- substr(x = curLine, 
+                          start = lFormatBorder$TierRassecode$lower,
+                          stop  = lFormatBorder$TierRassecode$upper)
+  cat("Line: ", nrLine, " TierRassecode: ", sTierRassecode, "\n")
+  sMutterRassecode <- substr(x = curLine, 
+                           start = lFormatBorder$MutterRassecode$lower,
+                           stop  = lFormatBorder$MutterRassecode$upper)
+  cat("Line: ", nrLine, " MutterRassecode: ", sMutterRassecode, "\n")
+  sVaterRassecode <- substr(x = curLine, 
+                             start = lFormatBorder$VaterRassecode$lower,
+                             stop  = lFormatBorder$VaterRassecode$upper)
+  cat("Line: ", nrLine, " VaterRassecode: ", sVaterRassecode, "\n")
+  
   
   ### # list of animal info
-  lAniInfo <- list(TierId=sTierId, MutterId=sMutterId)
+  lAniInfo <- list(TierId=sTierId, MutterId=sMutterId, VaterId=sVaterId, 
+                   GeburtsJahr=sGeburtsJahr, Geburtsdatum=sGeburtsdatum, 
+                   TierRassecode=sTierRassecode, MutterRassecode=sMutterRassecode, VaterRassecode=sVaterRassecode)
   ### # store all info in lResultPedigree
   if (is.null(lResultPedigree[[sTierId]])) {
     ### # sTierId is only added if not emtpy
