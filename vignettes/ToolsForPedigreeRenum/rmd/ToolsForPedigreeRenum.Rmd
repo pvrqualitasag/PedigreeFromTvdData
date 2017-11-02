@@ -1,0 +1,122 @@
+---
+title: "Tools for Pedigrees Renumeration"
+author: "Peter von Rohr"
+date: '2017-11-02'
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  html_notebook: default
+---
+
+## Disclaimer
+This document describes tests of a few tools used for re-numbering of pedigrees.
+
+
+## Introduction and Background
+From a theoretical point of view a pedigree is a special instance of a graph called a **Directed Acyclic Graph** (DAG). In the context of this document the term **graph** is not a synonym for a special type of diagram, but it stands for a class of objects that are used in discrete mathematics. A graph $G$ is defined by two sets $V$ and $E$ where the set $V$ contains the so called **nodes** and the set $E$ contains **edges**. Each edge relates two nodes. A more formal definition of a graph is given by 
+
+$$G = (V, E)$$
+
+Graphs can be divided into two classes. 
+
+1. undirected
+2. directed
+
+The difference between undirected and directed graphs is that the order of the two nodes that define an edge matters only in directed graphs. When looking at an edge of a directed graph, the first node is called the parent node and the second node is called the offspring node.
+
+
+## Pedigrees
+As already mentioned, a pedigree can be understood as an instance of a special class of directed graphs. For such a graph the set of nodes $V$ contains all animals in the pedigree and the set $E$ of all edges contains the relationships between parents and offspring. Based on the representation of a pedigree as a graph, it is clear that pedigrees fall into the class of directed graphs, because the relation between parents and offspring has a clear direction. Furthermore, any directed graph that represents a pedigree must not have any cyles, i.e., the directed graph must be acyclic. The condition of being acyclic means that starting at any node $v$ in the graph, there is no sequence of nodes defined by the directed edges given in the graph, where the node $v$ is visited more than once. 
+
+
+## Ordering nodes
+Many software programs that use pedigree information have the requirement that individuals in a pedigree are ordered such that parents are always before offspring. In graph theory this type of order of the nodes is called **topological ordering**. 
+
+There are several tools to produce a topological ordering from a given pedigree. Two such tools are described here.
+
+### tsort
+`tsort` is a Unix tool that can be used from the command line. `tsort` is described on https://en.wikipedia.org/wiki/Tsort. The example given on Wikipedia is shown below
+
+```{r WikipediaDag, echo=FALSE, fig.align='center', results='markup'}
+knitr::include_graphics(path = "../png/305px-Directed_acyclic_graph_2.svg.png")
+```
+
+The usage for the above given DAG is
+
+```
+$ tsort <<EOF
+> 3 8
+> 3 10
+> 5 11
+> 7 8
+> 7 11
+> 8 9
+> 11 2
+> 11 9
+> 11 10
+> EOF
+7
+5
+3
+11
+8
+10
+2
+9
+```
+
+Based on the above example, we can see that `tsort` requires the DAG as a parent-offspring list. Such a list consists of two columns and the parent is in the first column and the offspring in the second column. The output is the nodes in topological ordering. 
+
+In case we have to re-code the nodes in the pedigree, we can assign the line-number of the ouput to each individual. 
+
+### gRbase package
+An alternative to `tsort` is the R-package `gRbase`. This package offers more functionality than just topological orderings. 
+
+```{r gRbasesetup, echo=FALSE, results='hide'}
+### # gRbase requirement
+if (!require(gRbase)){
+  ### # RBGL was moved from CRAN to bioC
+  source("https://bioconductor.org/biocLite.R")
+  biocLite("RBGL")
+  install.packages("gRbase", repos = "https://cran.rstudio.com/", dependencies = TRUE)
+  require(gRbase)
+}
+
+### # for plotting, we need 
+if (!require(Rgraphviz)){
+  source("https://bioconductor.org/biocLite.R")
+  biocLite("Rgraphviz")
+  require(Rgraphviz)
+}
+```
+
+Start by defining a simple DAG taken from the website of `gRbase`. 
+
+```{r DefineSimpleDAG}
+daG11 <- dag( ~a:b + b:c:d)
+#plot( daG11 )
+### # alternative specification
+daG13 <- dag( list( c("a", "b"), c("b", "c", "d") ) )
+plot(daG13)
+```
+
+The above definitions mean that node `a` has parent `b` and node `b` has parents `c` and `d`. 
+
+We now return to our example that was used with `tsort` and we use `gRbase` to come up with the topological ordering.
+
+```{r DefDagTsort}
+dagTsort <- dag( list( c("11", "5", "7"), 
+                       c("8", "7", "3"), 
+                       c("2", "11"), 
+                       c("9", "11", "8"), 
+                       c("10", "11", "3")))
+plot(dagTsort)
+```
+
+The topological sort of the above defined DAG can be computed as
+
+```{r TopoSortDagTsort}
+topoSort(dagTsort)
+```
+
