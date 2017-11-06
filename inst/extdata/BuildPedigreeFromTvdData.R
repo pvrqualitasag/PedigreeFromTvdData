@@ -26,7 +26,7 @@ str(lResultPedigree)
 #
 lCheckedPedigree <- PedigreeFromTvdData::check_parent_as_animal(plPedigree = lResultPedigree)
 lCheckedPedigree2 <- PedigreeFromTvdData::check_tvdid(plPedigree = lCheckedPedigree)
-#lCheckedPedigree3 <- PedigreeFromTvdData::check_tvdid(plPedigree = lCheckedPedigree2)
+lCheckedPedigree3 <- PedigreeFromTvdData::check_birthdate(plPedigree = lCheckedPedigree2)
 
 
 ### # unique ids for all animals

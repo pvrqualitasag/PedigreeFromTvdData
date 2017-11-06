@@ -43,10 +43,6 @@ read_tvd_input <- function(psInputFile,
                        start = lFormatBorder$VaterId$lower,
                        stop  = lFormatBorder$VaterId$upper)
     if (pbOut) cat("Line: ", nrLine, " VaterId: ", sVaterId, "\n")
-    sGeburtsJahr <- substr(x = curLine,
-                           start = lFormatBorder$GeburtsJahr$lower,
-                           stop  = lFormatBorder$GeburtsJahr$upper)
-    if (pbOut) cat("Line: ", nrLine, " GeburtsJahr: ", sGeburtsJahr, "\n")
     sGeburtsdatum <- substr(x = curLine,
                             start = lFormatBorder$Geburtsdatum$lower,
                             stop  = lFormatBorder$Geburtsdatum$upper)
@@ -71,7 +67,7 @@ read_tvd_input <- function(psInputFile,
 
     ### # list of animal info
     lAniInfo <- list(TierId=sTierId, MutterId=sMutterId, VaterId=sVaterId,
-                     GeburtsJahr=sGeburtsJahr, Geburtsdatum=sGeburtsdatum, Sex=sSex,
+                     Geburtsdatum=sGeburtsdatum, Sex=sSex,
                      TierRassecode=sTierRassecode, MutterRassecode=sMutterRassecode, VaterRassecode=sVaterRassecode)
     ### # store all info in lResultPedigree
     if (is.null(lResultPedigree[[sTierId]])) {

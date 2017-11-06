@@ -14,7 +14,6 @@ getFormatBorder <- function(){
   return(list(TierId = list(lower=79, upper=92),
               MutterId = list(lower=23, upper=36),
               VaterId = list(lower=98, upper=111),
-              GeburtsJahr = list(lower=71, upper=74),
               Geburtsdatum = list(lower=71, upper=78),
               TierRassecode = list(lower=93, upper=95),
               MutterRassecode = list(lower=37, upper=39),
@@ -26,4 +25,11 @@ getFormatBorder <- function(){
 getTVDIdBorder <- function(){
   return(list(TVDCountry = list(lower=1, upper=2),
               TVDNumber = list(lower=3, upper=14)))
+}
+
+#' @export getBirthdateBorder
+getBirthdateBorder <- funtion(){
+  return(list(Year = list(lower=1, upper=4),
+              Month = list(lower=5, upper=6),
+              Day = list(lower=7, upper=8)))
 }
