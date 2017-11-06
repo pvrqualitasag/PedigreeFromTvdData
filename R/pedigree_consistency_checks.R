@@ -106,6 +106,7 @@ is.notnumber <- function(pId){
 ### ######################################################## ###
 #' Validation of birthdate
 #'
+#' @return lCheckedPedigree3
 #' @export check_birthdate
 check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder()){
   ### # initialize result
@@ -134,4 +135,5 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder()){
       lCurrentAni$Geburtsdatum <- NA
     }
   }
+  return(lCheckedPedigree3)
 }
