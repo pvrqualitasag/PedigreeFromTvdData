@@ -28,7 +28,7 @@ getTVDIdBorder <- function(){
 }
 
 #' @export getBirthdateBorder
-getBirthdateBorder <- funtion(){
+getBirthdateBorder <- function(){
   return(list(Year = list(lower=1, upper=4),
               Month = list(lower=5, upper=6),
               Day = list(lower=7, upper=8)))
