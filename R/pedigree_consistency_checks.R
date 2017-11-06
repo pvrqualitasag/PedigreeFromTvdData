@@ -37,3 +37,34 @@ check_parent_as_animal <- function(plPedigree){
   }
   return(lCheckResultPedigree)
 }
+
+
+#' Validation of tvd-number
+#'
+#' Given a pedigree imported from TVD-data, we want to
+#' check if the first two chars == country, after twelve chars numeric
+#'
+#'
+check_tvdid <- function(plPedigree){
+  ### # initialize result
+  lCheckedPedigree2 <- plPedigree
+  for(idxPed in 1:length(lCheckedPedigree2)){
+    lCurrentAni <- lCheckedPedigree2[[idxPed]]
+    if(!is.letter(pId = lCurrentAni$TierId)){
+      lCurrentAni$TierId <- NA
+    }
+    if(!is.number(pId = lCurrentAni$TierId)){
+      lCurrentAni$TierId <- NA
+    }
+  }
+  return(lCheckedPedigree2)
+}
+
+
+is.letter <- function(pId){
+  grepl("[[:alpha:]]", pId)
+}
+
+is.number <- function(pId){
+  grepl("[[:digit:]]", pId)
+}
