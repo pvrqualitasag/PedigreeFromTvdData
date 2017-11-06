@@ -21,3 +21,9 @@ getFormatBorder <- function(){
               VaterRassecode = list(lower=112, upper=114),
               Sex = list(lower=96, upper=96)))
 }
+
+#' @export getTVDIdBorder
+getTVDIdBorder <- function(){
+  return(list(TVDCountry = list(lower=1, upper=2),
+              TVDNumber = list(lower=3, upper=14)))
+}

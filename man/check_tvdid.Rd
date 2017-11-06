@@ -4,7 +4,13 @@
 \alias{check_tvdid}
 \title{Validation of tvd-number}
 \usage{
-check_tvdid(plPedigree)
+check_tvdid(plPedigree, lFormatBorder = getTVDIdBorder())
+}
+\arguments{
+\item{plPedigree}{input pedigree}
+}
+\value{
+lCheckedPedigree2 with mother and father changed according to checks
 }
 \description{
 Given a pedigree imported from TVD-data, we want to
