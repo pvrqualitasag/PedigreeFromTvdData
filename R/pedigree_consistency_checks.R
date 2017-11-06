@@ -113,27 +113,36 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder()){
   lCheckedPedigree3 <- plPedigree
   for(idxPed in 1:length(lCheckedPedigree3)){
     lCurrentAni <- lCheckedPedigree3[[idxPed]]
-    if(substr(lCurrentAni$Geburtsdatum,
+    if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Year$lower,
-              stop  = lFormatBorder$Year$upper) < "1950"){
+              stop  = lFormatBorder$Year$upper)) < as.numeric(lowestBorderYear)){
       lCurrentAni$Geburtsdatum <- NA
     }
-    if(substr(lCurrentAni$Geburtsdatum,
+    if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Month$lower,
-              stop  = lFormatBorder$Month$upper) < "1" ||
-       substr(lCurrentAni$Geburtsdatum,
+              stop  = lFormatBorder$Month$upper)) < as.numeric(lowestBorderMonth) ||
+       as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Month$lower,
-              stop  = lFormatBorder$Month$upper) > "12"){
+              stop  = lFormatBorder$Month$upper)) > as.numeric(highestBorderMonth)){
       lCurrentAni$Geburtsdatum <- NA
     }
-    if(substr(lCurrentAni$Geburtsdatum,
+    if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Day$lower,
-              stop  = lFormatBorder$Day$upper) < "1" ||
-       substr(lCurrentAni$Geburtsdatum,
+              stop  = lFormatBorder$Day$upper)) < as.numeric(lowestBorderDay) ||
+       as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Day$lower,
-              stop  = lFormatBorder$Day$upper) > "31"){
+              stop  = lFormatBorder$Day$upper)) > as.numeric(highestBorderDay)){
       lCurrentAni$Geburtsdatum <- NA
     }
   }
   return(lCheckedPedigree3)
+}
+
+### ######################################################## ###
+#' Validation of sex
+#'
+#' @return lCheckedPedigree4
+#' @export check_sex
+check_sex <- function(plPedigree){
+
 }
