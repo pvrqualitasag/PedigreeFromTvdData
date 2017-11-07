@@ -4,7 +4,8 @@
 \alias{check_birthdate}
 \title{Validation of birthdate}
 \usage{
-check_birthdate(plPedigree, lFormatBorder = getBirthdateBorder())
+check_birthdate(plPedigree, lFormatBorder = getBirthdateBorder(),
+  lLimitValue = getBirthdayConsistencyLimit())
 }
 \value{
 lCheckedPedigree3

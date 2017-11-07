@@ -7,5 +7,5 @@
 is.notnumber(pId)
 }
 \description{
-Check the number-code in TVDid
+Check if there are something else than number
 }

@@ -6,10 +6,6 @@
 \alias{PedigreeFromTvdData-package}
 \title{PedigreeFromTvdData: A package for importing pedigree data from TVD-input-files.}
 \description{
-<<<<<<< HEAD
-PedigreeFromTvdData: A package for importing pedigree data from TVD-input-files.
-}
-=======
 Package PedigreeFromTvdData is used to construct a pedigree from TVD-input files.
 TVD-input files are in a fixed-format according to the specification from the
 interface definition called "Datenschnittstelle Rindvieh".
@@ -26,4 +22,3 @@ Besides the parent offspring relationships, there are additional consistency
 requirements that can be checked.
 }
 
->>>>>>> 5b1876fdf9d2098f84b699757227d44dd2d3acdf

@@ -21,13 +21,17 @@ getFormatBorder <- function(){
               Sex = list(lower=96, upper=96)))
 }
 
-#' @export getTVDIdBorder
+#' Get consistency border for TVDid
+#'
+#'  @export getTVDIdBorder
 getTVDIdBorder <- function(){
   return(list(TVDCountry = list(lower=1, upper=2),
               TVDNumber = list(lower=3, upper=14)))
 }
 
-#' @export getBirthdateBorder
+#' Get consistency border for birthdate
+#'
+#'  @export getBirthdateBorder
 getBirthdateBorder <- function(){
   return(list(Year = list(lower=1, upper=4),
               Month = list(lower=5, upper=6),
@@ -45,6 +49,12 @@ getBirthdayConsistencyLimit <- function(){
               cHighestLimitDay = 31))
 }
 
-
-cMaennlich <- "1"
-cWeiblich <- "2"
+#' Get consistency sex
+#'
+#' @export getConsistencySex
+getConsistencySex <- function(){
+  return(list(
+    cMaennlich = 1,
+    cWeiblich = 2
+  ))
+}
