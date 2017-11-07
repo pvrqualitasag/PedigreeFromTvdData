@@ -156,6 +156,7 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
 #' Sex of the parent will be checked
 #'
 #' @param plPedigree
+#' @param lsex list of consistency values by default taken from getConsistencySex()
 #' @return lCheckedPedigree4
 #' @export check_sex
 check_sex <- function(plPedigree, lsex = getConsistencySex()){

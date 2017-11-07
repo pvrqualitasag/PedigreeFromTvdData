@@ -7,16 +7,17 @@
 ### ######################################### ###
 
 
-
+#' Add unique number to each record
+#'
+#' @param plPedigree original pedigree
+#' @return lProcessedPedigree pedigree with unique ids added
 #' @export unique_id
 unique_id <- function(plPedigree){
   ### # initialize result
   lProcessedPedigree <- plPedigree
   ### # loop over pedigree
   for (idxPed in 1:length(lProcessedPedigree)){
-    lCurrentAni <- lProcessedPedigree[[idxPed]]
-    lProcessedPedigree[[lCurrentAni]]$NumId <- idxPed
-    lProcessedPedigree[[idxPed]] <- lCurrentAni
+    lProcessedPedigree[[idxPed]]$NumId <- idxPed
   }
   return(lProcessedPedigree)
 }
