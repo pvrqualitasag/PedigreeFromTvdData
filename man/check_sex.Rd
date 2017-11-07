@@ -6,6 +6,9 @@
 \usage{
 check_sex(plPedigree, lsex = getConsistencySex())
 }
+\arguments{
+\item{lsex}{list of consistency values by default taken from getConsistencySex()}
+}
 \value{
 lCheckedPedigree4
 }

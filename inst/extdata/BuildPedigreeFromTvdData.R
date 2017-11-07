@@ -33,3 +33,4 @@ lCheckedPedigree4 <- PedigreeFromTvdData::check_sex(plPedigree = lCheckedPedigre
 lProcessedPedigree <- PedigreeFromTvdData::unique_id(plPedigree = lCheckedPedigree4)
 
 ### # generate output
+Output <- PedigreeFromTvdData::output(plPedigree = lProcessedPedigree)
