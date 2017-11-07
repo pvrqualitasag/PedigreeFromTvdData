@@ -5,7 +5,7 @@
 \title{Validation of birthdate}
 \usage{
 check_birthdate(plPedigree, lFormatBorder = getBirthdateBorder(),
-  lLimitValue = getBirthdayConsistencyLimit())
+  lLimitValue = getBirthdayConsistencyLimit(), pbOut = FALSE)
 }
 \value{
 lCheckedPedigree3
