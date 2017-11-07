@@ -8,11 +8,12 @@
 
 
 #' @export output
-output <- function(plPedigree){
+output <- function(plPedigree, psSepChar = "\t"){
   ### # initialize result
   Output <- plPedigree
   for(idxPed in 1:length(Output)){
     lCurrentAni <- Output[[idxPed]]
-    cat(Output[[lCurrentAni$TierId]]$NumId,"\t", Output[[lCurrentAni$VaterId]]$NumId,"\t", Output[[lCurrentAni$MutterId]]$NumId,"\t", Output[[lCurrentAni$TierId]]$TierId,"\t", Output[[lCurrentAni$TierId]]$Geburtsdatum,"\n")
+    cat(Output[[lCurrentAni$TierId]]$NumId,psSepChar, Output[[lCurrentAni$VaterId]]$NumId,psSepChar, Output[[lCurrentAni$MutterId]]$NumId,psSepChar, Output[[lCurrentAni$TierId]]$TierId,psSepChar, Output[[lCurrentAni$TierId]]$Geburtsdatum,"\n")
   }
+  return(invisible(TRUE))
 }
