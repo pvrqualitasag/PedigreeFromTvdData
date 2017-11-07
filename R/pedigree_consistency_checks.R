@@ -33,7 +33,6 @@ check_parent_as_animal <- function(plPedigree){
       lCurrentAni$VaterId <- NA
     }
     lCheckResultPedigree[[idxPed]] <- lCurrentAni
-
   }
   return(lCheckResultPedigree)
 }
@@ -55,42 +54,44 @@ check_tvdid <- function(plPedigree,lFormatBorder = getTVDIdBorder()){
   lCheckedPedigree2 <- plPedigree
   for(idxPed in 1:length(lCheckedPedigree2)){
     lCurrentAni <- lCheckedPedigree2[[idxPed]]
-    if(!is.notletter(pId = substr(lCurrentAni$TierId,
+    if(is.notletter(pId = substr(lCurrentAni$TierId,
                                start = lFormatBorder$TVDCountry$lower,
                                stop  = lFormatBorder$TVDCountry$upper))){
       lCurrentAni$TierId <- NA
     }
-    if(!is.notnumber(pId = substr(lCurrentAni$TierId,
+    if(is.notnumber(pId = substr(lCurrentAni$TierId,
                                start = lFormatBorder$TVDNumber$lower,
                                stop  = lFormatBorder$TVDNumber$upper))){
       lCurrentAni$TierId <- NA
     }
-    if(!is.notletter(pId = substr(lCurrentAni$MutterId,
+    if(is.notletter(pId = substr(lCurrentAni$MutterId,
                                   start = lFormatBorder$TVDCountry$lower,
                                   stop  = lFormatBorder$TVDCountry$upper))){
       lCurrentAni$MutterId <- NA
     }
-    if(!is.notnumber(pId = substr(lCurrentAni$MutterId,
+    if(is.notnumber(pId = substr(lCurrentAni$MutterId,
                                   start = lFormatBorder$TVDNumber$lower,
                                   stop  = lFormatBorder$TVDNumber$upper))){
       lCurrentAni$MutterId <- NA
     }
-    if(!is.notletter(pId = substr(lCurrentAni$VaterId,
+    if(is.notletter(pId = substr(lCurrentAni$VaterId,
                                   start = lFormatBorder$TVDCountry$lower,
                                   stop  = lFormatBorder$TVDCountry$upper))){
       lCurrentAni$VaterId <- NA
     }
-    if(!is.notnumber(pId = substr(lCurrentAni$VaterId,
+    if(is.notnumber(pId = substr(lCurrentAni$VaterId,
                                   start = lFormatBorder$TVDNumber$lower,
                                   stop  = lFormatBorder$TVDNumber$upper))){
       lCurrentAni$VaterId <- NA
     }
+    lCheckedPedigree2[[idxPed]] <- lCurrentAni
   }
   return(lCheckedPedigree2)
 }
 
 #' Check the country-code in TVDid
 #'
+#' Check if there are something else than letter
 #' @export is.notletter
 is.notletter <- function(pId){
   grepl("[^[:alpha:]]", pId)
@@ -98,6 +99,7 @@ is.notletter <- function(pId){
 
 #' Check the number-code in TVDid
 #'
+#' Check if there are something else than number
 #' @export is.notnumber
 is.notnumber <- function(pId){
   grepl("[^[:digit:]]", pId)
@@ -108,30 +110,30 @@ is.notnumber <- function(pId){
 #'
 #' @return lCheckedPedigree3
 #' @export check_birthdate
-check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder()){
+check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLimitValue= getBirthdayConsistencyLimit()){
   ### # initialize result
   lCheckedPedigree3 <- plPedigree
   for(idxPed in 1:length(lCheckedPedigree3)){
     lCurrentAni <- lCheckedPedigree3[[idxPed]]
     if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Year$lower,
-              stop  = lFormatBorder$Year$upper)) < as.numeric(cLowestBorderYear)){
+              stop  = lFormatBorder$Year$upper)) < lLimitValue$cLowestLimitYear){
       lCurrentAni$Geburtsdatum <- NA
     }
     if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Month$lower,
-              stop  = lFormatBorder$Month$upper)) < as.numeric(cLowestBorderMonth) ||
+              stop  = lFormatBorder$Month$upper)) < lLimitValue$cLowestBorderMonth ||
        as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Month$lower,
-              stop  = lFormatBorder$Month$upper)) > as.numeric(cHighestBorderMonth)){
+              stop  = lFormatBorder$Month$upper)) > lLimitValue$cHighestBorderMonth){
       lCurrentAni$Geburtsdatum <- NA
     }
     if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Day$lower,
-              stop  = lFormatBorder$Day$upper)) < as.numeric(cLowestBorderDay) ||
+              stop  = lFormatBorder$Day$upper)) < lLimitValue$cLowestBorderDay ||
        as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Day$lower,
-              stop  = lFormatBorder$Day$upper)) > as.numeric(cHighestBorderDay)){
+              stop  = lFormatBorder$Day$upper)) > lLimitValue$cHighestBorderDay){
       lCurrentAni$Geburtsdatum <- NA
     }
   }

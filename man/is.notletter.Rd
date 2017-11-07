@@ -7,5 +7,5 @@
 is.notletter(pId)
 }
 \description{
-Check the country-code in TVDid
+Check if there are something else than letter
 }
