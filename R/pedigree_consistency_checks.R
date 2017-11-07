@@ -115,26 +115,31 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
   lCheckedPedigree3 <- plPedigree
   for(idxPed in 1:length(lCheckedPedigree3)){
     lCurrentAni <- lCheckedPedigree3[[idxPed]]
-    if(as.numeric(substr(lCurrentAni$Geburtsdatum,
+    if(is.na(as.numeric(lCurrentAni$Geburtsdatum))){
+      lCurrentAni$Geburtsdatum <- NA
+    }
+    else{
+      if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Year$lower,
               stop  = lFormatBorder$Year$upper)) < lLimitValue$cLowestLimitYear){
       lCurrentAni$Geburtsdatum <- NA
-    }
-    if(as.numeric(substr(lCurrentAni$Geburtsdatum,
+      }
+      if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Month$lower,
               stop  = lFormatBorder$Month$upper)) < lLimitValue$cLowestLimitMonth ||
        as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Month$lower,
               stop  = lFormatBorder$Month$upper)) > lLimitValue$cHighestLimitMonth){
       lCurrentAni$Geburtsdatum <- NA
-    }
-    if(as.numeric(substr(lCurrentAni$Geburtsdatum,
+      }
+      if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Day$lower,
               stop  = lFormatBorder$Day$upper)) < lLimitValue$cLowestLimitDay ||
        as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Day$lower,
               stop  = lFormatBorder$Day$upper)) > lLimitValue$cHighestLimitDay){
       lCurrentAni$Geburtsdatum <- NA
+      }
     }
     lCheckedPedigree3[[idxPed]] <- lCurrentAni
   }
@@ -149,7 +154,7 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
 check_sex <- function(plPedigree, lsex = getConsistencySex){
   ### # initialize result
   lCheckedPedigree4 <- plPedigree
-  vecAnimals <- names(lCheckResultPedigree4)
+  vecAnimals <- names(lCheckedPedigree4)
   for(idxPed in 1:length(lCheckedPedigree4)){
     lCurrentAni <- lCheckedPedigree4[[idxPed]]
     if(is.element(lCurrentAni$MutterId, vecAnimals)){
@@ -162,7 +167,7 @@ check_sex <- function(plPedigree, lsex = getConsistencySex){
         lCurrentAni$Sex <- NA
       }
     }
-    lCheckResultPedigree4[[idxPed]] <- lCurrentAni
+    lCheckedPedigree4[[idxPed]] <- lCurrentAni
   }
   return(lCheckedPedigree4)
 }
