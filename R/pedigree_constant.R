@@ -34,11 +34,17 @@ getBirthdateBorder <- function(){
               Day = list(lower=7, upper=8)))
 }
 
-cLowestBorderYear <- "1950"
-cLowestBorderMonth <- "01"
-cHighestBorderMonth <-"12"
-cLowestBorderDay <- "01"
-cHighestBorderDay <-"31"
+#' Get consistency limits for birthdates
+#'
+#' @export getBirthdayConsistencyLimit
+getBirthdayConsistencyLimit <- function(){
+  return(list(cLowestLimitYear = "1950",
+              cLowestLimitMonth = "01",
+              cHighestLimitMonth ="12",
+              cLowestLimitDay = "01",
+              cHighestLimitDay ="31"))
+}
+
 
 cMaennlich <- "1"
 cWeiblich <- "2"
