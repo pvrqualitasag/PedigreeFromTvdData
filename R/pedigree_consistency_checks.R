@@ -91,7 +91,8 @@ check_tvdid <- function(plPedigree,lFormatBorder = getTVDIdBorder()){
 
 #' Check the country-code in TVDid
 #'
-#' Check if there are something else than letter
+#' Check if there are something else than letter in the country-part of tvdid
+#' @param pId
 #' @export is.notletter
 is.notletter <- function(pId){
   grepl("[^[:alpha:]]", pId)
@@ -99,14 +100,17 @@ is.notletter <- function(pId){
 
 #' Check the number-code in TVDid
 #'
-#' Check if there are something else than number
+#' Check if there are something else than number after the country letters of tvdid
+#' @param pId
 #' @export is.notnumber
 is.notnumber <- function(pId){
   grepl("[^[:digit:]]", pId)
 }
 
 ### ######################################################## ###
-#' Validation of birthdate
+#' Validation of birthdate border and limit
+#'
+#' Format of the birdate (YearMonthDay) have to be checked with some limits
 #'
 #' @return lCheckedPedigree3
 #' @export check_birthdate
@@ -149,22 +153,25 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
 ### ######################################################## ###
 #' Validation of sex
 #'
+#' Sex of the parent will be checked
+#'
+#' @param plPedigree
 #' @return lCheckedPedigree4
 #' @export check_sex
-check_sex <- function(plPedigree, lsex = getConsistencySex){
+check_sex <- function(plPedigree, lsex = getConsistencySex()){
   ### # initialize result
   lCheckedPedigree4 <- plPedigree
   vecAnimals <- names(lCheckedPedigree4)
   for(idxPed in 1:length(lCheckedPedigree4)){
     lCurrentAni <- lCheckedPedigree4[[idxPed]]
     if(is.element(lCurrentAni$MutterId, vecAnimals)){
-      if(as.numeric(lCurrentAni$Sex) != as.numeric(cWeiblich)){
-        lCurrentAni$Sex <- NA
+      if(lCheckedPedigree4[[lCurrentAni$MutterId]]$Sex != lsex$cWeiblich){
+        lCheckedPedigree4[[lCurrentAni$MutterId]]$Sex <- NA
         }
     }
     if(is.element(lCurrentAni$VaterId, vecAnimals)){
-      if(as.numeric(lCurrentAni$Sex) != as.numeric(cMaennlich)){
-        lCurrentAni$Sex <- NA
+      if(lCheckedPedigree4[[lCurrentAni$VaterId]]$Sex != lsex$cMaennlich){
+        lCheckedPedigree4[[lCurrentAni$VaterId]]$Sex <- NA
       }
     }
     lCheckedPedigree4[[idxPed]] <- lCurrentAni

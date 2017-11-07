@@ -2,7 +2,7 @@
 % Please edit documentation in R/pedigree_consistency_checks.R
 \name{check_birthdate}
 \alias{check_birthdate}
-\title{Validation of birthdate}
+\title{Validation of birthdate border and limit}
 \usage{
 check_birthdate(plPedigree, lFormatBorder = getBirthdateBorder(),
   lLimitValue = getBirthdayConsistencyLimit())
@@ -11,5 +11,5 @@ check_birthdate(plPedigree, lFormatBorder = getBirthdateBorder(),
 lCheckedPedigree3
 }
 \description{
-Validation of birthdate
+Format of the birdate (YearMonthDay) have to be checked with some limits
 }

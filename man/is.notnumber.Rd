@@ -7,5 +7,5 @@
 is.notnumber(pId)
 }
 \description{
-Check if there are something else than number
+Check if there are something else than number after the country letters of tvdid
 }
