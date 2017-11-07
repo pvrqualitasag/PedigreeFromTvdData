@@ -2,6 +2,7 @@
 
 export(check_birthdate)
 export(check_parent_as_animal)
+export(check_sex)
 export(check_tvdid)
 export(getBirthdateBorder)
 export(getFormatBorder)

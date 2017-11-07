@@ -115,23 +115,23 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder()){
     lCurrentAni <- lCheckedPedigree3[[idxPed]]
     if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Year$lower,
-              stop  = lFormatBorder$Year$upper)) < as.numeric(lowestBorderYear)){
+              stop  = lFormatBorder$Year$upper)) < as.numeric(cLowestBorderYear)){
       lCurrentAni$Geburtsdatum <- NA
     }
     if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Month$lower,
-              stop  = lFormatBorder$Month$upper)) < as.numeric(lowestBorderMonth) ||
+              stop  = lFormatBorder$Month$upper)) < as.numeric(cLowestBorderMonth) ||
        as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Month$lower,
-              stop  = lFormatBorder$Month$upper)) > as.numeric(highestBorderMonth)){
+              stop  = lFormatBorder$Month$upper)) > as.numeric(cHighestBorderMonth)){
       lCurrentAni$Geburtsdatum <- NA
     }
     if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Day$lower,
-              stop  = lFormatBorder$Day$upper)) < as.numeric(lowestBorderDay) ||
+              stop  = lFormatBorder$Day$upper)) < as.numeric(cLowestBorderDay) ||
        as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Day$lower,
-              stop  = lFormatBorder$Day$upper)) > as.numeric(highestBorderDay)){
+              stop  = lFormatBorder$Day$upper)) > as.numeric(cHighestBorderDay)){
       lCurrentAni$Geburtsdatum <- NA
     }
   }
@@ -144,5 +144,22 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder()){
 #' @return lCheckedPedigree4
 #' @export check_sex
 check_sex <- function(plPedigree){
-
+  ### # initialize result
+  lCheckedPedigree4 <- plPedigree
+  vecAnimals <- names(lCheckResultPedigree4)
+  for(idxPed in 1:length(lCheckedPedigree4)){
+    lCurrentAni <- lCheckedPedigree4[[idxPed]]
+    if(is.element(lCurrentAni$MutterId, vecAnimals)){
+      if(as.numeric(lCurrentAni$Sex) != as.numeric(cWeiblich)){
+        lCurrentAni$Sex <- NA
+        }
+    }
+    if(is.element(lCurrentAni$VaterId, vecAnimals)){
+      if(as.numeric(lCurrentAni$Sex) != as.numeric(cMaennlich)){
+        lCurrentAni$Sex <- NA
+      }
+    }
+    lCheckResultPedigree4[[idxPed]] <- lCurrentAni
+  }
+  return(lCheckedPedigree4)
 }

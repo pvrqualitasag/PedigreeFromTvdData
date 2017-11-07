@@ -34,8 +34,11 @@ getBirthdateBorder <- function(){
               Day = list(lower=7, upper=8)))
 }
 
-lowestBorderYear <- "1950"
-lowestBorderMonth <- "01"
-highestBorderMonth <-"12"
-lowestBorderDay <- "01"
-highestBorderDay <-"31"
+cLowestBorderYear <- "1950"
+cLowestBorderMonth <- "01"
+cHighestBorderMonth <-"12"
+cLowestBorderDay <- "01"
+cHighestBorderDay <-"31"
+
+cMaennlich <- "1"
+cWeiblich <- "2"
