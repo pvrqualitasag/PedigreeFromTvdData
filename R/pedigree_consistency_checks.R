@@ -47,6 +47,7 @@ check_parent_as_animal <- function(plPedigree){
 #' check if the first two chars == country, after twelve chars numeric
 #'
 #' @param plPedigree input pedigree
+#' @param lFormatBorder list of consistency border by default taken from getTVDIdBorder()
 #' @return lCheckedPedigree2 with mother and father changed according to checks
 #' @export check_tvdid
 check_tvdid <- function(plPedigree,lFormatBorder = getTVDIdBorder()){
@@ -112,6 +113,8 @@ is.notnumber <- function(pId){
 #'
 #' Format of the birdate (YearMonthDay) have to be checked with some limits
 #'
+#' @param lFormatBorder list of consistency border by default taken from getBirthdateBorder()
+#' @param lLimitValue list of consistency limit value by default taken from getBirthdayConsistencyLimit()
 #' @return lCheckedPedigree3
 #' @export check_birthdate
 check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLimitValue = getBirthdayConsistencyLimit()){

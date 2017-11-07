@@ -7,13 +7,16 @@
 ### ######################################### ###
 
 
+#' Output Pedigree from TVD-Data
+#'
+#' @param plPedigree processed Pedigree
+#' @param psSepChar  parameter by default for delimiter symbol
 #' @export output
 output <- function(plPedigree, psSepChar = "\t"){
   ### # initialize result
-  Output <- plPedigree
-  for(idxPed in 1:length(Output)){
-    lCurrentAni <- Output[[idxPed]]
-    cat(Output[[lCurrentAni$TierId]]$NumId,psSepChar, Output[[lCurrentAni$VaterId]]$NumId,psSepChar, Output[[lCurrentAni$MutterId]]$NumId,psSepChar, Output[[lCurrentAni$TierId]]$TierId,psSepChar, Output[[lCurrentAni$TierId]]$Geburtsdatum,"\n")
+  for(idxPed in 1:length(plPedigree)){
+    lCurrentAni <- plPedigree[[idxPed]]
+    cat(plPedigree[[lCurrentAni$TierId]]$NumId,psSepChar, plPedigree[[lCurrentAni$VaterId]]$NumId,psSepChar, plPedigree[[lCurrentAni$MutterId]]$NumId,psSepChar, plPedigree[[lCurrentAni$TierId]]$TierId,psSepChar, plPedigree[[lCurrentAni$TierId]]$Geburtsdatum,"\n")
   }
   return(invisible(TRUE))
 }

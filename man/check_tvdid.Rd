@@ -8,6 +8,8 @@ check_tvdid(plPedigree, lFormatBorder = getTVDIdBorder())
 }
 \arguments{
 \item{plPedigree}{input pedigree}
+
+\item{lFormatBorder}{list of consistency border by default taken from getTVDIdBorder()}
 }
 \value{
 lCheckedPedigree2 with mother and father changed according to checks

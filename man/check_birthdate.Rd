@@ -7,6 +7,11 @@
 check_birthdate(plPedigree, lFormatBorder = getBirthdateBorder(),
   lLimitValue = getBirthdayConsistencyLimit())
 }
+\arguments{
+\item{lFormatBorder}{list of consistency border by default taken from getBirthdateBorder()}
+
+\item{lLimitValue}{list of consistency limit value by default taken from getBirthdayConsistencyLimit()}
+}
 \value{
 lCheckedPedigree3
 }

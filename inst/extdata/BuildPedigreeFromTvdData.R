@@ -8,6 +8,7 @@
 
 
 sInputFile <- "inst/extdata/KLDAT_20170524_20.txt"
+
 # check that input file exists
 if (!file.exists(sInputFile))
   stop("Cannot find input file: ",sInputFile )
@@ -15,7 +16,7 @@ if (!file.exists(sInputFile))
 ### # read TVD-File
 #require(PedigreeFromTvdData)
 lResultPedigree <- PedigreeFromTvdData::read_tvd_input(psInputFile = sInputFile)
-str(lResultPedigree)
+#str(lResultPedigree)
 
 ### # further consistency checks, e.g. is ?
 ### #   - every parent also an animal
@@ -33,4 +34,4 @@ lCheckedPedigree4 <- PedigreeFromTvdData::check_sex(plPedigree = lCheckedPedigre
 lProcessedPedigree <- PedigreeFromTvdData::unique_id(plPedigree = lCheckedPedigree4)
 
 ### # generate output
-Output <- PedigreeFromTvdData::output(plPedigree = lProcessedPedigree)
+PedigreeFromTvdData::output(plPedigree = lProcessedPedigree)
