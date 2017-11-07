@@ -8,8 +8,9 @@
 
 #' Reading TVD data and construct a pedigree
 #'
-#' @param psInputFile input file with TVD-daten
-#' @param lFormatBorder list of format borders
+#' @param  psInputFile input file with TVD-daten
+#' @param  lFormatBorder list of format borders
+#' @param  pbOut flag to indicate whether debugging out should be written to the console
 #' @return lResultPedigree constructed pedigree as list
 #' @export read_tvd_input
 read_tvd_input <- function(psInputFile,

@@ -11,6 +11,8 @@ read_tvd_input(psInputFile, lFormatBorder = getFormatBorder(),
 \item{psInputFile}{input file with TVD-daten}
 
 \item{lFormatBorder}{list of format borders}
+
+\item{pbOut}{flag to indicate whether debugging out should be written to the console}
 }
 \value{
 lResultPedigree constructed pedigree as list
