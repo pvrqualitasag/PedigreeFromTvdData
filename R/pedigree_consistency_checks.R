@@ -146,7 +146,7 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
 #'
 #' @return lCheckedPedigree4
 #' @export check_sex
-check_sex <- function(plPedigree){
+check_sex <- function(plPedigree, lsex = getConsistencySex){
   ### # initialize result
   lCheckedPedigree4 <- plPedigree
   vecAnimals <- names(lCheckResultPedigree4)

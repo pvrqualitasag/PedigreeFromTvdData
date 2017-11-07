@@ -4,7 +4,7 @@
 \alias{check_sex}
 \title{Validation of sex}
 \usage{
-check_sex(plPedigree)
+check_sex(plPedigree, lsex = getConsistencySex)
 }
 \value{
 lCheckedPedigree4
