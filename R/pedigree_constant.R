@@ -23,7 +23,7 @@ getFormatBorder <- function(){
 
 #' Get consistency border for TVDid
 #'
-#'  @export getTVDIdBorder
+#' @export getTVDIdBorder
 getTVDIdBorder <- function(){
   return(list(TVDCountry = list(lower=1, upper=2),
               TVDNumber = list(lower=3, upper=14)))
@@ -31,7 +31,7 @@ getTVDIdBorder <- function(){
 
 #' Get consistency border for birthdate
 #'
-#'  @export getBirthdateBorder
+#' @export getBirthdateBorder
 getBirthdateBorder <- function(){
   return(list(Year = list(lower=1, upper=4),
               Month = list(lower=5, upper=6),

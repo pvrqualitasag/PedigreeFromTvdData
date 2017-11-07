@@ -7,5 +7,5 @@
 getTVDIdBorder()
 }
 \description{
-@export getTVDIdBorder
+Get consistency border for TVDid
 }

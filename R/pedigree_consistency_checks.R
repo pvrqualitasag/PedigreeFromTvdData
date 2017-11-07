@@ -110,7 +110,7 @@ is.notnumber <- function(pId){
 #'
 #' @return lCheckedPedigree3
 #' @export check_birthdate
-check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLimitValue= getBirthdayConsistencyLimit()){
+check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLimitValue = getBirthdayConsistencyLimit()){
   ### # initialize result
   lCheckedPedigree3 <- plPedigree
   for(idxPed in 1:length(lCheckedPedigree3)){
@@ -122,20 +122,21 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
     }
     if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Month$lower,
-              stop  = lFormatBorder$Month$upper)) < lLimitValue$cLowestBorderMonth ||
+              stop  = lFormatBorder$Month$upper)) < lLimitValue$cLowestLimitMonth ||
        as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Month$lower,
-              stop  = lFormatBorder$Month$upper)) > lLimitValue$cHighestBorderMonth){
+              stop  = lFormatBorder$Month$upper)) > lLimitValue$cHighestLimitMonth){
       lCurrentAni$Geburtsdatum <- NA
     }
     if(as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Day$lower,
-              stop  = lFormatBorder$Day$upper)) < lLimitValue$cLowestBorderDay ||
+              stop  = lFormatBorder$Day$upper)) < lLimitValue$cLowestLimitDay ||
        as.numeric(substr(lCurrentAni$Geburtsdatum,
               start = lFormatBorder$Day$lower,
-              stop  = lFormatBorder$Day$upper)) > lLimitValue$cHighestBorderDay){
+              stop  = lFormatBorder$Day$upper)) > lLimitValue$cHighestLimitDay){
       lCurrentAni$Geburtsdatum <- NA
     }
+    lCheckedPedigree3[[idxPed]] <- lCurrentAni
   }
   return(lCheckedPedigree3)
 }

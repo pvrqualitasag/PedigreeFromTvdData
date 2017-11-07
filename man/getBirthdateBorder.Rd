@@ -7,5 +7,5 @@
 getBirthdateBorder()
 }
 \description{
-@export getBirthdateBorder
+Get consistency border for birthdate
 }
