@@ -4,10 +4,12 @@
 \alias{output}
 \title{Output Pedigree from TVD-Data}
 \usage{
-output(plPedigree, psSepChar = "\\t")
+output(plPedigree, psOutfile = "ped_from_tvd.dat", psSepChar = "\\t")
 }
 \arguments{
 \item{plPedigree}{processed Pedigree}
+
+\item{psOutfile}{output Pedigree}
 
 \item{psSepChar}{parameter by default for delimiter symbol}
 }
