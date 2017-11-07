@@ -38,11 +38,11 @@ getBirthdateBorder <- function(){
 #'
 #' @export getBirthdayConsistencyLimit
 getBirthdayConsistencyLimit <- function(){
-  return(list(cLowestLimitYear = "1950",
-              cLowestLimitMonth = "01",
-              cHighestLimitMonth ="12",
-              cLowestLimitDay = "01",
-              cHighestLimitDay ="31"))
+  return(list(cLowestLimitYear = 1950,
+              cLowestLimitMonth = 1,
+              cHighestLimitMonth = 12,
+              cLowestLimitDay = 1,
+              cHighestLimitDay = 31))
 }
 
 
