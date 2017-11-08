@@ -169,13 +169,17 @@ check_sex <- function(plPedigree, lsex = getConsistencySex()){
   for(idxPed in 1:length(lCheckedPedigree4)){
     lCurrentAni <- lCheckedPedigree4[[idxPed]]
     if(is.element(lCurrentAni$MutterId, vecAnimals)){
-      if(lCheckedPedigree4[[lCurrentAni$MutterId]]$Sex != lsex$cWeiblich){
-        lCheckedPedigree4[[lCurrentAni$MutterId]]$Sex <- NA
+      if(!is.na(lCheckedPedigree4[[lCurrentAni$MutterId]]$Sex)){
+        if(lCheckedPedigree4[[lCurrentAni$MutterId]]$Sex != lsex$cWeiblich){
+          lCheckedPedigree4[[lCurrentAni$MutterId]]$Sex <- NA
         }
+      }
     }
     if(is.element(lCurrentAni$VaterId, vecAnimals)){
-      if(lCheckedPedigree4[[lCurrentAni$VaterId]]$Sex != lsex$cMaennlich){
-        lCheckedPedigree4[[lCurrentAni$VaterId]]$Sex <- NA
+      if(!is.na(lCheckedPedigree4[[lCurrentAni$VaterId]]$Sex)){
+        if(lCheckedPedigree4[[lCurrentAni$VaterId]]$Sex != lsex$cMaennlich){
+          lCheckedPedigree4[[lCurrentAni$VaterId]]$Sex <- NA
+        }
       }
     }
     lCheckedPedigree4[[idxPed]] <- lCurrentAni
