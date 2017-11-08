@@ -66,15 +66,15 @@ read_tvd_input <- function(psInputFile,
     if (pbOut) cat("Line: ", nrLine, " Sex: ", sSex, "\n")
 
 
-    ### # list of animal info
+    ### # list of animal info, empty field to fill with NA
     lAniInfo <- list(TierId = subBlank(psValue = sTierId),
-                     MutterId=sMutterId,
-                     VaterId=sVaterId,
-                     Geburtsdatum=sGeburtsdatum,
-                     Sex=sSex,
-                     TierRassecode=sTierRassecode,
-                     MutterRassecode=sMutterRassecode,
-                     VaterRassecode=sVaterRassecode)
+                     MutterId = subBlank(psValue = sMutterId),
+                     VaterId = subBlank(psValue = sVaterId),
+                     Geburtsdatum = subBlank(psValue = sGeburtsdatum),
+                     Sex = subBlank(psValue = sSex),
+                     TierRassecode = subBlank(psValue = sTierRassecode),
+                     MutterRassecode = subBlank(psValue = sMutterRassecode),
+                     VaterRassecode = subBlank(psValue = sVaterRassecode))
 
     ### # store all info in lResultPedigree
     ### #  sTierId is only added if is not already in the list
@@ -91,29 +91,6 @@ read_tvd_input <- function(psInputFile,
       ### # ...
     }
 
-    ### # empty field to fill with NA
-    if(sMutterId == "              "){
-      sMutterId <- gsub("              ",NA, sMutterId)
-    }
-    if(sVaterId == ""){
-      sVaterId <- gsub("              ","NA", sVaterId)
-    }
-    if(sGeburtsdatum == ""){
-      sGeburtsdatum <- gsub("        ","NA", sGeburtsdatum)
-    }
-    if(sSex == ""){
-      sSex <- gsub(" ","NA", sSex)
-    }
-    if(sTierRassecode == ""){
-      sTierRassecode <- gsub("   ","NA", sTierRassecode)
-    }
-    if(sMutterRassecode == ""){
-      sMutterRassecode <- gsub("   ","NA", sMutterRassecode)
-    }
-    if(sVaterRassecode == ""){
-      sVaterRassecode <- gsub("   ","NA", sVaterRassecode)
-    }
-
   }
   close(conInput)
   ### # result pedigree as list
@@ -122,6 +99,9 @@ read_tvd_input <- function(psInputFile,
 
 
 #' Substitute blanks and replace empty string by NA
+#'
+#' @param psValue value input
+#' @export subBlank
 subBlank <- function(psValue){
   sResult <- gsub(pattern = "[[:blank:]+]",
               replacement = "",

@@ -4,7 +4,7 @@
 \alias{output}
 \title{Output Pedigree from TVD-Data}
 \usage{
-output(plPedigree, psOutfile = "ped_from_tvd.dat", psSepChar = "\\t")
+output(plPedigree, psOutfile = sOutputFile, psSepChar = "\\t")
 }
 \arguments{
 \item{plPedigree}{processed Pedigree}

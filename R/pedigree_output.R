@@ -13,7 +13,7 @@
 #' @param psOutfile output Pedigree
 #' @param psSepChar  parameter by default for delimiter symbol
 #' @export output
-output <- function(plPedigree, psOutfile = "ped_from_tvd.dat", psSepChar = "\t"){
+output <- function(plPedigree, psOutfile = sOutputFile, psSepChar = "\t"){
   ### # initialize result
   for(idxPed in 1:length(plPedigree)){
     lCurrentAni <- plPedigree[[idxPed]]
