@@ -70,7 +70,9 @@ read_tvd_input <- function(psInputFile,
     lAniInfo <- list(TierId=sTierId, MutterId=sMutterId, VaterId=sVaterId,
                      Geburtsdatum=sGeburtsdatum, Sex=sSex,
                      TierRassecode=sTierRassecode, MutterRassecode=sMutterRassecode, VaterRassecode=sVaterRassecode)
+
     ### # store all info in lResultPedigree
+    ### #  sTierId is only added if is not already in the list
     if (is.null(lResultPedigree[[sTierId]])) {
       ### # sTierId is only added if not emtpy
       if (sTierId != ""){
@@ -82,6 +84,29 @@ read_tvd_input <- function(psInputFile,
       cat("Already existing animal with Id: ", sTierId, "\n")
       ### # further checks, with respect to amount of information of duplicate animal
       ### # ...
+    }
+
+    ### # empty field to fill with NA
+    if(sMutterId == "              "){
+      sMutterId <- gsub("              ",NA, sMutterId)
+    }
+    if(sVaterId == ""){
+      sVaterId <- gsub("              ","NA", sVaterId)
+    }
+    if(sGeburtsdatum == ""){
+      sGeburtsdatum <- gsub("        ","NA", sGeburtsdatum)
+    }
+    if(sSex == ""){
+      sSex <- gsub(" ","NA", sSex)
+    }
+    if(sTierRassecode == ""){
+      sTierRassecode <- gsub("   ","NA", sTierRassecode)
+    }
+    if(sMutterRassecode == ""){
+      sMutterRassecode <- gsub("   ","NA", sMutterRassecode)
+    }
+    if(sVaterRassecode == ""){
+      sVaterRassecode <- gsub("   ","NA", sVaterRassecode)
     }
 
   }
