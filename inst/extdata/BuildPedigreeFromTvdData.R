@@ -7,7 +7,12 @@
 ### ######################################### ###
 
 
-sInputFile <- "inst/extdata/KLDAT_20170524_20.txt"
+### # argument parsing from commandline
+
+#sInputFile <- "inst/extdata/KLDAT_20170524_20.txt"
+#sOutputFile <-
+
+
 
 # check that input file exists
 if (!file.exists(sInputFile))
@@ -35,3 +40,4 @@ lCheckedPedigree4 <- PedigreeFromTvdData::check_sex(plPedigree = lCheckedPedigre
 
 ### # generate output
 PedigreeFromTvdData::output(plPedigree = lProcessedPedigree)
+#PedigreeFromTvdData::output(plPedigree = lProcessedPedigree, psOutfile = sOutputFile)

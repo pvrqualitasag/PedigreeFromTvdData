@@ -67,9 +67,14 @@ read_tvd_input <- function(psInputFile,
 
 
     ### # list of animal info
-    lAniInfo <- list(TierId=sTierId, MutterId=sMutterId, VaterId=sVaterId,
-                     Geburtsdatum=sGeburtsdatum, Sex=sSex,
-                     TierRassecode=sTierRassecode, MutterRassecode=sMutterRassecode, VaterRassecode=sVaterRassecode)
+    lAniInfo <- list(TierId = subBlank(psValue = sTierId),
+                     MutterId=sMutterId,
+                     VaterId=sVaterId,
+                     Geburtsdatum=sGeburtsdatum,
+                     Sex=sSex,
+                     TierRassecode=sTierRassecode,
+                     MutterRassecode=sMutterRassecode,
+                     VaterRassecode=sVaterRassecode)
 
     ### # store all info in lResultPedigree
     ### #  sTierId is only added if is not already in the list
@@ -113,4 +118,16 @@ read_tvd_input <- function(psInputFile,
   close(conInput)
   ### # result pedigree as list
   return(lResultPedigree)
+}
+
+
+#' Substitute blanks and replace empty string by NA
+subBlank <- function(psValue){
+  sResult <- gsub(pattern = "[[:blank:]+]",
+              replacement = "",
+              x = psValue)
+  if (sResult == ""){
+    return (NA)
+  }
+  return(sResult)
 }
