@@ -7,15 +7,15 @@
 ### ######################################### ###
 
 
-#### # argument parsing from commandline
-#args<-commandArgs(trailingOnly = TRUE)
-#print(args)
-#if(length(args)!=2) stop("didn't receive 2 arguments")
-#sInputFile <-args[1]
-#sOutputFile <-args[2]
-#if(!file.exists(sInputFile)) stop("1st argument isn't an existing file")
-sInputFile <- "inst/extdata/KLDAT_20170524_20.txt"
-sOutputFile <- "inst/extdata/PedigreeFromTvdData.txt"
+### # argument parsing from commandline
+args<-commandArgs(trailingOnly = TRUE)
+print(args)
+if(length(args)!=2) stop("didn't receive 2 arguments")
+sInputFile <-args[1]
+sOutputFile <-args[2]
+if(!file.exists(sInputFile)) stop("1st argument isn't an existing file")
+#sInputFile <- "inst/extdata/KLDAT_20170524_20.txt"
+#sOutputFile <- "inst/extdata/PedigreeFromTvdData.txt"
 
 
 
