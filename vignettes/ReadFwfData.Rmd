@@ -1,0 +1,41 @@
+---
+title: "Reading Fixed Width Formatted Data"
+author: "Sophie Kunz and Peter von Rohr"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    highlight: null
+    number_sections: yes
+  knitr:::html_vignette:
+    toc: true
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Reading Fixed Width Formatted Data}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+# Disclaimer
+This vignette compares different methods of reading large amounts of fixed width formatted (fwf) data from a file. 
+
+
+# Introduction
+We are given a large file (about 13 million lines and 1.3 Gb of data) with fixed formatted data. This data needs to be read into R to do some consistency checks on the data and to write the data to a file in a different format. In a first implementation, we used the function `readLines()` to read each line, parse the content and store the data in a nested list. 
+
+## Scaling
+This approach worked well for small datasets, but it does not scale to bigger sizes of the input data. Even after several days of wall clock time, the data is still no completely processed. Hence we need a faster method to read the large input file and to process the data.
+
+## Remainder
+In this document, we are comparing different methods for reading large amounts of data. The focus will be on R-packages `iotools` and `LaF`. Because the methods of how the data will be processed is not completely independent of how the data is read from the file, we are going to discuss different approaches on how the data can be processed towards the end of this document.
+
+
+# Methods
+We are starting by comparing different methods of how we can read large amounts of data into R. 
+
+
+# Resources
+- Comparison of different methods for reading fwf data: 
+[Faster way to read fixed-width files in R](https://stackoverflow.com/questions/24715894/faster-way-to-read-fixed-width-files-in-r)
+- Alternative SO-post: [Reading big data with fixed width](https://stackoverflow.com/questions/18720036/reading-big-data-with-fixed-width)
+- paper on R-package iotools: https://arxiv.org/pdf/1510.00041.pdf
+- R-package LaF: https://cran.r-project.org/web/packages/LaF/vignettes/LaF-manual.pdf
