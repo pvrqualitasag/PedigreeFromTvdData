@@ -7,6 +7,8 @@
 check_sex(plPedigree, lsex = getConsistencySex())
 }
 \arguments{
+\item{plPedigree}{list of list containing the pedigree information}
+
 \item{lsex}{list of consistency values by default taken from getConsistencySex()}
 }
 \value{

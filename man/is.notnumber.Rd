@@ -6,6 +6,9 @@
 \usage{
 is.notnumber(pId)
 }
+\arguments{
+\item{pId}{Id to be tested}
+}
 \description{
 Check if there are something else than number after the country letters of tvdid
 }

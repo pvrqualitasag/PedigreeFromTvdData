@@ -93,7 +93,7 @@ check_tvdid <- function(plPedigree,lFormatBorder = getTVDIdBorder()){
 #' Check the country-code in TVDid
 #'
 #' Check if there are something else than letter in the country-part of tvdid
-#' @param pId
+#' @param pId Id to be tested
 #' @export is.notletter
 is.notletter <- function(pId){
   grepl("[^[:alpha:]]", pId)
@@ -102,7 +102,7 @@ is.notletter <- function(pId){
 #' Check the number-code in TVDid
 #'
 #' Check if there are something else than number after the country letters of tvdid
-#' @param pId
+#' @param pId Id to be tested
 #' @export is.notnumber
 is.notnumber <- function(pId){
   grepl("[^[:digit:]]", pId)
@@ -158,7 +158,7 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
 #'
 #' Sex of the parent will be checked
 #'
-#' @param plPedigree
+#' @param plPedigree list of list containing the pedigree information
 #' @param lsex list of consistency values by default taken from getConsistencySex()
 #' @return lCheckedPedigree4
 #' @export check_sex

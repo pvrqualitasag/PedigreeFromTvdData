@@ -6,6 +6,9 @@
 \usage{
 is.notletter(pId)
 }
+\arguments{
+\item{pId}{Id to be tested}
+}
 \description{
 Check if there are something else than letter in the country-part of tvdid
 }
