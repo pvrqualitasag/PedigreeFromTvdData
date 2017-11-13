@@ -15,6 +15,7 @@ sInputFile <-args[1]
 sOutputFile <-args[2]
 if(!file.exists(sInputFile)) stop("1st argument isn't an existing file")
 #sInputFile <- "inst/extdata/KLDAT_20170524_20.txt"
+#sInputFile <- "inst/extdata/KLDAT_20170524_10000.txt"
 #sOutputFile <- "inst/extdata/PedigreeFromTvdData.txt"
 
 
