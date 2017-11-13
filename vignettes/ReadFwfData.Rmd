@@ -3,17 +3,24 @@ title: "Reading Fixed Width Formatted Data"
 author: "Sophie Kunz and Peter von Rohr"
 date: "`r Sys.Date()`"
 output: 
+  rmarkdown::html_vignette:
+    toc: true
+    fig_caption: yes
   pdf_document:
     highlight: null
     number_sections: yes
-  knitr:::html_vignette:
-    toc: true
-    fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{Reading Fixed Width Formatted Data}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
+
+```{r PackageSetup, eval=FALSE, include=FALSE}
+for (pgk in c("readr", "iotools", "LaF", "microbenchmark")){
+  if (require(pgk, character.only = TRUE))
+    install.packages(pkgs = pgk)
+}
+```
 
 # Disclaimer
 This vignette compares different methods of reading large amounts of fixed width formatted (fwf) data from a file. 
@@ -31,6 +38,56 @@ In this document, we are comparing different methods for reading large amounts o
 
 # Methods
 We are starting by comparing different methods of how we can read large amounts of data into R. 
+
+## readlines
+The original idea that has shown to be very slow was to read the input line-by-line using `readline()` and building the required data-structure for consistency checking as nested list. 
+
+## read.fwf
+The standard way of reading fwf-data into an R dataframe is to use the function read.fwf from the base package.
+
+## read_fwf
+The package `readr` is part of the `tidyverse` and it offers the function `read_fwf` to read fwf-data. According to https://github.com/tidyverse/readr the function `data.table::fread()` is even faster than `readr::read.fwf()`
+
+## iotools
+The package `iotools` is available from http://www.rforge.net/iotools/ and https://cran.r-project.org/web/packages/iotools/index.html and described in https://arxiv.org/abs/1510.00041. 
+
+## LaF
+The package `LaF` is available from https://cran.r-project.org/web/packages/LaF/index.html and https://github.com/djvanderlaan/LaF. This package allows to read data from files that are too big to fit into memory which is a special property that is not available in other tools.
+
+
+
+# Results
+We are testing the described tools using a subset of the complete input data. This should make the tests to be runnable in an interactive mode.
+
+```{r}
+sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"), 
+                             package = "PedigreeFromTvdData")
+vecFormat <- c(22,14,3,31,8,14,3,1,14,3)
+```
+
+The size of this file in MB is 
+
+```{r}
+round(file.info(sDataFileName)$size / 1024 / 1024, digits = 2)
+```
+
+This file is read using each of the above mentioned methods and the time it takes to read them is compared. 
+
+```{r}
+mb <- microbenchmark::microbenchmark(
+  data.fwf = read.fwf(file = sDataFileName, widths = vecFormat),
+  data_fwf = suppressMessages(readr::read_fwf(file = sDataFileName, 
+                              col_positions = readr::fwf_widths(widths = vecFormat))),
+  iotools  = iotools::dstrfw(iotools::readAsRaw(sDataFileName), 
+                            col_types = rep("character", length(vecFormat)),
+                            widths = vecFormat),
+  laf = LaF::laf_open_fwf(filename = sDataFileName, 
+                          column_types = rep("character", length(vecFormat)),
+                          column_widths = vecFormat),
+  times = 5
+)
+mb
+```
 
 
 # Resources
