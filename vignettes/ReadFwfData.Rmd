@@ -1,18 +1,19 @@
 ---
 title: "Reading Fixed Width Formatted Data"
 author: "Sophie Kunz and Peter von Rohr"
-date: "`r Sys.Date()`"
-output: 
+date: '`r Sys.Date()`'
+output:
   rmarkdown::html_vignette:
-    toc: true
     fig_caption: yes
+    toc: yes
   pdf_document:
     highlight: null
     number_sections: yes
-vignette: >
-  %\VignetteIndexEntry{Reading Fixed Width Formatted Data}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
+  html_document:
+    df_print: paged
+    toc: yes
+vignette: |
+  %\VignetteIndexEntry{Reading Fixed Width Formatted Data} %\VignetteEncoding{UTF-8} %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r PackageSetup, eval=FALSE, include=FALSE}
@@ -74,19 +75,23 @@ round(file.info(sDataFileName)$size / 1024 / 1024, digits = 2)
 This file is read using each of the above mentioned methods and the time it takes to read them is compared. 
 
 ```{r}
-mb <- microbenchmark::microbenchmark(
-  data.fwf = read.fwf(file = sDataFileName, widths = vecFormat),
-  data_fwf = suppressMessages(readr::read_fwf(file = sDataFileName, 
+(microbenchmark::microbenchmark(
+  data.fwf = read.fwf(file = sDataFileName, widths = vecFormat), times = 5, unit = "s"))
+
+(microbenchmark::microbenchmark(data_fwf = suppressMessages(readr::read_fwf(file = sDataFileName, 
                               col_positions = readr::fwf_widths(widths = vecFormat))),
-  iotools  = iotools::dstrfw(iotools::readAsRaw(sDataFileName), 
+                              times = 5, unit = "s"))
+
+(microbenchmark::microbenchmark(iotools  = iotools::dstrfw(iotools::readAsRaw(sDataFileName), 
                             col_types = rep("character", length(vecFormat)),
                             widths = vecFormat),
-  laf = LaF::laf_open_fwf(filename = sDataFileName, 
+                              times = 5, unit = "s"))
+
+(microbenchmark::microbenchmark(laf = LaF::laf_open_fwf(filename = sDataFileName, 
                           column_types = rep("character", length(vecFormat)),
                           column_widths = vecFormat),
-  times = 5
-)
-mb
+                                times = 5, unit = "s"))
+
 ```
 
 
