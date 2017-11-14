@@ -72,27 +72,54 @@ The size of this file in MB is
 round(file.info(sDataFileName)$size / 1024 / 1024, digits = 2)
 ```
 
-This file is read using each of the above mentioned methods and the time it takes to read them is compared. 
+This file is read using each of the above mentioned methods and the time it takes to read them is compared. The basic method to which everything is compared is based on reading the input file line by line using `readLines()` and building up a nested list with the results.
 
 ```{r}
-(microbenchmark::microbenchmark(
-  data.fwf = read.fwf(file = sDataFileName, widths = vecFormat), times = 5, unit = "s"))
-
-(microbenchmark::microbenchmark(data_fwf = suppressMessages(readr::read_fwf(file = sDataFileName, 
+(mb.base <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::read_tvd_input(psInputFile = sDataFileName),
+  times = 5, unit = "s"))
+(mb.fwf <- microbenchmark::microbenchmark(
+  data.fwf = read.fwf(file = sDataFileName, widths = vecFormat), 
+  times = 5, unit = "s"))
+(mb_fwf <- microbenchmark::microbenchmark(
+  data_fwf = suppressMessages(readr::read_fwf(file = sDataFileName, 
                               col_positions = readr::fwf_widths(widths = vecFormat))),
-                              times = 5, unit = "s"))
-
-(microbenchmark::microbenchmark(iotools  = iotools::dstrfw(iotools::readAsRaw(sDataFileName), 
+  times = 5, unit = "s"))
+(mb.iot <- microbenchmark::microbenchmark(
+  iotools  = iotools::dstrfw(iotools::readAsRaw(sDataFileName), 
                             col_types = rep("character", length(vecFormat)),
                             widths = vecFormat),
-                              times = 5, unit = "s"))
-
-(microbenchmark::microbenchmark(laf = LaF::laf_open_fwf(filename = sDataFileName, 
+  times = 5, unit = "s"))
+(mb.laf <- microbenchmark::microbenchmark(
+  laf = LaF::laf_open_fwf(filename = sDataFileName, 
                           column_types = rep("character", length(vecFormat)),
                           column_widths = vecFormat),
-                                times = 5, unit = "s"))
+  times = 5, unit = "s"))
 
 ```
+
+## Overview of results
+The following table shows the median times (column MedianTime) in seconds for all methods that were compared. The column entitled `Factor` expresses every median time in terms of the fastest method.
+
+```{r MedTimeRead, echo=FALSE}
+vecMethods <- c("PedigreeFromTvdData::read_tvd_input",
+                "base::read.fwf",
+                 "readr::read_fwf",
+                 "iotools::dstrfw",
+                 "LaF::laf_open_fwf")
+vecMedTimes <- c(mb.base$time[3],
+                 mb.fwf$time[3],
+                  mb_fwf$time[3],
+                  mb.iot$time[3],
+                  mb.laf$time[3])
+nMinTime <- vecMedTimes[order(vecMedTimes)][1]
+dfMedTime <- data.frame(Methode = vecMethods,
+                        MedianTime = round(vecMedTimes*10^(-9), digits = 4),
+                        Factor = round(vecMedTimes/nMinTime, digits = 0))
+knitr::kable(dfMedTime)
+```
+
+The results above show several things that can be learned. Our experiments showed that `r vecMethods[order(vecMedTimes)][1]` was the fastest and `r vecMethods[order(vecMedTimes)][length(vecMethods)]` was the slowest method.
 
 
 # Resources
