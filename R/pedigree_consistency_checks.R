@@ -41,6 +41,70 @@ check_parent_as_animal <- function(plPedigree){
 
 ### ######################################################## ###
 
+#' Correct Ids in column pnIdCol which do not have the correct format
+#'
+#' Given a pedigree in a tibble, set all values in pnIdCol to NA which
+#' do not have the correct format.
+#'
+#' @param ptblPedigreeResult input pedigree to be checked as tibble
+#' @param plFormatBorder list with format borders
+#' @param pnIdCol column to be checked inside of the pedigree
+#' @return tblPedigreeResult corrected tibble pedigree
+correct_tvd_format <- function(ptblPedigreeResult, plFormatBorder, pnIdCol) {
+  ### # copy argument to result
+  tblPedigreeResult <- ptblPedigreeResult
+
+  ### # check whether first two positions TierId are letters
+  vecCountryIdx <- which(is.notletter(substr(tblPedigreeResult[[pnIdCol]],
+                                             plFormatBorder$TVDCountry$lower,
+                                             plFormatBorder$TVDCountry$upper)))
+  if (length(vecCountryIdx > 0)){
+    tblPedigreeResult[[pnIdCol]][vecCountryIdx] <- NA
+  }
+  ### # check whether other positions are numbers TVDNumber
+  vecNumberIdx <- which(is.notnumber(substr(tblPedigreeResult[[pnIdCol]],
+                                           plFormatBorder$TVDNumber$lower,
+                                           plFormatBorder$TVDNumber$upper)))
+  if (length(vecNumberIdx) > 0){
+    tblPedigreeResult[[pnIdCol]][vecNumberIdx] <- NA
+  }
+
+  return(tblPedigreeResult)
+}
+
+
+#' Checking Format of TVD-Ids in Pedigree ptblPedigree
+#'
+#' @param ptblPedigree pedigree as tibble
+#' @param lFormatBorder list with format borders
+#' @param lIdCols list with column indices where TVD-ids are stored
+#' @return corrected pedigree
+#' @export check_tvd_id2
+check_tvd_id2 <- function(ptblPedigree,
+                          plFormatBorder = getTVDIdBorder(),
+                          plIdCols = getTvdIdCols()){
+  ### # copy argument to result
+  tblPedigreeResult <- ptblPedigree
+
+  ### # checks for TierId
+  tblPedigreeResult <- correct_tvd_format(ptblPedigreeResult = tblPedigreeResult,
+                                          plFormatBorder = plFormatBorder,
+                                          pnIdCol = plIdCols$TierIdCol)
+
+  ### # checks for MutterId
+  tblPedigreeResult <- correct_tvd_format(ptblPedigreeResult = tblPedigreeResult,
+                                          plFormatBorder = plFormatBorder,
+                                          pnIdCol = plIdCols$MutterIdCol)
+
+  ### # checks for VaterId
+  tblPedigreeResult <- correct_tvd_format(ptblPedigreeResult = tblPedigreeResult,
+                                          plFormatBorder = plFormatBorder,
+                                          pnIdCol = plIdCols$VaterIdCol)
+
+
+  return(tblPedigreeResult)
+}
+
 #' Validation of tvd-number
 #'
 #' Given a pedigree imported from TVD-data, we want to

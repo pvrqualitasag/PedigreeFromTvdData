@@ -111,3 +111,24 @@ subBlank <- function(psValue){
   }
   return(sResult)
 }
+
+
+#' Read TVD-Pedigree from file using readr::read_fwf()
+#'
+#' @param psInputFile name of the input file
+#' @param pvecColPosition vector with column positions
+#' @param pbOut flag indicating whether output should be written
+#' @return tbl_result_pedigree resulting pedigree as tibble
+#' @export readr_fwf_tvd_input
+readr_fwf_tvd_input <- function(psInputFile,
+                                pvecColPosition = getColPositions(),
+                                pbOut = FALSE){
+  if (pbOut) cat(" ==> Reading TVD Pedigree input from file: ", psInputFile, "\n")
+  tbl_result_pedigree <- readr::read_fwf(file = psInputFile,
+                                         col_positions = readr::fwf_widths(widths = pvecColPosition))
+  if (pbOut) cat(" ==> Input file read with dimensions: nrow/ncol: ",
+                 nrow(tbl_result_pedigree), "/", ncol(tbl_result_pedigree), "\n")
+
+  return(tbl_result_pedigree)
+
+}

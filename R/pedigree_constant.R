@@ -6,6 +6,24 @@
 ###
 ### ################################################## ###
 
+
+#' Return default column indices for Ids
+#'
+#' @return list with Id columns
+#' @export getTvdIdCols
+getTvdIdCols <- function(){
+  return(list(TierIdCol = 6, MutterIdCol = 2, VaterIdCol = 9))
+}
+
+#' Return default column positions for fixed width coming from TVD
+#'
+#' @return vector with column positions
+#' @export getColPositions
+getColPositions <- function(){
+  return(c(22,14,3,31,8,14,3,1,14,3))
+}
+
+
 #' Return default border values for fixed input format
 #'
 #' @return list of format borders

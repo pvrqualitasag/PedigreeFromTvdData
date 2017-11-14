@@ -13,7 +13,9 @@ output:
     df_print: paged
     toc: yes
 vignette: |
-  %\VignetteIndexEntry{Reading Fixed Width Formatted Data} %\VignetteEncoding{UTF-8} %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Reading Fixed Width Formatted Data} 
+  %\VignetteEncoding{UTF-8} 
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r PackageSetup, eval=FALSE, include=FALSE}
@@ -120,6 +122,51 @@ knitr::kable(dfMedTime)
 ```
 
 The results above show several things that can be learned. Our experiments showed that `r vecMethods[order(vecMedTimes)][1]` was the fastest and `r vecMethods[order(vecMedTimes)][length(vecMethods)]` was the slowest method.
+
+
+# Discussion
+The data used so far was a small test example. The real data set will be three orders of magnitude larger. Hence the time requirements will also be larger by a factor of about $1000$. 
+
+
+# Consistency Checks
+Besides reading the data, checking for certain consistency properties is also required in our project. So far, we have read our data into a nested list of lists which is a specialized data structure. The goal of this section is to adapt the consistency checks for the resulting data structure of one of the faster reading methods.
+
+## Method selection
+In a compromise between speed of data input and ease of use of the resulting data object during consistency checks, we are currently looking at `readr::read_fwf()`. 
+
+## Checking format of TVD-Ids
+In a first consistency check, we are correcting for wrongly formatted TVD-Ids. In the test dataset that we used so far, all IDs are correctly formatted, hence the original pedigree will be the same as the corrected version after the verification.
+
+```{r}
+tbl_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sDataFileName)
+tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id2(ptblPedigree = tbl_ped)
+all(tbl_ped_checked[[6]] == tbl_ped[[6]])
+all(tbl_ped_checked[[2]][!is.na(tbl_ped_checked[[2]])] == tbl_ped[[2]][!is.na(tbl_ped[[2]])])
+all(tbl_ped_checked[[9]][!is.na(tbl_ped_checked[[9]])] == tbl_ped[[9]][!is.na(tbl_ped[[9]])])
+```
+
+In a much smaller data set, we are deliberately inserting some mistakes which should show up with our correction methd.
+
+
+```{r}
+sSmallDataFileName <- system.file(file.path("extdata","KLDAT_20170524_20.txt"), 
+                             package = "PedigreeFromTvdData")
+
+tbl_small_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sSmallDataFileName)
+tbl_small_ped_checked <- PedigreeFromTvdData::check_tvd_id2(ptblPedigree = tbl_small_ped)
+```
+
+The IDs with the wrong format are set to `NA`.
+
+```{r}
+(na_idx <- which(is.na(tbl_small_ped_checked[[6]]) & !is.na(tbl_small_ped[[6]])))
+```
+
+The corresponding records are:
+
+```{r}
+tbl_small_ped[c(na_idx),]
+```
 
 
 # Resources
