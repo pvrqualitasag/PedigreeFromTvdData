@@ -3,12 +3,12 @@ title: "Reading Fixed Width Formatted Data"
 author: "Sophie Kunz and Peter von Rohr"
 date: '`r Sys.Date()`'
 output:
-  pdf_document:
-    highlight: null
-    number_sections: yes
   rmarkdown::html_vignette:
     fig_caption: yes
     toc: yes
+  pdf_document:
+    highlight: null
+    number_sections: yes
   html_document:
     df_print: paged
     toc: yes
@@ -18,11 +18,16 @@ vignette: |
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r PackageSetup, eval=FALSE, include=FALSE}
-for (pgk in c("readr", "iotools", "LaF", "microbenchmark")){
-  if (require(pgk, character.only = TRUE))
-    install.packages(pkgs = pgk)
+```{r PackageSetup, eval=TRUE, include=FALSE}
+vec_pkgs <- c("readr", "iotools", "LaF", "microbenchmark")
+if (!all(sapply(vec_pkgs, 
+       function(x) x  %in% installed.packages(), USE.NAMES = FALSE))){
+  for (pgk in vec_pkgs){
+    if (!pgk %in% installed.packages())
+      install.packages(pkgs = pgk)
+  }  
 }
+
 ```
 
 # Disclaimer
@@ -138,17 +143,17 @@ In a compromise between speed of data input and ease of use of the resulting dat
 In a first consistency check, we are correcting for wrongly formatted TVD-Ids. In the test dataset that we used so far, all IDs are correctly formatted, hence the original pedigree will be the same as the corrected version after the verification.
 
 ```{r}
-tbl_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sDataFileName)
+#tbl_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sDataFileName)
+tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(psInputFile = sDataFileName)
 tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id2(ptblPedigree = tbl_ped)
+# check whether ID-columns of original and checked pedigrees are the same
 all(tbl_ped_checked[[6]] == tbl_ped[[6]])
+# checks for mothers and fathers
 all(tbl_ped_checked[[2]][!is.na(tbl_ped_checked[[2]])] == tbl_ped[[2]][!is.na(tbl_ped[[2]])])
 all(tbl_ped_checked[[9]][!is.na(tbl_ped_checked[[9]])] == tbl_ped[[9]][!is.na(tbl_ped[[9]])])
 ```
 
-
 The simple comparison as was done with the TVD-Ids for each animal in column $6$ cannot be done for the parents, because, we cannot assume that they have the same number of `NA`s. Hence we have to find the IDs which are only `NA` in the corrected version of the pedigree.
-
-
 
 In a much smaller data set, we are deliberately inserting some mistakes which should show up with our correction methd.
 
