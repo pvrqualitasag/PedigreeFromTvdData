@@ -3,12 +3,12 @@ title: "Reading Fixed Width Formatted Data"
 author: "Sophie Kunz and Peter von Rohr"
 date: '`r Sys.Date()`'
 output:
-  rmarkdown::html_vignette:
-    fig_caption: yes
-    toc: yes
   pdf_document:
     highlight: null
     number_sections: yes
+  rmarkdown::html_vignette:
+    fig_caption: yes
+    toc: yes
   html_document:
     df_print: paged
     toc: yes
@@ -144,6 +144,11 @@ all(tbl_ped_checked[[6]] == tbl_ped[[6]])
 all(tbl_ped_checked[[2]][!is.na(tbl_ped_checked[[2]])] == tbl_ped[[2]][!is.na(tbl_ped[[2]])])
 all(tbl_ped_checked[[9]][!is.na(tbl_ped_checked[[9]])] == tbl_ped[[9]][!is.na(tbl_ped[[9]])])
 ```
+
+
+The simple comparison as was done with the TVD-Ids for each animal in column $6$ cannot be done for the parents, because, we cannot assume that they have the same number of `NA`s. Hence we have to find the IDs which are only `NA` in the corrected version of the pedigree.
+
+
 
 In a much smaller data set, we are deliberately inserting some mistakes which should show up with our correction methd.
 
