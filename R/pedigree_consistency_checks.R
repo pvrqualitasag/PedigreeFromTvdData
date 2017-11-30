@@ -80,7 +80,6 @@ correct_tvd_format <- function(ptblPedigreeResult, plFormatBorder, pnIdCol) {
 #' @param lIdCols list with column indices where TVD-ids are stored
 #' @return corrected pedigree
 #' @export check_tvd_id_tbl
-#check_tvd_id2
 check_tvd_id_tbl<- function(ptblPedigree,
                           plFormatBorder = getTVDIdBorder(),
                           plIdCols = getTvdIdCols()){
@@ -217,6 +216,44 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
   }
   return(lCheckedPedigree3)
 }
+
+
+#' Validation of birthdate format using tbl_df pedigree
+#'
+#'
+check_birthdate_tbl <- function(ptblPedigree,
+                                lFormatBorder = getBirthdateBorder(),
+                                lLimitValue = getBirthdayConsistencyLimit(),
+                                pnBirthdateColIdx = getBirthdateColIdx()){
+  tblPedigreeResult <- ptblPedigree
+
+  ### # check whether day is within limits
+  vecDay <- tblPedigreeResult[,pnBirthdateColIdx] %% 100
+  vecInvalidDay <- which((vecDay < lLimitValue$cLowestLimitDay |
+                           vecDay > lLimitValue$cHighestLimitDay) &
+                           !is.na(vecDay))
+  if (length(vecInvalidDay) > 0){
+    tblPedigreeResult[vecInvalidDay,pnBirthdateColIdx] <- NA
+  }
+
+  ### # month
+  vecMonth <- (tblPedigreeResult[,pnBirthdateColIdx] %/% 100) %% 100
+  vecInvalidMonth <- which((vecMonth < lLimitValue$cLowestLimitMonth |
+                            vecMonth > lLimitValue$cHighestLimitMonth) &
+                             !is.na(vecMonth))
+  if (length(vecInvalidMonth) > 0){
+    tblPedigreeResult[vecInvalidMonth,pnBirthdateColIdx] <- NA
+  }
+
+  ### # year
+
+  ### # birthdates which are not missing
+  !is.na(tblPedigreeResult[,pnBirthdateColIdx])
+
+
+
+}
+
 
 ### ######################################################## ###
 #' Validation of sex

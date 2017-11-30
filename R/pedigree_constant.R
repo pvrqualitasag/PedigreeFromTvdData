@@ -67,6 +67,19 @@ getBirthdayConsistencyLimit <- function(){
               cHighestLimitDay = 31))
 }
 
+#' Get column index of birthdate in tbl_df pedigree
+#'
+#' Because there are no package-global variables, we
+#' return the fix-coded column index of birthdate as
+#' the result of a function.
+#'
+#' @return column index of birthdate in tbl_df pedigree
+#' @export getBirthdateColIdx
+getBirthdateColIdx <- function(){
+  return(5)
+}
+
+
 #' Get consistency sex
 #'
 #' @export getConsistencySex
