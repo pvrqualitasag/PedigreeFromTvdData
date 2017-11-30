@@ -145,7 +145,7 @@ In a first consistency check, we are correcting for wrongly formatted TVD-Ids. I
 ```{r}
 #tbl_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sDataFileName)
 tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(psInputFile = sDataFileName)
-tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id2(ptblPedigree = tbl_ped)
+tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_ped)
 # check whether ID-columns of original and checked pedigrees are the same
 all(tbl_ped_checked[[6]] == tbl_ped[[6]])
 # checks for mothers and fathers
@@ -163,7 +163,7 @@ sSmallDataFileName <- system.file(file.path("extdata","KLDAT_20170524_20.txt"),
                              package = "PedigreeFromTvdData")
 
 tbl_small_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sSmallDataFileName)
-tbl_small_ped_checked <- PedigreeFromTvdData::check_tvd_id2(ptblPedigree = tbl_small_ped)
+tbl_small_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_small_ped)
 ```
 
 The IDs with the wrong format are set to `NA`.

@@ -79,8 +79,9 @@ correct_tvd_format <- function(ptblPedigreeResult, plFormatBorder, pnIdCol) {
 #' @param lFormatBorder list with format borders
 #' @param lIdCols list with column indices where TVD-ids are stored
 #' @return corrected pedigree
-#' @export check_tvd_id2
-check_tvd_id2 <- function(ptblPedigree,
+#' @export check_tvd_id_tbl
+#check_tvd_id2
+check_tvd_id_tbl<- function(ptblPedigree,
                           plFormatBorder = getTVDIdBorder(),
                           plIdCols = getTvdIdCols()){
   ### # copy argument to result
