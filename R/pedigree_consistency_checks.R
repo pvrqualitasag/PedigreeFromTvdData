@@ -247,11 +247,6 @@ check_birthdate_tbl <- function(ptblPedigree,
 
   ### # year
 
-  ### # birthdates which are not missing
-  !is.na(tblPedigreeResult[,pnBirthdateColIdx])
-
-
-
 }
 
 
