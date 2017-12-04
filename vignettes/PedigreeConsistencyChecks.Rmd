@@ -1,0 +1,105 @@
+---
+title: "Pedigree Consistency Checks"
+author: "Sophie Kunz and Peter von Rohr"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pedigree Consistency Checks}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Consistency Checks
+Besides reading the data, checking for certain consistency properties is also required in our project. So far, we have read our data into a nested list of lists which is a specialized data structure. The goal of this section is to adapt the consistency checks for the resulting data structure of one of the faster reading methods.
+
+## Data Input
+Based on our comparison of reading fwf-pedigree-data into R, we use package `LaF` to read the data and directly convert the data read into a `tbl_df`. This is done in the function `laf_open_fwf_tvd_input` of package `PedigreeFromTvdData`. 
+
+```{r}
+sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"), 
+                             package = "PedigreeFromTvdData")
+vecFormat <- c(22,14,3,31,8,14,3,1,14,3)
+tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(psInputFile = sDataFileName)
+```
+
+Besides the time it takes to 
+
+## Checking format of TVD-Ids
+In a first consistency check, we are correcting for wrongly formatted TVD-Ids. In the test dataset that we used so far, all IDs are correctly formatted, hence the original pedigree will be the same as the corrected version after the verification.
+
+```{r}
+system.time(tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_ped))
+```
+
+The timing indicates how long it takes to do the check of the TVD-Ids. When we are interested in the amount of memory taken by the pedigree and by the check, we follow the outline given in [Advanced R](http://adv-r.had.co.nz/memory.html). The size in memory of the complete pedigree is
+
+```{r}
+pryr::object_size(tbl_ped)
+```
+
+The total amount of memory used by all objects is
+
+```{r}
+pryr::mem_used()
+```
+
+The change in memory usage during the check can be measured using
+
+```{r}
+pryr::mem_change(tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_ped))
+pryr::mem_used()
+```
+
+
+
+```{r}
+# check whether ID-columns of original and checked pedigrees are the same
+all(tbl_ped_checked[[6]] == tbl_ped[[6]])
+```
+
+The simple comparison as was done with the TVD-Ids for each animal in column $6$ cannot be done for the parents, because, we cannot assume that they have the same number of `NA`s. Hence we have to find the IDs which are only `NA` in the corrected version of the pedigree.
+
+```{r}
+# checks for mothers and fathers
+all(tbl_ped_checked[[2]][!is.na(tbl_ped_checked[[2]])] == tbl_ped[[2]][!is.na(tbl_ped[[2]])])
+all(tbl_ped_checked[[9]][!is.na(tbl_ped_checked[[9]])] == tbl_ped[[9]][!is.na(tbl_ped[[9]])])
+```
+
+
+In a much smaller data set, we are deliberately inserting some mistakes which should show up with our correction methd.
+
+
+```{r}
+sSmallDataFileName <- system.file(file.path("extdata","KLDAT_20170524_20.txt"), 
+                             package = "PedigreeFromTvdData")
+
+tbl_small_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sSmallDataFileName)
+tbl_small_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_small_ped)
+```
+
+The IDs with the wrong format are set to `NA`.
+
+```{r}
+(na_idx <- which(is.na(tbl_small_ped_checked[[6]]) & !is.na(tbl_small_ped[[6]])))
+```
+
+The corresponding records are:
+
+```{r}
+tbl_small_ped[c(na_idx),]
+```
+
+
+# Resources
+- R memory usage in [Advanced R](http://adv-r.had.co.nz/memory.html)
+
+
+# Session Info
+```{r}
+sessionInfo()
+```
+
+
+# Latest Update
+`r paste(Sys.time(),paste0("(", Sys.info()[["user"]],")" ))`
+
