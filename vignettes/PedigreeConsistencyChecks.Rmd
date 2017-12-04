@@ -9,6 +9,19 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
+vec_pkgs <- c("pryr")
+if (!all(sapply(vec_pkgs, 
+       function(x) x  %in% installed.packages(), USE.NAMES = FALSE))){
+  for (pgk in vec_pkgs){
+    if (!pgk %in% installed.packages())
+      install.packages(pkgs = pgk)
+  }  
+}
+
+```
+
 # Consistency Checks
 Besides reading the data, checking for certain consistency properties is also required in our project. So far, we have read our data into a nested list of lists which is a specialized data structure. The goal of this section is to adapt the consistency checks for the resulting data structure of one of the faster reading methods.
 
@@ -22,16 +35,7 @@ vecFormat <- c(22,14,3,31,8,14,3,1,14,3)
 tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(psInputFile = sDataFileName)
 ```
 
-Besides the time it takes to 
-
-## Checking format of TVD-Ids
-In a first consistency check, we are correcting for wrongly formatted TVD-Ids. In the test dataset that we used so far, all IDs are correctly formatted, hence the original pedigree will be the same as the corrected version after the verification.
-
-```{r}
-system.time(tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_ped))
-```
-
-The timing indicates how long it takes to do the check of the TVD-Ids. When we are interested in the amount of memory taken by the pedigree and by the check, we follow the outline given in [Advanced R](http://adv-r.had.co.nz/memory.html). The size in memory of the complete pedigree is
+Besides the time it takes to read pedigree data, we are also interested in the amount of memory it takes to store the pedigree data. We are using package `pryr` to get information about memory usage. For more information about R memory usage, we refer to [Advanced R](http://adv-r.had.co.nz/memory.html). The size in memory of the complete pedigree is
 
 ```{r}
 pryr::object_size(tbl_ped)
@@ -43,14 +47,22 @@ The total amount of memory used by all objects is
 pryr::mem_used()
 ```
 
-The change in memory usage during the check can be measured using
+## Checking format of TVD-Ids
+In a first consistency check, we are correcting for wrongly formatted TVD-Ids. In the test dataset that we used so far, all IDs are correctly formatted, hence the original pedigree will be the same as the corrected version after the verification.
+
+```{r}
+system.time(tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_ped))
+```
+
+The timing values indicate how long it takes to do the checks. The checks are done by giving the original pedigree as input and the checked and modified pedigree is obtained as a function result. In the modified pedigree any IDs that are recognized as incorrect are set to `NA`. In order to monitor the amount of memory used during the check, we use the function `pryr::mem_change()`. 
 
 ```{r}
 pryr::mem_change(tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_ped))
-pryr::mem_used()
 ```
 
+Because the change in memory is very small, we can see that the method of consistency check should not have a negative impact on the memory usage.
 
+The consistency check for the TVD-Ids is successful, if the original pedigree and the verified pedigree after the check are the same.
 
 ```{r}
 # check whether ID-columns of original and checked pedigrees are the same

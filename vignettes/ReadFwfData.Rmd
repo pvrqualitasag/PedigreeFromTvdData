@@ -18,7 +18,7 @@ vignette: |
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r PackageSetup, eval=TRUE, include=FALSE}
+```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
 vec_pkgs <- c("readr", "iotools", "LaF", "microbenchmark")
 if (!all(sapply(vec_pkgs, 
        function(x) x  %in% installed.packages(), USE.NAMES = FALSE))){
