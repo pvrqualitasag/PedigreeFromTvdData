@@ -4,10 +4,12 @@
 \alias{all_parent_id_consistent}
 \title{Check whether all ids of a given parent (mother or father) have consistent IDs}
 \usage{
-all_parent_id_consistent(p_tbl_ped, pn_parent_col, p_b_out = FALSE)
+all_parent_id_consistent(p_tbl_ped, plIdCols, pn_parent_col, p_b_out = FALSE)
 }
 \arguments{
 \item{p_tbl_ped}{original pedigree as tbl_df}
+
+\item{plIdCols}{list with column indices for all ids, required for checking}
 
 \item{pn_parent_col}{column index of parent to be checked}
 

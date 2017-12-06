@@ -4,10 +4,24 @@
 \alias{check_birthdate_tbl}
 \title{Validation of birthdate format using tbl_df pedigree}
 \usage{
-check_birthdate_tbl(ptblPedigree, lFormatBorder = getBirthdateBorder(),
-  lLimitValue = getBirthdayConsistencyLimit(),
-  pnBirthdateColIdx = getBirthdateColIdx())
+check_birthdate_tbl(ptblPedigree, lLimitValue = getBirthdayConsistencyLimit(),
+  pnBirthdateColIdx)
+}
+\arguments{
+\item{ptblPedigree}{pedigree in tbl_df format}
+
+\item{lLimitValue}{list with fixed limits for year, month and date}
+
+\item{pnBirthdateColIdx}{column index of birthdates in ptblPedigree}
+}
+\value{
+validated and modified tbl_df pedigree
 }
 \description{
-Validation of birthdate format using tbl_df pedigree
+Birthdates in pedigree ptblPedigree are validated, assuming
+that they are in numeric format as YYYYMMDD. In case the
+birthdate is read as character, it first gets converted to
+a numeric value. For each part of the date (year, month and
+day), there are constant limits defined. Whenever a validation
+fails, the date is set to NA.
 }

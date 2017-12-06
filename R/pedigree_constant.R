@@ -207,3 +207,16 @@ getTvdIdColsDsch <- function(psFormatDschFile,
               MutterIdCol = grep(pattern = ps_pattern_mutter_id, tbl_dsch_k11[[pnTagCol]]),
               VaterIdCol = grep(pattern = ps_pattern_vater_id, tbl_dsch_k11[[pnTagCol]])))
 }
+
+
+#' Get column index for birthdate with new DSCH-format
+#'
+#' @export getBirthdateColIdxDsch
+getBirthdateColIdxDsch <- function(psFormatDschFile,
+                                   pnTagCol   = 2,
+                                   ps_pattern_geburt_dat = "Kalbedatum"){
+  ### # read DSCH format from given xlsx-file
+  tbl_dsch_k11 <- getK11ColPositionFromDsch(psFormatDschFile = psFormatDschFile)
+  ### # return list column positions found using the specified patterns
+  return(grep(pattern = ps_pattern_geburt_dat, tbl_dsch_k11[[pnTagCol]]))
+}

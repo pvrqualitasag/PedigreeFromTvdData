@@ -74,13 +74,18 @@ The simple comparison as was done with the TVD-Ids for each animal in column $6$
 
 ```{r}
 # checks for mothers
-(l_check_result_mothers <- all_parent_id_consistent(p_tbl_ped = tbl_ped, pn_parent_col = getTvdIdCols()$MutterIdCol))
+lIdCols <- getTvdIdCols()
+(l_check_result_mothers <- all_parent_id_consistent(p_tbl_ped = tbl_ped,
+                                                    plIdCols  = lIdCols, 
+                                                    pn_parent_col = lIdCols$MutterIdCol))
 ```
 The same check is also done for the fathers.
 
 ```{r}
 # checks for fathers
-(l_check_result_fathers <- all_parent_id_consistent(p_tbl_ped = tbl_ped, pn_parent_col = getTvdIdCols()$VaterIdCol))
+(l_check_result_fathers <- all_parent_id_consistent(p_tbl_ped = tbl_ped,
+                                                    plIdCols  = lIdCols, 
+                                                    pn_parent_col = lIdCols$VaterIdCol))
 ```
 
 
@@ -104,7 +109,8 @@ l_tvd_id_col_dsch <- getTvdIdColsDsch(psFormatDschFile = sFormatDsch)
 cat("The result of the check with the new pedigree is:\n")
 (l_check_result_fathers_new <- 
       all_parent_id_consistent(p_tbl_ped = tbl_ped_new, 
-                              pn_parent_col = l_tvd_id_col_dsch$VaterIdCol))
+                               plIdCols  = l_tvd_id_col_dsch,
+                               pn_parent_col = l_tvd_id_col_dsch$VaterIdCol))
 ```
 
 ### Small example tests
@@ -130,6 +136,23 @@ The corresponding records are:
 ```{r}
 tbl_small_ped[c(na_idx),]
 ```
+
+
+## Checking birthdates
+Birthdates are validated using the tbd_df pedigree with the new format.
+
+```{r}
+n_bd_col_idx <- PedigreeFromTvdData::getBirthdateColIdxDsch(psFormatDschFile = sFormatDsch)
+### # convert birthdates from string to numeric
+if (is.character(tbl_ped_new[[n_bd_col_idx]])){
+  tbl_ped_new[[n_bd_col_idx]] <- as.numeric(tbl_ped_new[[n_bd_col_idx]])
+}
+tbl_ped_new_checked <- PedigreeFromTvdData::check_birthdate_tbl(ptblPedigree = tbl_ped_new,
+                                                                pnBirthdateColIdx = n_bd_col_idx)
+(l_check_result_bd <- PedigreeFromTvdData::all_birthdate_consistent(p_tbl_ped = tbl_ped_new, 
+                                                                    pn_bd_col_idx = n_bd_col_idx))
+```
+
 
 
 # Resources
