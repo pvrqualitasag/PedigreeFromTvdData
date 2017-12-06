@@ -283,3 +283,41 @@ check_sex <- function(plPedigree, lsex = getConsistencySex()){
   }
   return(lCheckedPedigree4)
 }
+
+
+#' Check whether all ids of a given parent (mother or father) have consistent IDs
+#'
+#' Given a pedigree as tbl_df, it is first run through the TVD-ID check using
+#' the function PedigreeFromTvdData::check_tvd_id_tbl(). As a result, we get the
+#' checked pedigree. The original pedigree in p_tbl_ped and the checked pedigree
+#' are compared and the result is returned as a list indicating whether the
+#' two pedigrees are consistent and if not with a vector of row-indices where
+#' inconsistencies did occur.
+#'
+#' @param p_tbl_ped original pedigree as tbl_df
+#' @param pn_parent_col column index of parent to be checked
+#' @param p_b_out flag indicating whether output should be written
+#' @return list indicating result of consistency check and list of row indices with inconsistent IDs
+#' @export all_parent_id_consistent
+all_parent_id_consistent <- function(p_tbl_ped, pn_parent_col, p_b_out = FALSE){
+  ### # initialize a result list
+  l_check_result <- list(b_consistency_check = FALSE, vec_incons_rows = NA)
+  ### # run the check of the pedigree ids
+  tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = p_tbl_ped)
+
+  ### # check result for parents, start with number of non-NA's in both pedigrees
+  n_not_na_ped <- length(p_tbl_ped[[pn_parent_col]][!is.na(p_tbl_ped[[pn_parent_col]])])
+  n_not_na_ped_checked <- length(tbl_ped_checked[[pn_parent_col]][!is.na(tbl_ped_checked[[pn_parent_col]])])
+  if ( n_not_na_ped == n_not_na_ped_checked ){
+    if (p_b_out) cat(" *** All parent-ids consistent:\n")
+    l_check_result$b_consistency_check <-
+      all(tbl_ped_checked[[pn_parent_col]][!is.na(tbl_ped_checked[[pn_parent_col]])] == p_tbl_ped[[pn_parent_col]][!is.na(p_tbl_ped[[pn_parent_col]])])
+  } else {
+    l_check_result$vec_incons_rows <- which(is.na(tbl_ped_checked[[pn_parent_col]]) & !is.na(p_tbl_ped[[pn_parent_col]]))
+    if (p_b_out) {
+      cat(" *** Parent-Ids different after check:\n")
+      print(l_check_result$vec_incons_rows)
+    }
+  }
+  return(l_check_result)
+}

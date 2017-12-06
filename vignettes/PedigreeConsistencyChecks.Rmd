@@ -32,7 +32,8 @@ Based on our comparison of reading fwf-pedigree-data into R, we use package `LaF
 sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"), 
                              package = "PedigreeFromTvdData")
 vecFormat <- c(22,14,3,31,8,14,3,1,14,3)
-tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(psInputFile = sDataFileName)
+tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(psInputFile = sDataFileName,
+                                                       pvecColPosition = vecFormat)
 ```
 
 Besides the time it takes to read pedigree data, we are also interested in the amount of memory it takes to store the pedigree data. We are using package `pryr` to get information about memory usage. For more information about R memory usage, we refer to [Advanced R](http://adv-r.had.co.nz/memory.html). The size in memory of the complete pedigree is
@@ -72,12 +73,41 @@ all(tbl_ped_checked[[6]] == tbl_ped[[6]])
 The simple comparison as was done with the TVD-Ids for each animal in column $6$ cannot be done for the parents, because, we cannot assume that they have the same number of `NA`s. Hence we have to find the IDs which are only `NA` in the corrected version of the pedigree.
 
 ```{r}
-# checks for mothers and fathers
-all(tbl_ped_checked[[2]][!is.na(tbl_ped_checked[[2]])] == tbl_ped[[2]][!is.na(tbl_ped[[2]])])
-all(tbl_ped_checked[[9]][!is.na(tbl_ped_checked[[9]])] == tbl_ped[[9]][!is.na(tbl_ped[[9]])])
+# checks for mothers
+(l_check_result_mothers <- all_parent_id_consistent(p_tbl_ped = tbl_ped, pn_parent_col = getTvdIdCols()$MutterIdCol))
+```
+The same check is also done for the fathers.
+
+```{r}
+# checks for fathers
+(l_check_result_fathers <- all_parent_id_consistent(p_tbl_ped = tbl_ped, pn_parent_col = getTvdIdCols()$VaterIdCol))
 ```
 
 
+```{r, echo=FALSE, results='asis'}
+if (!l_check_result_fathers$b_consistency_check){
+  ### # there was a problem with sire-IDs
+  cat("Some of the sire-IDs were found to have a problem with their format. Hence we are trying to re-read the pedigree using different column formats.\n")
+} else {
+  ### # no problems found
+  cat("The format of the sire-IDs was found to be ok.\n")
+}
+```
+
+```{r, eval=!l_check_result_fathers$b_consistency_check}
+sFormatDsch <- system.file(file.path("extdata", "RindviehCH_Schnittstelle_4_13_D.xlsx"), 
+                            package = "PedigreeFromTvdData")
+vec_format_new <- PedigreeFromTvdData::getK11ColPositionVecFromDsch(psFormatDschFile = sFormatDsch)
+tbl_ped_new <- PedigreeFromTvdData::laf_open_fwf_tvd_input(psInputFile     = sDataFileName,
+                                                             pvecColPosition = vec_format_new)
+l_tvd_id_col_dsch <- getTvdIdColsDsch(psFormatDschFile = sFormatDsch)
+cat("The result of the check with the new pedigree is:\n")
+(l_check_result_fathers_new <- 
+      all_parent_id_consistent(p_tbl_ped = tbl_ped_new, 
+                              pn_parent_col = l_tvd_id_col_dsch$VaterIdCol))
+```
+
+### Small example tests
 In a much smaller data set, we are deliberately inserting some mistakes which should show up with our correction methd.
 
 
