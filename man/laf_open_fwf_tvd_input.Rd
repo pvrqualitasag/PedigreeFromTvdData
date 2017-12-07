@@ -4,13 +4,13 @@
 \alias{laf_open_fwf_tvd_input}
 \title{Read TVD-Pedigree from inputfile using LaF::laf_open_fwf()}
 \usage{
-laf_open_fwf_tvd_input(psInputFile, pvecColPosition = getColPositions(),
-  pbOut = FALSE)
+laf_open_fwf_tvd_input(ps_input_file, pvec_col_position = getColPositions(),
+  pb_out = FALSE)
 }
 \arguments{
-\item{psInputFile}{name of the input file}
+\item{ps_input_file}{name of the input file}
 
-\item{pvecColPosition}{vector with column positions}
+\item{pvec_col_position}{vector with column positions}
 
 \item{pbOut}{flag indicating whether output should be written}
 }

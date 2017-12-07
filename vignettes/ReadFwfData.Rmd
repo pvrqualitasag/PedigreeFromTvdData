@@ -18,7 +18,7 @@ vignette: |
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r PackageSetup, eval=TRUE, include=FALSE}
+```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
 vec_pkgs <- c("readr", "iotools", "LaF", "microbenchmark")
 if (!all(sapply(vec_pkgs, 
        function(x) x  %in% installed.packages(), USE.NAMES = FALSE))){
@@ -133,55 +133,19 @@ The results above show several things that can be learned. Our experiments showe
 The data used so far was a small test example. The real data set will be three orders of magnitude larger. Hence the time requirements will also be larger by a factor of about $1000$. 
 
 
-# Consistency Checks
-Besides reading the data, checking for certain consistency properties is also required in our project. So far, we have read our data into a nested list of lists which is a specialized data structure. The goal of this section is to adapt the consistency checks for the resulting data structure of one of the faster reading methods.
-
-## Method selection
-In a compromise between speed of data input and ease of use of the resulting data object during consistency checks, we are currently looking at `readr::read_fwf()`. 
-
-## Checking format of TVD-Ids
-In a first consistency check, we are correcting for wrongly formatted TVD-Ids. In the test dataset that we used so far, all IDs are correctly formatted, hence the original pedigree will be the same as the corrected version after the verification.
-
-```{r}
-#tbl_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sDataFileName)
-tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(psInputFile = sDataFileName)
-tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_ped)
-# check whether ID-columns of original and checked pedigrees are the same
-all(tbl_ped_checked[[6]] == tbl_ped[[6]])
-# checks for mothers and fathers
-all(tbl_ped_checked[[2]][!is.na(tbl_ped_checked[[2]])] == tbl_ped[[2]][!is.na(tbl_ped[[2]])])
-all(tbl_ped_checked[[9]][!is.na(tbl_ped_checked[[9]])] == tbl_ped[[9]][!is.na(tbl_ped[[9]])])
-```
-
-The simple comparison as was done with the TVD-Ids for each animal in column $6$ cannot be done for the parents, because, we cannot assume that they have the same number of `NA`s. Hence we have to find the IDs which are only `NA` in the corrected version of the pedigree.
-
-In a much smaller data set, we are deliberately inserting some mistakes which should show up with our correction methd.
-
-
-```{r}
-sSmallDataFileName <- system.file(file.path("extdata","KLDAT_20170524_20.txt"), 
-                             package = "PedigreeFromTvdData")
-
-tbl_small_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sSmallDataFileName)
-tbl_small_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_small_ped)
-```
-
-The IDs with the wrong format are set to `NA`.
-
-```{r}
-(na_idx <- which(is.na(tbl_small_ped_checked[[6]]) & !is.na(tbl_small_ped[[6]])))
-```
-
-The corresponding records are:
-
-```{r}
-tbl_small_ped[c(na_idx),]
-```
-
-
 # Resources
 - Comparison of different methods for reading fwf data: 
 [Faster way to read fixed-width files in R](https://stackoverflow.com/questions/24715894/faster-way-to-read-fixed-width-files-in-r)
 - Alternative SO-post: [Reading big data with fixed width](https://stackoverflow.com/questions/18720036/reading-big-data-with-fixed-width)
 - paper on R-package iotools: https://arxiv.org/pdf/1510.00041.pdf
 - R-package LaF: https://cran.r-project.org/web/packages/LaF/vignettes/LaF-manual.pdf
+
+
+# Session Info
+```{r}
+sessionInfo()
+```
+
+
+# Latest Update
+`r paste(Sys.time(),paste0("(", Sys.info()[["user"]],")" ))`
