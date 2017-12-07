@@ -155,7 +155,7 @@ Birthdates are validated using the tbd_df pedigree with the new format.
 n_bd_col_idx <- getBirthdateColIdxDsch()
 ### # convert birthdates from string to numeric
 if (is.character(tbl_ped_id_checked[[n_bd_col_idx]])){
-  tbl_ped_id_checked[[n_bd_col_idx]] <- as.numeric(tbl_ped_id_checked[[n_bd_col_idx]])
+  tbl_ped_id_checked[[n_bd_col_idx]] <- as.integer(tbl_ped_id_checked[[n_bd_col_idx]])
 }
 tbl_ped_id_bd_checked <- check_birthdate_tbl(ptblPedigree = tbl_ped_id_checked,
                                              pnBirthdateColIdx = n_bd_col_idx)
@@ -169,6 +169,12 @@ Reading the pedigree and doing all checks is combined in the function `build_che
 
 ```{r}
 tbl_ped_final <- build_check_pedigree_from_tvd(ps_tvd_file = sDataFileName)
+```
+
+The following checks wether the result of the single checks is the same as the result after the overall checks.
+
+```{r}
+all.equal(tbl_ped_final, tbl_ped_id_bd_checked)
 ```
 
 

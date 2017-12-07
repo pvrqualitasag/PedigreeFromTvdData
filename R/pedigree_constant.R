@@ -143,9 +143,9 @@ getK11ColPositionFromDsch <- function(psFormatDschFile = getFormatDSCHFile(),
   }
   ### # maching positions of end tags
   if (is.na(psEndTag)){
-    (vecEndPos <- which(is.na(tbl_dsch_format[,pnTagCol])))
+    vecEndPos <- which(is.na(tbl_dsch_format[,pnTagCol]))
   } else {
-    (vecEndPos <- which(tbl_dsch_format[,pnTagCol] == psEndTag))
+    vecEndPos <- which(tbl_dsch_format[,pnTagCol] == psEndTag)
   }
   ### # end tag must be found at least once, otherwise stop with error
   if (length(vecEndPos) < 1)
@@ -155,6 +155,8 @@ getK11ColPositionFromDsch <- function(psFormatDschFile = getFormatDSCHFile(),
   ### #  the first after the starting position
   if(length(vecEndPos) > 1){
     n_k11_end_row <- vecEndPos[vecEndPos > n_k11_start_row][1]
+  } else {
+    n_k11_end_row <- vecEndPos
   }
 
   ### # check that end is not before start
@@ -193,7 +195,7 @@ getK11ColPositionVecFromDsch <- function(psFormatDschFile = getFormatDSCHFile(),
 #' column index in the peidgree tbl_df is searched using some
 #' tag patterns that are specific for the ID-columns
 #'
-#' @param psFormatDschFile DSCH format file (default = "RindviehCH_Schnittstelle_4_13_D.xlsx")
+#' @param psFormatDschFile DSCH format file (default = "RindviehCH_Schnittstelle_4_13_D_K11.xlsx")
 #' @param pnTagCol column in DSCH format where tags occur
 #' @param ps_pattern_tier_id Tag for TierID (default = "Kalb Id")
 #' @param ps_pattern_mutter_id Tag for MutterId (default = "Mutter Id")
@@ -233,6 +235,6 @@ getBirthdateColIdxDsch <- function(psFormatDschFile = getFormatDSCHFile(),
 #' @export getFormatDSCHFile
 getFormatDSCHFile <- function(){
   return(system.file(file.path("extdata",
-                               "RindviehCH_Schnittstelle_4_13_D.xlsx"),
+                               "RindviehCH_Schnittstelle_4_13_D_K11.xlsx"),
                      package = "PedigreeFromTvdData"))
 }

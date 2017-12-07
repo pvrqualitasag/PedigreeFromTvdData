@@ -27,7 +27,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   tbl_ped <- check_tvd_id_tbl(ptblPedigree = tbl_ped)
 
   ### # checking for birthdate
-  tbl_ped <- check_birthdate_tbl(ptblPedigree = tbl_ped)
+  #tbl_ped <- check_birthdate_tbl(ptblPedigree = tbl_ped)
 
   ### # more checks can be done here
 
