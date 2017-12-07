@@ -4,14 +4,6 @@
 \alias{check_birthdate_tbl}
 \title{Validation of birthdate format using tbl_df pedigree}
 \usage{
-<<<<<<< HEAD
-check_birthdate_tbl(ptblPedigree, lFormatBorder = getBirthdateBorder(),
-  lLimitValue = getBirthdayConsistencyLimit(),
-  pnBirthdateColIdx = getBirthdateColIdx())
-}
-\description{
-Validation of birthdate format using tbl_df pedigree
-=======
 check_birthdate_tbl(ptblPedigree, lLimitValue = getBirthdayConsistencyLimit(),
   pnBirthdateColIdx)
 }
@@ -32,5 +24,4 @@ birthdate is read as character, it first gets converted to
 a numeric value. For each part of the date (year, month and
 day), there are constant limits defined. Whenever a validation
 fails, the date is set to NA.
->>>>>>> e1057051b5c517e3f45b40f6f2b298ca59d32e90
 }

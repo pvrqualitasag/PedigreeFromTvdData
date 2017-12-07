@@ -11,7 +11,7 @@ vignette: >
 
 
 ```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
-vec_pkgs <- c("pryr")
+vec_pkgs <- c("pryr", "readxl")
 if (!all(sapply(vec_pkgs, 
        function(x) x  %in% installed.packages(), USE.NAMES = FALSE))){
   for (pgk in vec_pkgs){
