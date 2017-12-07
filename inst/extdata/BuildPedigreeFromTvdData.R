@@ -26,7 +26,10 @@ if (!file.exists(sInputFile))
 
 ### # read TVD-File
 #require(PedigreeFromTvdData)
-lResultPedigree <- PedigreeFromTvdData::read_tvd_input(psInputFile = sInputFile)
+#lResultPedigree <- PedigreeFromTvdData::read_tvd_input(psInputFile = sInputFile)
+sSmallDataFileName <- system.file(file.path("extdata","KLDAT_20170524_20.txt"),
+                                  package = "PedigreeFromTvdData")
+tbl_small_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sSmallDataFileName)
 #str(lResultPedigree)
 
 ### # further consistency checks, e.g. is ?

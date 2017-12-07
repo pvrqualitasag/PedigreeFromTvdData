@@ -221,6 +221,11 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
 #' Validation of birthdate format using tbl_df pedigree
 #'
 #'
+#' @param ptblPedigree tbl_df pedigree
+#' @param lFormatBorder list of consistency border by default taken from getBirthdateBorder()
+#' @param lLimitValue list of consistency limit value by default taken from getBirthdayConsistencyLimit()
+#' @param pnBirthdateColIdx column numberd by default taken from getBirthdateColIdx()
+#' @export check_birthdate_tbl
 check_birthdate_tbl <- function(ptblPedigree,
                                 lFormatBorder = getBirthdateBorder(),
                                 lLimitValue = getBirthdayConsistencyLimit(),
@@ -246,11 +251,13 @@ check_birthdate_tbl <- function(ptblPedigree,
   }
 
   ### # year
+  vecYear <- tblPedigreeResult[,pnBirthdateColIdx] %/% 10000
+  vecInvalidYear <- which(vecYear < lLimitValue$cLowestLimitYear &
+                            !is.na(vecYear))
 
-  ### # birthdates which are not missing
-  !is.na(tblPedigreeResult[,pnBirthdateColIdx])
-
-
+  if (length(vecInvalidYear) > 0){
+    tblPedigreeResult[vecInvalidYear,pnBirthdateColIdx] <- NA
+  }
 
 }
 
@@ -287,4 +294,20 @@ check_sex <- function(plPedigree, lsex = getConsistencySex()){
     lCheckedPedigree4[[idxPed]] <- lCurrentAni
   }
   return(lCheckedPedigree4)
+}
+
+
+#' Validation of sex format using tbl_df pedigree
+#'
+#'
+#' @param ptblPedigree
+#' @param lsex list of consistency values by default taken from getConsistencySex()
+#' @export check_sex_tbl
+check_sex_tbl <- function(ptblPedigree,
+                          lsex = getConsistencySex(),
+                          pnTvdIdColIdx = getTvdIdCols()){
+  tblPedigreeResult <- ptblPedigree
+  if(!is.na(tblPedigreeResult[,pnTvdIdColIdx$MutterIdCol])){
+    if(){}
+  }
 }
