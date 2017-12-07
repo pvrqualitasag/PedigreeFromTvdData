@@ -136,21 +136,21 @@ readr_fwf_tvd_input <- function(psInputFile,
 
 #' Read TVD-Pedigree from inputfile using LaF::laf_open_fwf()
 #'
-#' @param psInputFile name of the input file
-#' @param pvecColPosition vector with column positions
+#' @param ps_input_file name of the input file
+#' @param pvec_col_position vector with column positions
 #' @param pbOut flag indicating whether output should be written
 #' @return tibble converted to laf containing the pedigree info
 #' @export laf_open_fwf_tvd_input
-laf_open_fwf_tvd_input <- function(psInputFile,
-                                   pvecColPosition = getColPositions(),
-                                   pbOut = FALSE){
-  if (pbOut)
+laf_open_fwf_tvd_input <- function(ps_input_file,
+                                   pvec_col_position = getColPositions(),
+                                   pb_out = FALSE){
+  if (pb_out)
     cat(" ==> laf_open_fwf_tvd_input: Reading TVD Pedigree input from file: ",
-        psInputFile, "\n")
+        ps_input_file, "\n")
 
-  laf = LaF::laf_open_fwf(filename = psInputFile,
-                          column_types = rep("character", length(pvecColPosition)),
-                          column_widths = pvecColPosition)
+  laf <- LaF::laf_open_fwf(filename = ps_input_file,
+                          column_types = rep("character", length(pvec_col_position)),
+                          column_widths = pvec_col_position)
   ### # convert laf to tibble
   return(dplyr::tbl_df(laf[ , ]))
 }

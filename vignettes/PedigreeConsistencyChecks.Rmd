@@ -32,8 +32,8 @@ Based on our comparison of reading fwf-pedigree-data into R, we use package `LaF
 sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"), 
                              package = "PedigreeFromTvdData")
 vecFormat <- c(22,14,3,31,8,14,3,1,14,3)
-tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(psInputFile = sDataFileName,
-                                                       pvecColPosition = vecFormat)
+tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(ps_input_file = sDataFileName,
+                                                       pvec_col_position = vecFormat)
 ```
 
 Besides the time it takes to read pedigree data, we are also interested in the amount of memory it takes to store the pedigree data. We are using package `pryr` to get information about memory usage. For more information about R memory usage, we refer to [Advanced R](http://adv-r.had.co.nz/memory.html). The size in memory of the complete pedigree is
@@ -103,8 +103,8 @@ if (!l_check_result_fathers$b_consistency_check){
 sFormatDsch <- system.file(file.path("extdata", "RindviehCH_Schnittstelle_4_13_D.xlsx"), 
                             package = "PedigreeFromTvdData")
 vec_format_new <- PedigreeFromTvdData::getK11ColPositionVecFromDsch(psFormatDschFile = sFormatDsch)
-tbl_ped_new <- PedigreeFromTvdData::laf_open_fwf_tvd_input(psInputFile     = sDataFileName,
-                                                             pvecColPosition = vec_format_new)
+tbl_ped_new <- PedigreeFromTvdData::laf_open_fwf_tvd_input(ps_input_file     = sDataFileName,
+                                                           pvec_col_position = vec_format_new)
 l_tvd_id_col_dsch <- getTvdIdColsDsch(psFormatDschFile = sFormatDsch)
 cat("The result of the check with the new pedigree is:\n")
 (l_check_result_fathers_new <- 

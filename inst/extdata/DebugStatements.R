@@ -5,6 +5,12 @@
 ###   started:   2017-12-06 (pvr)
 
 
+### # testing with large data set on castor
+### # directory
+# zws@castor:/qualstorzws01/data_projekte/projekte/muku_ZWS_SourceCodeAnpassungen/20170904_FLP_Fettabdeckung/VKS/data$
+
+
+
 
 ### # reading format from xlsx
 sFormatDsch <- system.file(file.path("extdata", "RindviehCH_Schnittstelle_4_13_D.xlsx"),

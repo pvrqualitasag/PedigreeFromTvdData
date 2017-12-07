@@ -6,6 +6,12 @@
 \usage{
 clean_build_install(pkg = ".")
 }
+\arguments{
+\item{pkg}{package directory}
+}
 \description{
-Cleanup, build vignettes, documents and install
+Simple utility to clean up old vignette output,
+to build vignettes for the current package, to
+roxygenize all help-texts and to install the
+new version of the package given by pkg.
 }
