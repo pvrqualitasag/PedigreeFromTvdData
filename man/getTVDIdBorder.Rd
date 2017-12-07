@@ -6,6 +6,11 @@
 \usage{
 getTVDIdBorder()
 }
+\value{
+list of start and end positions for parts of TVD-ID
+}
 \description{
-Get consistency border for TVDid
+The results returned by this function are based
+on the definition of a TVD-ID which has two positions
+for a country code and twelve positions for a number
 }

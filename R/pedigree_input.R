@@ -142,7 +142,7 @@ readr_fwf_tvd_input <- function(psInputFile,
 #' @return tibble converted to laf containing the pedigree info
 #' @export laf_open_fwf_tvd_input
 laf_open_fwf_tvd_input <- function(ps_input_file,
-                                   pvec_col_position = getColPositions(),
+                                   pvec_col_position = getK11ColPositionVecFromDsch(),
                                    pb_out = FALSE){
   if (pb_out)
     cat(" ==> laf_open_fwf_tvd_input: Reading TVD Pedigree input from file: ",

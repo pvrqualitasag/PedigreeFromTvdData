@@ -41,6 +41,11 @@ getFormatBorder <- function(){
 
 #' Get consistency border for TVDid
 #'
+#' The results returned by this function are based
+#' on the definition of a TVD-ID which has two positions
+#' for a country code and twelve positions for a number
+#'
+#' @return list of start and end positions for parts of TVD-ID
 #' @export getTVDIdBorder
 getTVDIdBorder <- function(){
   return(list(TVDCountry = list(lower=1, upper=2),
@@ -123,7 +128,7 @@ getDschFormatTblDf <- function(psFormatDschFile){
 #' @param psEndTag Tag indicating end row of K11 format (default = NA)
 #' @return tbl_df containing K11 definition
 #' @export getK11ColPositionFromDsch
-getK11ColPositionFromDsch <- function(psFormatDschFile,
+getK11ColPositionFromDsch <- function(psFormatDschFile = getFormatDSCHFile(),
                                       pnTagCol   = 2,
                                       psStartTag = "Satzart K11",
                                       psEndTag   = NA) {
@@ -173,7 +178,7 @@ getK11ColPositionFromDsch <- function(psFormatDschFile,
 #' @param pnColPosition column index where positions are stored
 #' @return vector with K11 column positions
 #' @export getK11ColPositionVecFromDsch
-getK11ColPositionVecFromDsch <- function(psFormatDschFile,
+getK11ColPositionVecFromDsch <- function(psFormatDschFile = getFormatDSCHFile(),
                                          pnColPosition = 5){
   ### # read DSCH format from given xlsx-file
   tbl_dsch_k11 <- getK11ColPositionFromDsch(psFormatDschFile = psFormatDschFile)
@@ -188,14 +193,14 @@ getK11ColPositionVecFromDsch <- function(psFormatDschFile,
 #' column index in the peidgree tbl_df is searched using some
 #' tag patterns that are specific for the ID-columns
 #'
-#' @param psFormatDschFile DSCH format file
+#' @param psFormatDschFile DSCH format file (default = "RindviehCH_Schnittstelle_4_13_D.xlsx")
 #' @param pnTagCol column in DSCH format where tags occur
 #' @param ps_pattern_tier_id Tag for TierID (default = "Kalb Id")
 #' @param ps_pattern_mutter_id Tag for MutterId (default = "Mutter Id")
 #' @param ps_pattern_vater_id Tag for VaterId (default = "Vater Id")
 #' @return list of column indices for TierId, MutterId and VaterId
 #' @export getTvdIdColsDsch
-getTvdIdColsDsch <- function(psFormatDschFile,
+getTvdIdColsDsch <- function(psFormatDschFile = getFormatDSCHFile(),
                              pnTagCol   = 2,
                              ps_pattern_tier_id = "Kalb Id",
                              ps_pattern_mutter_id = "Mutter Id",
@@ -212,11 +217,22 @@ getTvdIdColsDsch <- function(psFormatDschFile,
 #' Get column index for birthdate with new DSCH-format
 #'
 #' @export getBirthdateColIdxDsch
-getBirthdateColIdxDsch <- function(psFormatDschFile,
-                                   pnTagCol   = 2,
+getBirthdateColIdxDsch <- function(psFormatDschFile = getFormatDSCHFile(),
+                                   pnTagCol = 2,
                                    ps_pattern_geburt_dat = "Kalbedatum"){
   ### # read DSCH format from given xlsx-file
   tbl_dsch_k11 <- getK11ColPositionFromDsch(psFormatDschFile = psFormatDschFile)
   ### # return list column positions found using the specified patterns
   return(grep(pattern = ps_pattern_geburt_dat, tbl_dsch_k11[[pnTagCol]]))
+}
+
+
+#' Return path to the DSCH-format file
+#'
+#' @return Path to the DSCH-format file
+#' @export getFormatDSCHFile
+getFormatDSCHFile <- function(){
+  return(system.file(file.path("extdata",
+                               "RindviehCH_Schnittstelle_4_13_D.xlsx"),
+                     package = "PedigreeFromTvdData"))
 }

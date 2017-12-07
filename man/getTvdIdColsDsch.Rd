@@ -4,12 +4,12 @@
 \alias{getTvdIdColsDsch}
 \title{Get column indices of different IDs in pedigree tbl_df}
 \usage{
-getTvdIdColsDsch(psFormatDschFile, pnTagCol = 2,
+getTvdIdColsDsch(psFormatDschFile = getFormatDSCHFile(), pnTagCol = 2,
   ps_pattern_tier_id = "Kalb Id", ps_pattern_mutter_id = "Mutter Id",
   ps_pattern_vater_id = "Vater Id")
 }
 \arguments{
-\item{psFormatDschFile}{DSCH format file}
+\item{psFormatDschFile}{DSCH format file (default = "RindviehCH_Schnittstelle_4_13_D.xlsx")}
 
 \item{pnTagCol}{column in DSCH format where tags occur}
 

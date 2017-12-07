@@ -8,6 +8,8 @@ check_sex_tbl(ptblPedigree, lsex = getConsistencySex(),
   pnTvdIdColIdx = getTvdIdCols())
 }
 \arguments{
+\item{ptblPedigree}{pedigree in tbl_df format}
+
 \item{lsex}{list of consistency values by default taken from getConsistencySex()}
 }
 \description{

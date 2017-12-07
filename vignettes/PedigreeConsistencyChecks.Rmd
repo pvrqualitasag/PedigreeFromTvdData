@@ -32,8 +32,8 @@ Based on our comparison of reading fwf-pedigree-data into R, we use package `LaF
 sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"), 
                              package = "PedigreeFromTvdData")
 vecFormat <- c(22,14,3,31,8,14,3,1,14,3)
-tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(ps_input_file = sDataFileName,
-                                                       pvec_col_position = vecFormat)
+tbl_ped <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName,
+                                  pvec_col_position = vecFormat)
 ```
 
 Besides the time it takes to read pedigree data, we are also interested in the amount of memory it takes to store the pedigree data. We are using package `pryr` to get information about memory usage. For more information about R memory usage, we refer to [Advanced R](http://adv-r.had.co.nz/memory.html). The size in memory of the complete pedigree is
@@ -52,13 +52,16 @@ pryr::mem_used()
 In a first consistency check, we are correcting for wrongly formatted TVD-Ids. In the test dataset that we used so far, all IDs are correctly formatted, hence the original pedigree will be the same as the corrected version after the verification.
 
 ```{r}
-system.time(tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_ped))
+lIdCols <- getTvdIdCols()
+system.time(tbl_ped_id_checked <- check_tvd_id_tbl(ptblPedigree = tbl_ped,
+                                                   plIdCols = lIdCols))
 ```
 
 The timing values indicate how long it takes to do the checks. The checks are done by giving the original pedigree as input and the checked and modified pedigree is obtained as a function result. In the modified pedigree any IDs that are recognized as incorrect are set to `NA`. In order to monitor the amount of memory used during the check, we use the function `pryr::mem_change()`. 
 
 ```{r}
-pryr::mem_change(tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_ped))
+pryr::mem_change(tbl_ped_id_checked <- check_tvd_id_tbl(ptblPedigree = tbl_ped,
+                                                        plIdCols = lIdCols))
 ```
 
 Because the change in memory is very small, we can see that the method of consistency check should not have a negative impact on the memory usage.
@@ -67,14 +70,13 @@ The consistency check for the TVD-Ids is successful, if the original pedigree an
 
 ```{r}
 # check whether ID-columns of original and checked pedigrees are the same
-all(tbl_ped_checked[[6]] == tbl_ped[[6]])
+all(tbl_ped_id_checked[[lIdCols$TierIdCol]] == tbl_ped[[lIdCols$TierIdCol]])
 ```
 
 The simple comparison as was done with the TVD-Ids for each animal in column $6$ cannot be done for the parents, because, we cannot assume that they have the same number of `NA`s. Hence we have to find the IDs which are only `NA` in the corrected version of the pedigree.
 
 ```{r}
 # checks for mothers
-lIdCols <- getTvdIdCols()
 (l_check_result_mothers <- all_parent_id_consistent(p_tbl_ped = tbl_ped,
                                                     plIdCols  = lIdCols, 
                                                     pn_parent_col = lIdCols$MutterIdCol))
@@ -92,7 +94,9 @@ The same check is also done for the fathers.
 ```{r, echo=FALSE, results='asis'}
 if (!l_check_result_fathers$b_consistency_check){
   ### # there was a problem with sire-IDs
-  cat("Some of the sire-IDs were found to have a problem with their format. Hence we are trying to re-read the pedigree using different column formats.\n")
+  cat("Some of the sire-IDs were found to have a problem with their format. Their IDs look as follows: \n\n")
+  print(tbl_ped[[lIdCols$VaterIdCol]][l_check_result_fathers$vec_incons_rows[1:3]])
+  cat("\nHence we are trying to re-read the pedigree using different column formats.\n")
 } else {
   ### # no problems found
   cat("The format of the sire-IDs was found to be ok.\n")
@@ -100,17 +104,22 @@ if (!l_check_result_fathers$b_consistency_check){
 ```
 
 ```{r, eval=!l_check_result_fathers$b_consistency_check}
-sFormatDsch <- system.file(file.path("extdata", "RindviehCH_Schnittstelle_4_13_D.xlsx"), 
-                            package = "PedigreeFromTvdData")
-vec_format_new <- PedigreeFromTvdData::getK11ColPositionVecFromDsch(psFormatDschFile = sFormatDsch)
-tbl_ped_new <- PedigreeFromTvdData::laf_open_fwf_tvd_input(ps_input_file     = sDataFileName,
-                                                           pvec_col_position = vec_format_new)
-l_tvd_id_col_dsch <- getTvdIdColsDsch(psFormatDschFile = sFormatDsch)
+# read pedigree again with new format
+tbl_ped_new <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName)
+# validate IDs
+tbl_ped_id_checked <- check_tvd_id_tbl(ptblPedigree = tbl_ped_new)
+# check parents
+l_tvd_id_col_dsch <- getTvdIdColsDsch()
+l_check_result_mothers <- all_parent_id_consistent(p_tbl_ped = tbl_ped_new,
+                                                   plIdCols  = l_tvd_id_col_dsch, 
+                                                   pn_parent_col = l_tvd_id_col_dsch$MutterIdCol)
+l_check_result_fathers <- all_parent_id_consistent(p_tbl_ped = tbl_ped_new, 
+                                                   plIdCols  = l_tvd_id_col_dsch,
+                                                   pn_parent_col = l_tvd_id_col_dsch$VaterIdCol)
 cat("The result of the check with the new pedigree is:\n")
-(l_check_result_fathers_new <- 
-      all_parent_id_consistent(p_tbl_ped = tbl_ped_new, 
-                               plIdCols  = l_tvd_id_col_dsch,
-                               pn_parent_col = l_tvd_id_col_dsch$VaterIdCol))
+all(tbl_ped_id_checked[[l_tvd_id_col_dsch$TierIdCol]] == tbl_ped_new[[l_tvd_id_col_dsch$TierIdCol]])
+print(l_check_result_mothers)
+print(l_check_result_fathers)
 ```
 
 ### Small example tests
@@ -121,8 +130,9 @@ In a much smaller data set, we are deliberately inserting some mistakes which sh
 sSmallDataFileName <- system.file(file.path("extdata","KLDAT_20170524_20.txt"), 
                              package = "PedigreeFromTvdData")
 
-tbl_small_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = sSmallDataFileName)
-tbl_small_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = tbl_small_ped)
+tbl_small_ped <- readr_fwf_tvd_input(psInputFile = sSmallDataFileName)
+tbl_small_ped_checked <- check_tvd_id_tbl(ptblPedigree = tbl_small_ped,
+                                          plIdCols = lIdCols)
 ```
 
 The IDs with the wrong format are set to `NA`.
@@ -142,17 +152,24 @@ tbl_small_ped[c(na_idx),]
 Birthdates are validated using the tbd_df pedigree with the new format.
 
 ```{r}
-n_bd_col_idx <- PedigreeFromTvdData::getBirthdateColIdxDsch(psFormatDschFile = sFormatDsch)
+n_bd_col_idx <- getBirthdateColIdxDsch()
 ### # convert birthdates from string to numeric
-if (is.character(tbl_ped_new[[n_bd_col_idx]])){
-  tbl_ped_new[[n_bd_col_idx]] <- as.numeric(tbl_ped_new[[n_bd_col_idx]])
+if (is.character(tbl_ped_id_checked[[n_bd_col_idx]])){
+  tbl_ped_id_checked[[n_bd_col_idx]] <- as.numeric(tbl_ped_id_checked[[n_bd_col_idx]])
 }
-tbl_ped_new_checked <- PedigreeFromTvdData::check_birthdate_tbl(ptblPedigree = tbl_ped_new,
-                                                                pnBirthdateColIdx = n_bd_col_idx)
-(l_check_result_bd <- PedigreeFromTvdData::all_birthdate_consistent(p_tbl_ped = tbl_ped_new, 
-                                                                    pn_bd_col_idx = n_bd_col_idx))
+tbl_ped_id_bd_checked <- check_birthdate_tbl(ptblPedigree = tbl_ped_id_checked,
+                                             pnBirthdateColIdx = n_bd_col_idx)
+(l_check_result_bd <- all_birthdate_consistent(p_tbl_ped = tbl_ped_id_checked, 
+                                               pn_bd_col_idx = n_bd_col_idx))
 ```
 
+
+## One for all
+Reading the pedigree and doing all checks is combined in the function `build_check_pedigree_from_tvd()` which just needs the file with the TVD-Data as input.
+
+```{r}
+tbl_ped_final <- build_check_pedigree_from_tvd(ps_tvd_file = sDataFileName)
+```
 
 
 # Resources

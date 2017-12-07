@@ -82,7 +82,7 @@ correct_tvd_format <- function(ptblPedigreeResult, plFormatBorder, pnIdCol) {
 #' @export check_tvd_id_tbl
 check_tvd_id_tbl<- function(ptblPedigree,
                           plFormatBorder = getTVDIdBorder(),
-                          plIdCols = getTvdIdCols()){
+                          plIdCols = getTvdIdColsDsch()){
   ### # copy argument to result
   tblPedigreeResult <- ptblPedigree
 
@@ -235,9 +235,9 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
 #' @export check_birthdate_tbl
 check_birthdate_tbl <- function(ptblPedigree,
                                 lLimitValue   = getBirthdayConsistencyLimit(),
-                                pnBirthdateColIdx){
+                                pnBirthdateColIdx = getBirthdateColIdxDsch()){
   tblPedigreeResult <- ptblPedigree
-  ### # with the new format, birthdate is suddenly char again - convert
+  ### # birthdate seams to be read as char - convert
   if (is.character(tblPedigreeResult[[pnBirthdateColIdx]])){
     tblPedigreeResult[[pnBirthdateColIdx]] <- as.numeric(tblPedigreeResult[[pnBirthdateColIdx]])
   }
@@ -311,7 +311,7 @@ check_sex <- function(plPedigree, lsex = getConsistencySex()){
 #' Validation of sex format using tbl_df pedigree
 #'
 #'
-#' @param ptblPedigree
+#' @param ptblPedigree pedigree in tbl_df format
 #' @param lsex list of consistency values by default taken from getConsistencySex()
 #' @export check_sex_tbl
 check_sex_tbl <- function(ptblPedigree,
@@ -322,7 +322,8 @@ check_sex_tbl <- function(ptblPedigree,
 #    if(){}
   }
 
-  #' Check whether all ids of a given parent (mother or father) have consistent IDs
+
+#' Check whether all ids of a given parent (mother or father) have consistent IDs
 #'
 #' Given a pedigree as tbl_df, it is first run through the TVD-ID check using
 #' the function PedigreeFromTvdData::check_tvd_id_tbl(). As a result, we get the

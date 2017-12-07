@@ -5,7 +5,7 @@
 \title{Checking Format of TVD-Ids in Pedigree ptblPedigree}
 \usage{
 check_tvd_id_tbl(ptblPedigree, plFormatBorder = getTVDIdBorder(),
-  plIdCols = getTvdIdCols())
+  plIdCols = getTvdIdColsDsch())
 }
 \arguments{
 \item{ptblPedigree}{pedigree as tibble}

@@ -4,7 +4,7 @@
 \alias{getBirthdateColIdxDsch}
 \title{Get column index for birthdate with new DSCH-format}
 \usage{
-getBirthdateColIdxDsch(psFormatDschFile, pnTagCol = 2,
+getBirthdateColIdxDsch(psFormatDschFile = getFormatDSCHFile(), pnTagCol = 2,
   ps_pattern_geburt_dat = "Kalbedatum")
 }
 \description{

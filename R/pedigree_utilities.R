@@ -20,5 +20,6 @@ clean_build_install <- function(pkg = "."){
   devtools::build_vignettes(pkg = pkg)
   devtools::document(pkg = pkg)
   devtools::install(pkg = pkg)
+
   return((invisible(TRUE)))
 }
