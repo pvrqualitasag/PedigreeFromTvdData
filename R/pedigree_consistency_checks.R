@@ -275,13 +275,55 @@ check_birthdate_tbl <- function(ptblPedigree,
 ### ######################################################### ###
 ###
 ###
-#' Check that parents are older than offspring
+#' Check that parents are older than their offspring
 #'
+#' @description
+#' Given a pedigree in tbl_df format, all parents that are also
+#' present as animals are filtered, if they are not older than
+#' their offspring.
 #'
-check_parent_older_tbl <- function(ptblPedigree,
-                                   plIdCols = getTvdIdColsDsch(),
-                                   pnBirthdateColIdx = getBirthdateColIdxDsch()){
+#' @details
+#' From the given pedigree in ptbl_pedigree, the three columns
+#' containing animal-Id, birthdate and a parent-id where parent
+#' can either be mother or father are extracted using `dplyr::select`.
+#' The selected columns are given new names for easier readability
+#' of the remaining code. From the original set of pedigree records,
+#' all parents are selected into a separate tbl_df. Their birthdate
+#' is searched using a `dplyr::inner_join()` back to the orginal
+#' pedigree records. Once the birthdates for the parents are found
+#' we can filter those out which have a birthdate which is closer
+#' to the birthdate of the offspring than a given tolerance value.
+#'
+#' @param ptbl_pedigree pedigree in tbl_df format
+#' @param pn_offspring_col column index for offspring
+#' @param pn_birthday_col column index for birthdates of offspring
+#' @param pn_parent_col column index for parents
+#' @param pn_date_diff_tol minimum difference between birthdates of parents and offspring
+#' @return tbl_df of pedigree records not fullfilling requirements
+check_parent_older_offspring <- function(ptbl_pedigree,
+                                         pn_offspring_col,
+                                         pn_birthday_col,
+                                         pn_parent_col,
+                                         pn_date_diff_tol = 10^4) {
 
+  ### # using pipes, we can link all the steps together
+  tbl_age_check  <- ptbl_pedigree %>% select(pn_offspring_col,
+                                             pn_birthday_col,
+                                             pn_parent_col)
+  ### # assign names
+  names(tbl_age_check) <- c("Animal", "Birthdate", "Parent")
+
+  ### # piping all selections, joins and filters together
+  tbl_inconsistent_result <-
+    tbl_age_check %>%
+    filter(Parent != "") %>%
+    select(Parent) %>%
+    inner_join(tbl_age_check, by = c("Parent" = "Animal")) %>%
+    select(Parent,Birthdate) %>%
+    inner_join(tbl_age_check, by = "Parent") %>%
+    filter((Birthdate.y - Birthdate.x) < pn_date_diff_tol)
+
+  return(tbl_inconsistent_result)
 }
 
 ### ######################################################## ###

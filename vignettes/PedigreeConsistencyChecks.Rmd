@@ -19,7 +19,8 @@ if (!all(sapply(vec_pkgs,
       install.packages(pkgs = pgk)
   }  
 }
-
+require(magrittr)
+require(dplyr)
 ```
 
 # Consistency Checks
