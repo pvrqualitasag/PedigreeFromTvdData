@@ -217,7 +217,7 @@ Then we apply the rather arbitrarily chosen consistency criterion that the diffe
 
 The same must be done for fathers. Instead of copy-paste, we construct a function that does the same validation.
 
-```{r}
+```{r, eval=FALSE}
 #' Check that parents are older than their offspring
 #'
 #' @param ptbl_pedigree pedigree in tbl_df format
@@ -265,7 +265,7 @@ Testing with our pedigree again leads to the following result
 
 ```
 
-Doing the same thing for father
+Doing the same thing for fathers and using the function inside of the package
 
 ```{r}
 (tbl_fail_father_age <- check_parent_older_offspring(ptbl_pedigree = tbl_ped_id_bd_checked, 
