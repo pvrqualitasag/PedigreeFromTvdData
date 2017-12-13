@@ -227,7 +227,6 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
 #' day), there are constant limits defined. Whenever a validation
 #' fails, the date is set to NA.
 #'
-
 #' @param ptblPedigree pedigree in tbl_df format
 #' @param lLimitValue list with fixed limits for year, month and date
 #' @param pnBirthdateColIdx column index of birthdates in ptblPedigree
@@ -239,7 +238,7 @@ check_birthdate_tbl <- function(ptblPedigree,
   tblPedigreeResult <- ptblPedigree
   ### # birthdate seams to be read as char - convert
   if (is.character(tblPedigreeResult[[pnBirthdateColIdx]])){
-    tblPedigreeResult[[pnBirthdateColIdx]] <- as.numeric(tblPedigreeResult[[pnBirthdateColIdx]])
+    tblPedigreeResult[[pnBirthdateColIdx]] <- as.integer(tblPedigreeResult[[pnBirthdateColIdx]])
   }
 
   ### # check whether day is within limits
@@ -272,6 +271,18 @@ check_birthdate_tbl <- function(ptblPedigree,
   return(tblPedigreeResult)
 }
 
+
+### ######################################################### ###
+###
+###
+#' Check that parents are older than offspring
+#'
+#'
+check_parent_older_tbl <- function(ptblPedigree,
+                                   plIdCols = getTvdIdColsDsch(),
+                                   pnBirthdateColIdx = getBirthdateColIdxDsch()){
+
+}
 
 ### ######################################################## ###
 #' Validation of sex
@@ -323,6 +334,11 @@ check_sex_tbl <- function(ptblPedigree,
   }
 
 
+### ######################################################## ###
+###   Functions below this line are helper function for the  ###
+###   vignette on checking data consistency.                 ###
+###
+#
 #' Check whether all ids of a given parent (mother or father) have consistent IDs
 #'
 #' Given a pedigree as tbl_df, it is first run through the TVD-ID check using

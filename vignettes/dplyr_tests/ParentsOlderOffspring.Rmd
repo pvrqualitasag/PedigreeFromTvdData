@@ -1,0 +1,123 @@
+---
+title: "How to use dplyr Joins"
+output:
+  html_document:
+    df_print: paged
+---
+
+This document examines how to join ages of parents to a record given for a certain animal.
+
+## dplyr
+We use the `dplyr`-vignette to learn how the different joins work.
+
+### nycflights13 data
+```{r}
+### # check whether packages are installed
+vec_pkgs <- c("magrittr", "nycflights13")
+for (p in vec_pkgs){
+  if (!p %in% installed.packages())
+    install.packages(pkgs = p)
+}
+
+```
+
+```{r}
+library("nycflights13")
+library(magrittr)
+library(dplyr)
+
+### # head of airlines dataset
+head(airlines)
+# Drop unimportant variables so it's easier to understand the join results.
+flights2 <- flights %>% select(year:day, hour, origin, dest, tailnum, carrier)
+
+flights2 %>% 
+  left_join(airlines)
+```
+
+
+## Different Joins
+Four different joins can be distinguished
+
+```{r}
+(df1 <- data_frame(x = c(1:3), y = 3:1))
+(df2 <- data_frame(x = c(1, 3, 5), a = c(10,20,30), b = c("a","x","y")))
+```
+
+* `inner_join(x,y)`
+```{r}
+df1 %>% inner_join(df2) %>% knitr::kable()
+```
+
+* `left_join(x,y)`
+```{r}
+df1 %>% left_join(df2)
+```
+
+* `right_join(x,y)`
+```{r}
+df1 %>% right_join(df2)
+```
+
+* `full_join(x,y)`
+```{r}
+df1 %>% full_join(df2)
+```
+
+
+## Use Joins for pedigree checks
+When, we want to check that mothers are older than their offspring, we join the birthdate of the mothers to the offspring records and check whether the consistence requirement is fullfilled.
+
+First, we read the pedigree
+
+```{r}
+sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"), 
+                             package = "PedigreeFromTvdData")
+tbl_ped_final <- PedigreeFromTvdData::build_check_pedigree_from_tvd(ps_tvd_file = sDataFileName)
+```
+
+Get the column indices of the IDs as a list and column index of birthdates
+
+```{r}
+l_id_col_dsch_idx <- PedigreeFromTvdData::getTvdIdColsDsch()
+n_bd_col_idx <- PedigreeFromTvdData::getBirthdateColIdxDsch()
+```
+
+Animal-Ids, Mother-Ids and birthdates are extracted from `tbl_ped_final`.
+
+```{r}
+tbl_animal <- tbl_ped_final %>% select(l_id_col_dsch_idx$TierIdCol, n_bd_col_idx, l_id_col_dsch_idx$MutterIdCol, l_id_col_dsch_idx$VaterIdCol)
+names(tbl_animal) <- c("Tier", "Kalbedatum", "Mutter", "Vater")
+head(tbl_animal)
+```
+
+Find animals that are also mothers
+
+```{r}
+tbl_mother_ids <- tbl_animal %>% filter(Mutter != "") %>% select(Mutter)
+head(tbl_mother_ids)
+nrow(tbl_mother_ids)
+```
+
+Join ids of mother to the animal records to obtain the birthdate of the mothers
+
+```{r}
+tbl_mother_ids %>% inner_join(tbl_animal, by = c("Mutter" = "Tier"))
+(tbl_mother_bd <- tbl_mother_ids %>% inner_join(tbl_animal, by = c("Mutter" = "Tier")) %>% select(Mutter, Kalbedatum))
+```
+
+Join the mothers and their birthdates back to the animal records
+
+```{r}
+(tbl_ani_mother_bd <- tbl_mother_bd %>% inner_join(tbl_animal, by = "Mutter"))
+
+```
+
+Filter according to the consistency requirements
+
+```{r}
+tbl_ani_mother_bd %>% filter(Kalbedatum.x > Kalbedatum.y)
+tbl_ani_mother_bd %>% filter((Kalbedatum.y - Kalbedatum.x) < 1000)
+
+```
+

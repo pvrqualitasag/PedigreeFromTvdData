@@ -4,7 +4,7 @@
 \name{PedigreeFromTvdData}
 \alias{PedigreeFromTvdData}
 \alias{PedigreeFromTvdData-package}
-\title{PedigreeFromTvdData: Importing pedigree data from TVD-input-files.}
+\title{PedigreeFromTvdData: Import pedigree from K11-formatted TVD-data.}
 \description{
 Package PedigreeFromTvdData is used to construct a pedigree from
 TVD-input files. TVD-input files are in a fixed-format according
@@ -16,18 +16,20 @@ consistency-checking, pedigree-data-output.
 \section{Input Data Format}{
 
 The input data used in this package to extract the required
-information for #' the construction of a pedigree is a fixed format.
-The input data is organised in a file consists of a list of records.
-Each record takes up one line of the input file. Records can be split
-into fields and each field takes a specific number of characters. The
-number of characters for each field is defined by a constant list of
-border values. This list is obtained by the function
-\code{getFormatBorder()}.
+pedigree information is a fixed-width format such
+as defined in the K11-format of the DSCH Rindvieh.ch. The definition
+of DSCH is given by an xlsx-spreadsheet which was adapted to the
+format of the input data used here. The vector of column widths
+is obtained by calling the function \code{getK11ColPositionVecFromDsch()}.
 }
 
 \section{Data Import}{
 
-The data import is implemented in function \code{read_tvd_input()}.
+The data import using the a line-by-line input strategy and saving
+the data in nested lists did take too long. Hence, we compared different
+input functions. See the vignette entitled "Reading Fixed Width Formatted Data"
+for the comparison results. In the current version the data is read
+using the function laf_open_fwf_tvd_input() which is based on the package LaF.
 This function takes as input the name of the input file. Optionally,
 the field borders can be specified as a function argument. The last
 argument is a flag that determines whether debugging output is
@@ -36,10 +38,12 @@ written to the console or not.
 
 \section{Consistency Checks}{
 
-A pedigree is a directed acyclic graph which implies that the parent
-offspring relationship must not contain any loops. Furthermore,
-parents must be older than offspring and the sex of parents must
-be consistent according to their assignment.
+Three types of consistency checks can be done, once the pedigree is read.
+\enumerate{
+\item Format of TVD-Ids for animals and parents
+\item Format and values of birthdates
+\item Sex of parents
+}
 }
 
 \section{Data Output}{

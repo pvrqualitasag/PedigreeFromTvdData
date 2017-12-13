@@ -11,7 +11,7 @@ vignette: >
 
 
 ```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
-vec_pkgs <- c("pryr", "readxl")
+vec_pkgs <- c("pryr", "readxl","magrittr", "dplyr")
 if (!all(sapply(vec_pkgs, 
        function(x) x  %in% installed.packages(), USE.NAMES = FALSE))){
   for (pgk in vec_pkgs){
@@ -161,6 +161,127 @@ tbl_ped_id_bd_checked <- check_birthdate_tbl(ptblPedigree = tbl_ped_id_checked,
                                              pnBirthdateColIdx = n_bd_col_idx)
 (l_check_result_bd <- all_birthdate_consistent(p_tbl_ped = tbl_ped_id_checked, 
                                                pn_bd_col_idx = n_bd_col_idx))
+```
+
+
+## Parents must be older than offspring
+Whenever parents also appear as animals, they must be older than their offspring. This translates into the integer value of the parents' birthdate must be smaller than the birthdate value of their offspring. The check is not straightforward, because the birthdate of the parents is only present whenever the parent is also available with its animal record. Hence a first goal is to obtain the birthdate of a given parent.
+
+We start with the mothers. To find the birthdate of the mothers, we have to find those mothers which are also present as animals. We are using some `dplyr`-based functionalities to do that selection. For this task, we only need a subset of all columns of the pedigree, hence we first select the relevant columns and then give them meaningful names
+
+```{r}
+# select columns
+tbl_age_check <- tbl_ped_id_bd_checked %>% select(l_tvd_id_col_dsch$TierIdCol,
+                                 n_bd_col_idx,
+                                 l_tvd_id_col_dsch$MutterIdCol)
+# assign names
+names(tbl_age_check) <- c("Animal", "Birthdate", "Mother")
+# head to check
+head(tbl_age_check)
+```
+
+IDs of mothers are found in the respective column, hence we filter out all those records which do not have a mother
+
+```{r}
+tbl_mother_id <- tbl_age_check %>% filter(Mother != "") %>% select(Mother)
+nrow(tbl_mother_id)
+head(tbl_mother_id)
+```
+
+To get to the birthdate of those mothers, we join them back to `tbl_age_check` using `dplyr`s function `inner_join` which finds for each mother its corresponding animal record.
+
+```{r}
+(tbl_mother_bd <- tbl_mother_id %>% inner_join(tbl_age_check, by = c("Mother" = "Animal"))
+ %>% select(Mother,Birthdate))
+nrow(tbl_mother_bd)
+```
+
+One check that the above worked can be done by looking up one records of the selected mothers in the original `tbl_df`
+
+```{r}
+tbl_ped_id_bd_checked[tbl_ped_id_bd_checked[[l_tvd_id_col_dsch$TierIdCol]] == tbl_mother_bd$Mother[1], c(1,5,11,12,16)]
+```
+
+Mother and birthdates are joined back together to their offspring records
+
+```{r}
+(tbl_mother_offspring <- tbl_mother_bd %>% inner_join(tbl_age_check, by = "Mother"))
+```
+
+Then we apply the rather arbitrarily chosen consistency criterion that the difference between the birthdates must be larger then say $10^4$ which corresponds to about one year.
+
+```{r}
+(tbl_mother_offspring %>% filter((Birthdate.y - Birthdate.x) < 10^4))
+```
+
+The same must be done for fathers. Instead of copy-paste, we construct a function that does the same validation.
+
+```{r}
+#' Check that parents are older than their offspring
+#'
+#' @param ptbl_pedigree pedigree in tbl_df format
+#' @param pn_offspring_col column index for offspring
+#' @param pn_birthday_col column index for birthdates of offspring 
+#' @param pn_parent_col column index for parents
+#' @param pn_date_diff_tol minimum difference between birthdates of parents and offspring
+#' @return tbl_df of pedigree records not fullfilling requirements
+check_parent_older_offspring <- function(ptbl_pedigree, 
+                                         pn_offspring_col, 
+                                         pn_birthday_col, 
+                                         pn_parent_col,
+                                         pn_date_diff_tol = 10^4) {
+
+  ### # using pipes, we can link all the steps together
+  tbl_age_check  <- ptbl_pedigree %>% select(pn_offspring_col,
+                                            pn_birthday_col,
+                                            pn_parent_col)
+  ### # assign names
+  names(tbl_age_check) <- c("Animal", "Birthdate", "Parent")
+
+
+  ### # piping all selections, joins and filters together
+  tbl_inconsistent_result <- 
+    tbl_age_check %>% 
+    filter(Parent != "") %>% 
+    select(Parent) %>% 
+    inner_join(tbl_age_check, by = c("Parent" = "Animal")) %>% 
+    select(Parent,Birthdate) %>% 
+    inner_join(tbl_age_check, by = "Parent") %>% 
+    filter((Birthdate.y - Birthdate.x) < pn_date_diff_tol)
+    
+    
+  return(tbl_inconsistent_result)
+}
+```
+
+Testing with our pedigree again leads to the following result
+
+```{r}
+(tbl_fail_mother_age <- check_parent_older_offspring(ptbl_pedigree = tbl_ped_id_bd_checked, 
+                                         pn_offspring_col = l_tvd_id_col_dsch$TierIdCol, 
+                                         pn_birthday_col = n_bd_col_idx, 
+                                         pn_parent_col = l_tvd_id_col_dsch$MutterIdCol))
+
+```
+
+Doing the same thing for father
+
+```{r}
+(tbl_fail_father_age <- check_parent_older_offspring(ptbl_pedigree = tbl_ped_id_bd_checked, 
+                                         pn_offspring_col = l_tvd_id_col_dsch$TierIdCol, 
+                                         pn_birthday_col = n_bd_col_idx, 
+                                         pn_parent_col = l_tvd_id_col_dsch$VaterIdCol))
+
+```
+
+Again checking that first record of the above result, if any result was found, leads to the following
+
+```{r}
+if (nrow(tbl_fail_father_age) > 0){
+  tbl_ped_id_bd_checked[tbl_ped_id_bd_checked[[l_tvd_id_col_dsch$TierIdCol]] == tbl_fail_father_age$Animal[1], c(1,5,11,12,16)]
+} else {
+  cat("No inconsistencies with age of fathers found\n")
+}
 ```
 
 
