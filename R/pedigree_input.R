@@ -143,7 +143,6 @@ readr_fwf_tvd_input <- function(psInputFile,
 #' @export laf_open_fwf_tvd_input
 laf_open_fwf_tvd_input <- function(ps_input_file,
                                    pvec_col_position = getK11ColPositionVecFromDsch(),
-                                   pn_pk_col_id = getTvdIdColsDsch()$TierIdCol,
                                    pb_out = FALSE){
   if (pb_out)
     cat(" ==> laf_open_fwf_tvd_input: Reading TVD Pedigree input from file: ",
@@ -156,11 +155,11 @@ laf_open_fwf_tvd_input <- function(ps_input_file,
   ### # convert laf to tbl_df
   tbl_pedigree_result <- dplyr::tbl_df(laf[ , ])
 
-  ### # check uniqueness of animal ids
+  ### # check number of records read
   nr_recs_read <- nrow(tbl_pedigree_result)
   if (pb_out)
     cat(" ==> number of records read: ", nr_recs_read, "\n")
 
 
-  return()
+  return(tbl_pedigree_result)
 }
