@@ -15,6 +15,15 @@ This vignette describes implementation of checks that are described in the compa
 ## Checks
 The vignette on the strategy defined checks to be routines that search for pedigree records that do not fullfill certain requirement conditions. As the result returned from checks are lists of primary keys of pedigree records, we must ensure that these primary keys are available. This must be done right after reading the pedigree from the input file.
 
+The pedigree is read using the following statement
+
+```{r}
+sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"), 
+                             package = "PedigreeFromTvdData")
+tbl_ped <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName)
+```
+
+As mentioned above, we first check for uniqueness of the animal-IDs. 
 
 
 ## Session Info
