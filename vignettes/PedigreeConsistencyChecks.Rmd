@@ -19,8 +19,8 @@ if (!all(sapply(vec_pkgs,
       install.packages(pkgs = pgk)
   }  
 }
-require(magrittr)
 require(dplyr)
+require(PedigreeFromTvdData)
 ```
 
 # Consistency Checks
@@ -217,7 +217,7 @@ Then we apply the rather arbitrarily chosen consistency criterion that the diffe
 
 The same must be done for fathers. Instead of copy-paste, we construct a function that does the same validation.
 
-```{r}
+```{r, eval=FALSE}
 #' Check that parents are older than their offspring
 #'
 #' @param ptbl_pedigree pedigree in tbl_df format

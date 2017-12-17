@@ -155,10 +155,12 @@ laf_open_fwf_tvd_input <- function(ps_input_file,
   ### # convert laf to tbl_df
   tbl_pedigree_result <- dplyr::tbl_df(laf[ , ])
 
-  ### # check uniqueness of animal ids
-  nr_recs_read <- nrow(tbl_pedigree_result)
-  if (pb_out)
-    cat(" ==> number of records read: ", nr_recs_read, "\n")
+  ### # check number of rows read
+  if (pb_out){
+    cat(" ==> number of records read: ", nrow(tbl_pedigree_result), "\n")
+    cat(" ==> number of columns read: ", ncol(tbl_pedigree_result), "\n")
+  }
+
 
   ### # return pedigree as tbl_df
   return(tbl_pedigree_result)

@@ -9,21 +9,73 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
+require(dplyr)
+require(PedigreeFromTvdData)
+```
+
 ## Disclaimer
 This vignette describes implementation of checks that are described in the companion vignette on strategies entitled [Pedigree Checks - Concepts and Strategies](ConsistencyCheckStrategy.html). 
 
 ## Checks
-The vignette on the strategy defined checks to be routines that search for pedigree records that do not fullfill certain requirement conditions. As the result returned from checks are lists of primary keys of pedigree records, we must ensure that these primary keys are available. This must be done right after reading the pedigree from the input file.
+The vignette on the strategy defined checks to be routines that search for pedigree records that do not fullfill certain requirement conditions. The different type of checks have different requirements in computing resources. The check whether the pedigree contains any cycles is quite expensive to compute. One possible way to implement this check is to use an algorithm that computes the toplogical sort of the pedigree nodes. This construction does not give a result, whenever the pedigree contains any loops. For that reason this check is currently not implemented. 
+
+### Checking for unique IDs
+As the result returned from checks are lists of primary keys of pedigree records, we must ensure that these primary keys are available. This must be done right after reading the pedigree from the input file.
 
 The pedigree is read using the following statement
 
 ```{r}
 sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"), 
                              package = "PedigreeFromTvdData")
-tbl_ped <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName)
+tbl_ped_uni_id <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName, pb_out = TRUE)
 ```
 
-As mentioned above, we first check for uniqueness of the animal-IDs. 
+As mentioned above, we first check for uniqueness of the animal-IDs. This is done with the following function call
+
+```{r}
+tbl_non_uni <- check_unique_animal_id(tbl_ped_uni_id, pb_out = TRUE)
+# check whether there are any non-unique ids
+if (nrow(tbl_non_uni) > 0){
+  cat(" *** Nr of duplicate IDs found: ", nrow(tbl_non_uni), "\n")
+} else {
+  cat(" *** No duplicate IDs found: ", nrow(tbl_non_uni), "\n")
+}
+```
+
+For a more detailed check of the function, we have created a data set that contains duplicate IDs. This constructed dataset is now used for a further test.
+
+```{r}
+s_data_file_dup_id <- system.file(file.path("extdata","KLDAT_20171214_dup_id_100.txt"), 
+                             package = "PedigreeFromTvdData")
+tbl_ped_dup_id <- laf_open_fwf_tvd_input(ps_input_file = s_data_file_dup_id, pb_out = TRUE)
+(tbl_non_uni_dup_id <- check_unique_animal_id(tbl_ped_dup_id, pb_out = TRUE))
+```
+
+Whenever, the check for uniqueness of the IDs is successful the property of the maximum in-degree of every node is also fullfilled. Hence we do not need to write a separate function for a check on the maximum in-degree.
+
+### Parents older than offspring
+The check whether parents are older than offspring is done with the function `check_parent_older_offspring()` which has to be called for dams and sires separately.
+
+
+```{r}
+(l_tvd_id_col_dsch <- getTvdIdColsDsch())
+(n_bd_col_idx <- getBirthdateColIdxDsch())
+### # FIXME: the following line leads to an error
+(tbl_fail_mother_age <- check_parent_older_offspring(ptbl_pedigree = tbl_ped_uni_id, 
+                                         pn_offspring_col = l_tvd_id_col_dsch$TierIdCol, 
+                                         pn_birthday_col = n_bd_col_idx, 
+                                         pn_parent_col = l_tvd_id_col_dsch$MutterIdCol))
+```
+
+The same for the fathers
+
+```{r}
+(tbl_fail_father_age <- check_parent_older_offspring(ptbl_pedigree = tbl_ped, 
+                                         pn_offspring_col = l_tvd_id_col_dsch$TierIdCol, 
+                                         pn_birthday_col = n_bd_col_idx, 
+                                         pn_parent_col = l_tvd_id_col_dsch$VaterIdCol))
+```
 
 
 ## Session Info

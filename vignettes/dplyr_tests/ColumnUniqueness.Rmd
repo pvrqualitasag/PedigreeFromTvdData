@@ -44,3 +44,8 @@ In case, we just want to find those which occur more than once, i.e., which are 
 (df %>% group_by(x, y) %>% summarise(n = n()) %>% filter(n > 1))
 ```
 
+Another question is whether the whole thing also works with indices instead of names.
+
+```{r}
+(df %>% group_by(.[[1]], .[[2]]) %>% summarise(n = n()) %>% filter(n > 1))
+```
