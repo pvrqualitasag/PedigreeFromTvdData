@@ -61,7 +61,6 @@ The check whether parents are older than offspring is done with the function `ch
 ```{r}
 (l_tvd_id_col_dsch <- getTvdIdColsDsch())
 (n_bd_col_idx <- getBirthdateColIdxDsch())
-### # FIXME: the following line leads to an error
 (tbl_fail_mother_age <- check_parent_older_offspring(ptbl_pedigree = tbl_ped_uni_id, 
                                          pn_offspring_col = l_tvd_id_col_dsch$TierIdCol, 
                                          pn_birthday_col = n_bd_col_idx, 
@@ -71,7 +70,7 @@ The check whether parents are older than offspring is done with the function `ch
 The same for the fathers
 
 ```{r}
-(tbl_fail_father_age <- check_parent_older_offspring(ptbl_pedigree = tbl_ped, 
+(tbl_fail_father_age <- check_parent_older_offspring(ptbl_pedigree = tbl_ped_uni_id, 
                                          pn_offspring_col = l_tvd_id_col_dsch$TierIdCol, 
                                          pn_birthday_col = n_bd_col_idx, 
                                          pn_parent_col = l_tvd_id_col_dsch$VaterIdCol))

@@ -162,12 +162,14 @@ check_birthdate_tbl <- function(ptblPedigree,
 #' containing animal-Id, birthdate and a parent-id where parent
 #' can either be mother or father are extracted using `dplyr::select`.
 #' The selected columns are given new names for easier readability
-#' of the remaining code. From the original set of pedigree records,
-#' all parents are selected into a separate tbl_df. Their birthdate
-#' is searched using a `dplyr::inner_join()` back to the orginal
-#' pedigree records. Once the birthdates for the parents are found
-#' we can filter those out which have a birthdate which is closer
-#' to the birthdate of the offspring than a given tolerance value.
+#' of the remaining code. In case the birthdates are formatted as
+#' characters, they are converted into integers. From the original
+#' set of pedigree records, all parents are selected into a separate
+#' tbl_df. Their birthdate is searched using a `dplyr::inner_join()`
+#' back to the orginal pedigree records. Once the birthdates for the
+#' parents are found we can filter those out which have a birthdate
+#' which is closer to the birthdate of the offspring than a given
+#' tolerance value.
 #'
 #' @param ptbl_pedigree pedigree in tbl_df format
 #' @param pn_offspring_col column index for offspring
@@ -189,6 +191,11 @@ check_parent_older_offspring <- function(ptbl_pedigree,
   ### # assign names
   names(tbl_age_check) <- c("Animal", "Birthdate", "Parent")
 
+  ### # in case column with "Birthdate" is of type character, convert it to integer
+  if (is.character(tbl_age_check$Birthdate)){
+    tbl_age_check$Birthdate <- as.integer(tbl_age_check$Birthdate)
+  }
+
   ### # piping all selections, joins and filters together
   tbl_inconsistent_result <-
     tbl_age_check %>%
@@ -199,7 +206,7 @@ check_parent_older_offspring <- function(ptbl_pedigree,
     inner_join(tbl_age_check, by = "Parent") %>%
     filter((Birthdate.y - Birthdate.x) < pn_date_diff_tol)
 
-  return(tbl_inconsistent_result)
+  return(tbl_inconsistent_result[,c("Animal", "Birthdate.y", "Parent", "Birthdate.x")])
 }
 
 ### ######################################################## ###
@@ -218,8 +225,9 @@ check_sex_tbl <- function(ptblPedigree,
   }
 
 
-#' Check for uniqueness of animal-IDs in tbl_df pedigree
+#' Check for uniqueness of Animal-IDs in a pedigree
 #'
+#' @description
 #' Given a pedigree in tbl_df-format, we have to make sure
 #' that identifiers of animals (animal-IDs) are unique. This
 #' follows from the general definition of a pedigree and
@@ -228,6 +236,8 @@ check_sex_tbl <- function(ptblPedigree,
 #'
 #' @param ptbl_pedigree pedigree in tbl_df format
 #' @param pn_ani_id_col_idx column index for animal-ID in pedigree
+#' @param pb_out flag whether debugging output should be written
+#' @return tbl_rec_result tbl_df with non-unique IDs and number of occurences
 #' @export check_unique_animal_id
 check_unique_animal_id <- function(ptbl_pedigree,
                                    pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol,
@@ -242,6 +252,9 @@ check_unique_animal_id <- function(ptbl_pedigree,
     group_by(.[[pn_ani_id_col_idx]]) %>%
     summarise(n = n()) %>%
     filter(n > 1)
+
+  ### # specify names of result
+  names(tbl_rec_result) <- c("Animal", "n")
 
   if (pb_out)
     cat(" *** Number of non-unique Ids found: ", nrow(tbl_rec_result), "\n")

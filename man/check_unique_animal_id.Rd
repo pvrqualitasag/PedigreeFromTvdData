@@ -2,7 +2,7 @@
 % Please edit documentation in R/pedigree_consistency_checks_tbl_df.R
 \name{check_unique_animal_id}
 \alias{check_unique_animal_id}
-\title{Check for uniqueness of animal-IDs in tbl_df pedigree}
+\title{Check for uniqueness of Animal-IDs in a pedigree}
 \usage{
 check_unique_animal_id(ptbl_pedigree,
   pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol, pb_out = FALSE)
@@ -11,6 +11,11 @@ check_unique_animal_id(ptbl_pedigree,
 \item{ptbl_pedigree}{pedigree in tbl_df format}
 
 \item{pn_ani_id_col_idx}{column index for animal-ID in pedigree}
+
+\item{pb_out}{flag whether debugging output should be written}
+}
+\value{
+tbl_rec_result tbl_df with non-unique IDs and number of occurences
 }
 \description{
 Given a pedigree in tbl_df-format, we have to make sure

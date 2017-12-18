@@ -31,10 +31,12 @@ From the given pedigree in ptbl_pedigree, the three columns
 containing animal-Id, birthdate and a parent-id where parent
 can either be mother or father are extracted using `dplyr::select`.
 The selected columns are given new names for easier readability
-of the remaining code. From the original set of pedigree records,
-all parents are selected into a separate tbl_df. Their birthdate
-is searched using a `dplyr::inner_join()` back to the orginal
-pedigree records. Once the birthdates for the parents are found
-we can filter those out which have a birthdate which is closer
-to the birthdate of the offspring than a given tolerance value.
+of the remaining code. In case the birthdates are formatted as
+characters, they are converted into integers. From the original
+set of pedigree records, all parents are selected into a separate
+tbl_df. Their birthdate is searched using a `dplyr::inner_join()`
+back to the orginal pedigree records. Once the birthdates for the
+parents are found we can filter those out which have a birthdate
+which is closer to the birthdate of the offspring than a given
+tolerance value.
 }
