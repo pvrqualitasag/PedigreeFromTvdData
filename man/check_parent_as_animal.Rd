@@ -7,7 +7,7 @@
 check_parent_as_animal(plPedigree)
 }
 \arguments{
-\item{plResultPedigree}{input pedigree}
+\item{plPedigree}{input pedigree}
 }
 \value{
 lCheckResultPedigree with mother and father changed according to checks

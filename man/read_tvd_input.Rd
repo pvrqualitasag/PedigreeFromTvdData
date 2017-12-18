@@ -18,5 +18,14 @@ read_tvd_input(psInputFile, lFormatBorder = getFormatBorder(),
 lResultPedigree constructed pedigree as list
 }
 \description{
-Reading TVD data and construct a pedigree
+First attempt to read a pedigree from a fwf-file and storing
+the pedigree-information in a nested list of lists.
 }
+\section{NOTE}{
+
+The state of this function is deprecated and hence it
+should not be used. When reading large files this takes
+a very long time to executed and can therefore not be
+used for real pedigree data.
+}
+

@@ -4,8 +4,7 @@
 \alias{check_unique_animal_id}
 \title{Check for uniqueness of Animal-IDs in a pedigree}
 \usage{
-check_unique_animal_id(ptbl_pedigree,
-  pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol, pb_out = FALSE)
+check_unique_animal_id(ptbl_pedigree, pn_ani_id_col_idx, pb_out)
 }
 \arguments{
 \item{ptbl_pedigree}{pedigree in tbl_df format}
@@ -23,4 +22,10 @@ that identifiers of animals (animal-IDs) are unique. This
 follows from the general definition of a pedigree and
 it is also required, because we want to use the column
 as a primary key of the animal's pedigree record.
+}
+\examples{
+s_data_file <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),
+                           package = "PedigreeFromTvdData")
+tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(ps_input_file = s_data_file)
+PedigreeFromTvdData::check_unique_animal_id(ptbl_pedigree = tbl_ped)
 }

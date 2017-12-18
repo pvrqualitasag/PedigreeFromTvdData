@@ -10,7 +10,7 @@ vignette: >
 ---
 
 ```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
-require(dplyr)
+#require(dplyr)
 require(PedigreeFromTvdData)
 ```
 

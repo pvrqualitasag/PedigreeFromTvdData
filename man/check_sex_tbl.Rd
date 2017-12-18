@@ -11,6 +11,8 @@ check_sex_tbl(ptblPedigree, lsex = getConsistencySex(),
 \item{ptblPedigree}{pedigree in tbl_df format}
 
 \item{lsex}{list of consistency values by default taken from getConsistencySex()}
+
+\item{pnTvdIdColIdx}{vector of column indices of TVD-Ids}
 }
 \description{
 Validation of sex format using tbl_df pedigree

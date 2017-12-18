@@ -10,9 +10,9 @@ check_tvd_id_tbl(ptblPedigree, plFormatBorder = getTVDIdBorder(),
 \arguments{
 \item{ptblPedigree}{pedigree as tibble}
 
-\item{lFormatBorder}{list with format borders}
+\item{plFormatBorder}{list with format borders}
 
-\item{lIdCols}{list with column indices where TVD-ids are stored}
+\item{plIdCols}{list with column indices where TVD-ids are stored}
 }
 \value{
 corrected pedigree

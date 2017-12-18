@@ -7,7 +7,7 @@
 getDschFormatTblDf(psFormatDschFile)
 }
 \arguments{
-\item{sFormatDsch}{path to DSCH-xlsx file}
+\item{psFormatDschFile}{path to DSCH-xlsx file}
 }
 \value{
 tbl_df containing DSCH format definitions

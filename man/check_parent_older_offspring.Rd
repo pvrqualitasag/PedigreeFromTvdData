@@ -4,8 +4,11 @@
 \alias{check_parent_older_offspring}
 \title{Check that parents are older than their offspring}
 \usage{
-check_parent_older_offspring(ptbl_pedigree, pn_offspring_col, pn_birthday_col,
-  pn_parent_col, pn_date_diff_tol = 10^4)
+check_parent_older_offspring(ptbl_pedigree,
+                                    pn_offspring_col,
+                                    pn_birthday_col,
+                                    pn_parent_col,
+                                    pn_date_diff_tol)
 }
 \arguments{
 \item{ptbl_pedigree}{pedigree in tbl_df format}
@@ -39,4 +42,16 @@ back to the orginal pedigree records. Once the birthdates for the
 parents are found we can filter those out which have a birthdate
 which is closer to the birthdate of the offspring than a given
 tolerance value.
+}
+\examples{
+s_data_file <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),
+                           package = "PedigreeFromTvdData")
+tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(ps_input_file = s_data_file)
+l_tvd_id_col_dsch <- PedigreeFromTvdData::getTvdIdColsDsch()
+n_bd_col_idx <- PedigreeFromTvdData::getBirthdateColIdxDsch()
+PedigreeFromTvdData::check_parent_older_offspring(ptbl_pedigree = tbl_ped,
+                                                  pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
+                                                  pn_birthday_col = n_bd_col_idx,
+                                                  pn_parent_col = l_tvd_id_col_dsch$MutterIdCol)
+
 }

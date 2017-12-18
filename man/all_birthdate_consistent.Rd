@@ -4,12 +4,14 @@
 \alias{all_birthdate_consistent}
 \title{check whether all non-NA birthdates are consistent}
 \usage{
-all_birthdate_consistent(p_tbl_ped, pn_bd_col_idx, p_b_out = FALSE)
+all_birthdate_consistent(p_tbl_ped, pn_bd_col_idx, pb_out)
 }
 \arguments{
 \item{p_tbl_ped}{original pedigree as tbl_df}
 
 \item{pn_bd_col_idx}{column index of birthdate}
+
+\item{pb_out}{flag indicating whether debugging output should be written}
 }
 \value{
 list of check result and row indices of non-consistent records

@@ -11,8 +11,8 @@
 #' Checking Format of TVD-Ids in Pedigree ptblPedigree
 #'
 #' @param ptblPedigree pedigree as tibble
-#' @param lFormatBorder list with format borders
-#' @param lIdCols list with column indices where TVD-ids are stored
+#' @param plFormatBorder list with format borders
+#' @param plIdCols list with column indices where TVD-ids are stored
 #' @return corrected pedigree
 #' @export check_tvd_id_tbl
 check_tvd_id_tbl<- function(ptblPedigree,
@@ -150,8 +150,12 @@ check_birthdate_tbl <- function(ptblPedigree,
 ### ######################################################### ###
 ###
 ###
-#' Check that parents are older than their offspring
+#' @title Check that parents are older than their offspring
 #'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
+#' @importFrom dplyr inner_join
 #' @description
 #' Given a pedigree in tbl_df format, all parents that are also
 #' present as animals are filtered, if they are not older than
@@ -178,6 +182,22 @@ check_birthdate_tbl <- function(ptblPedigree,
 #' @param pn_date_diff_tol minimum difference between birthdates of parents and offspring
 #' @return tbl_df of pedigree records not fullfilling requirements
 #' @export check_parent_older_offspring
+#' @usage check_parent_older_offspring(ptbl_pedigree,
+#'                                     pn_offspring_col,
+#'                                     pn_birthday_col,
+#'                                     pn_parent_col,
+#'                                     pn_date_diff_tol)
+#' @examples
+#' s_data_file <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),
+#'                            package = "PedigreeFromTvdData")
+#' tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(ps_input_file = s_data_file)
+#' l_tvd_id_col_dsch <- PedigreeFromTvdData::getTvdIdColsDsch()
+#' n_bd_col_idx <- PedigreeFromTvdData::getBirthdateColIdxDsch()
+#' PedigreeFromTvdData::check_parent_older_offspring(ptbl_pedigree = tbl_ped,
+#'                                                   pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
+#'                                                   pn_birthday_col = n_bd_col_idx,
+#'                                                   pn_parent_col = l_tvd_id_col_dsch$MutterIdCol)
+#'
 check_parent_older_offspring <- function(ptbl_pedigree,
                                          pn_offspring_col,
                                          pn_birthday_col,
@@ -199,10 +219,10 @@ check_parent_older_offspring <- function(ptbl_pedigree,
   ### # piping all selections, joins and filters together
   tbl_inconsistent_result <-
     tbl_age_check %>%
-    filter(Parent != "") %>%
-    select(Parent) %>%
+    filter("Parent" != "") %>%
+    select("Parent") %>%
     inner_join(tbl_age_check, by = c("Parent" = "Animal")) %>%
-    select(Parent,Birthdate) %>%
+    select("Parent","Birthdate") %>%
     inner_join(tbl_age_check, by = "Parent") %>%
     filter((Birthdate.y - Birthdate.x) < pn_date_diff_tol)
 
@@ -215,6 +235,7 @@ check_parent_older_offspring <- function(ptbl_pedigree,
 #'
 #' @param ptblPedigree pedigree in tbl_df format
 #' @param lsex list of consistency values by default taken from getConsistencySex()
+#' @param pnTvdIdColIdx vector of column indices of TVD-Ids
 #' @export check_sex_tbl
 check_sex_tbl <- function(ptblPedigree,
                           lsex = getConsistencySex(),
@@ -225,7 +246,12 @@ check_sex_tbl <- function(ptblPedigree,
   }
 
 
-#' Check for uniqueness of Animal-IDs in a pedigree
+#' @title Check for uniqueness of Animal-IDs in a pedigree
+#'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarise
+#' @importFrom dplyr filter
 #'
 #' @description
 #' Given a pedigree in tbl_df-format, we have to make sure
@@ -239,6 +265,12 @@ check_sex_tbl <- function(ptblPedigree,
 #' @param pb_out flag whether debugging output should be written
 #' @return tbl_rec_result tbl_df with non-unique IDs and number of occurences
 #' @export check_unique_animal_id
+#' @usage check_unique_animal_id(ptbl_pedigree, pn_ani_id_col_idx, pb_out)
+#' @examples
+#' s_data_file <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),
+#'                            package = "PedigreeFromTvdData")
+#' tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(ps_input_file = s_data_file)
+#' PedigreeFromTvdData::check_unique_animal_id(ptbl_pedigree = tbl_ped)
 check_unique_animal_id <- function(ptbl_pedigree,
                                    pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol,
                                    pb_out = FALSE){
@@ -250,8 +282,8 @@ check_unique_animal_id <- function(ptbl_pedigree,
   ### #  the records that have counts greater 1
   tbl_rec_result <- ptbl_pedigree %>%
     group_by(.[[pn_ani_id_col_idx]]) %>%
-    summarise(n = n()) %>%
-    filter(n > 1)
+    summarise("n" = n()) %>%
+    filter("n" > 1)
 
   ### # specify names of result
   names(tbl_rec_result) <- c("Animal", "n")
@@ -281,10 +313,10 @@ check_unique_animal_id <- function(ptbl_pedigree,
 #' @param p_tbl_ped original pedigree as tbl_df
 #' @param plIdCols list with column indices for all ids, required for checking
 #' @param pn_parent_col column index of parent to be checked
-#' @param p_b_out flag indicating whether output should be written
+#' @param pb_out flag indicating whether debugging output should be written
 #' @return list indicating result of consistency check and list of row indices with inconsistent IDs
 #' @export all_parent_id_consistent
-all_parent_id_consistent <- function(p_tbl_ped, plIdCols, pn_parent_col, p_b_out = FALSE){
+all_parent_id_consistent <- function(p_tbl_ped, plIdCols, pn_parent_col, pb_out = FALSE){
   ### # initialize a result list
   l_check_result <- list(b_consistency_check = FALSE, vec_incons_rows = NA)
   ### # run the check of the pedigree ids
@@ -297,7 +329,7 @@ all_parent_id_consistent <- function(p_tbl_ped, plIdCols, pn_parent_col, p_b_out
     length(tbl_ped_checked[[pn_parent_col]][!is.na(tbl_ped_checked[[pn_parent_col]])])
   ### # number of non-na records are the same for original and checked pedigree
   if ( n_not_na_ped == n_not_na_ped_checked ){
-    if (p_b_out) cat(" *** All parent-ids consistent:\n")
+    if (pb_out) cat(" *** All parent-ids consistent:\n")
     l_check_result$b_consistency_check <-
       all(tbl_ped_checked[[pn_parent_col]][!is.na(tbl_ped_checked[[pn_parent_col]])] ==
             p_tbl_ped[[pn_parent_col]][!is.na(p_tbl_ped[[pn_parent_col]])])
@@ -305,7 +337,7 @@ all_parent_id_consistent <- function(p_tbl_ped, plIdCols, pn_parent_col, p_b_out
     ### # row indices of records that are different
     l_check_result$vec_incons_rows <-
       which(is.na(tbl_ped_checked[[pn_parent_col]]) & !is.na(p_tbl_ped[[pn_parent_col]]))
-    if (p_b_out) {
+    if (pb_out) {
       cat(" *** Parent-Ids different after check:\n")
       print(l_check_result$vec_incons_rows)
     }
@@ -323,9 +355,11 @@ all_parent_id_consistent <- function(p_tbl_ped, plIdCols, pn_parent_col, p_b_out
 #'
 #' @param p_tbl_ped original pedigree as tbl_df
 #' @param pn_bd_col_idx column index of birthdate
+#' @param pb_out flag indicating whether debugging output should be written
 #' @return list of check result and row indices of non-consistent records
 #' @export all_birthdate_consistent
-all_birthdate_consistent <- function(p_tbl_ped, pn_bd_col_idx, p_b_out = FALSE){
+#' @usage all_birthdate_consistent(p_tbl_ped, pn_bd_col_idx, pb_out)
+all_birthdate_consistent <- function(p_tbl_ped, pn_bd_col_idx, pb_out = FALSE){
   ### # initialize a result list
   l_check_result <- list(b_consistency_check = FALSE, vec_incons_rows = NA)
   ### # run the check of the pedigree ids
@@ -333,18 +367,18 @@ all_birthdate_consistent <- function(p_tbl_ped, pn_bd_col_idx, p_b_out = FALSE){
                                                               pnBirthdateColIdx = pn_bd_col_idx)
 
   ### # number of non-NA birthdates in original and checked pedigrees
-  n_not_na_ped <- length(!is.na(p_tbl_ped[[n_bd_col_idx]]))
-  n_not_na_ped_checked <- length(!is.na(tbl_ped_checked[[n_bd_col_idx]]))
+  n_not_na_ped <- length(!is.na(p_tbl_ped[[pn_bd_col_idx]]))
+  n_not_na_ped_checked <- length(!is.na(tbl_ped_checked[[pn_bd_col_idx]]))
   ### # if those numbers are the same, and
   if ((n_not_na_ped_checked == n_not_na_ped) &&
-      all(p_tbl_ped[[n_bd_col_idx]][!is.na(p_tbl_ped[[n_bd_col_idx]])] ==
-          tbl_ped_checked[[n_bd_col_idx]][!is.na(tbl_ped_checked[[n_bd_col_idx]])])) {
-    if (p_b_out) cat("*** Birthdates all consistent\n")
+      all(p_tbl_ped[[pn_bd_col_idx]][!is.na(p_tbl_ped[[pn_bd_col_idx]])] ==
+          tbl_ped_checked[[pn_bd_col_idx]][!is.na(tbl_ped_checked[[pn_bd_col_idx]])])) {
+    if (pb_out) cat("*** Birthdates all consistent\n")
     l_check_result$b_consistency_check <- TRUE
   } else {
-    if (p_b_out) cat("*** Some birthdates are not consistent\n")
+    if (pb_out) cat("*** Some birthdates are not consistent\n")
     l_check_result$vec_incons_rows <-
-      which(is.na(tbl_ped_checked[[n_bd_col_idx]]) & !is.na(p_tbl_ped[[n_bd_col_idx]]))
+      which(is.na(tbl_ped_checked[[pn_bd_col_idx]]) & !is.na(p_tbl_ped[[pn_bd_col_idx]]))
 
   }
   return(l_check_result)

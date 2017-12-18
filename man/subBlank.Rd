@@ -9,6 +9,9 @@ subBlank(psValue)
 \arguments{
 \item{psValue}{value input}
 }
+\value{
+String psValue with all blanks removed
+}
 \description{
 Substitute blanks and replace empty string by NA
 }

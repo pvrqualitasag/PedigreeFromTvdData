@@ -11,14 +11,16 @@ vignette: >
 
 
 ```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
-vec_pkgs <- c("pryr", "readxl","magrittr", "dplyr")
-if (!all(sapply(vec_pkgs, 
-       function(x) x  %in% installed.packages(), USE.NAMES = FALSE))){
-  for (pgk in vec_pkgs){
-    if (!pgk %in% installed.packages())
-      install.packages(pkgs = pgk)
-  }  
-}
+#vec_pkgs <- c("pryr", "readxl","magrittr", "dplyr")
+#if (!all(sapply(vec_pkgs, 
+#       function(x) x  %in% installed.packages(), USE.NAMES = FALSE))){
+#  for (pgk in vec_pkgs){
+#    if (!pgk %in% installed.packages())
+#      install.packages(pkgs = pgk)
+#  }  
+#}
+require(pryr)
+require(magrittr)
 require(dplyr)
 require(PedigreeFromTvdData)
 ```
@@ -104,7 +106,7 @@ if (!l_check_result_fathers$b_consistency_check){
 }
 ```
 
-```{r, eval=!l_check_result_fathers$b_consistency_check}
+```{r}
 # read pedigree again with new format
 tbl_ped_new <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName)
 # validate IDs

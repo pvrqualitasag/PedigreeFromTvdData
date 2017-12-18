@@ -17,7 +17,7 @@
 #' @details
 #' This section contains details about the function.
 #'
-#' @param plResultPedigree input pedigree
+#' @param plPedigree input pedigree
 #' @return lCheckResultPedigree with mother and father changed according to checks
 #' @export check_parent_as_animal
 check_parent_as_animal <- function(plPedigree){
@@ -98,11 +98,14 @@ check_tvdid <- function(plPedigree,lFormatBorder = getTVDIdBorder()){
 #'
 #' Format of the birdate (YearMonthDay) have to be checked with some limits
 #'
+#' @param plPedigree pedigree as nested list of lists
 #' @param lFormatBorder list of consistency border by default taken from getBirthdateBorder()
 #' @param lLimitValue list of consistency limit value by default taken from getBirthdayConsistencyLimit()
 #' @return lCheckedPedigree3
 #' @export check_birthdate
-check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLimitValue = getBirthdayConsistencyLimit()){
+check_birthdate <- function(plPedigree,
+                            lFormatBorder = getBirthdateBorder(),
+                            lLimitValue = getBirthdayConsistencyLimit()){
   ### # initialize result
   lCheckedPedigree3 <- plPedigree
   for(idxPed in 1:length(lCheckedPedigree3)){
