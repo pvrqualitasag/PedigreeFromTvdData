@@ -282,8 +282,8 @@ check_unique_animal_id <- function(ptbl_pedigree,
   ### #  the records that have counts greater 1
   tbl_rec_result <- ptbl_pedigree %>%
     group_by(.[[pn_ani_id_col_idx]]) %>%
-    summarise("n" = n()) %>%
-    filter("n" > 1)
+    summarise(n = n()) %>%
+    filter(n > 1)
 
   ### # specify names of result
   names(tbl_rec_result) <- c("Animal", "n")
