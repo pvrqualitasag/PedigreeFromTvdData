@@ -4,8 +4,8 @@
 \alias{getK11ColPositionFromDsch}
 \title{Get K11 Format from the DSCH-format file}
 \usage{
-getK11ColPositionFromDsch(psFormatDschFile, pnTagCol = 2,
-  psStartTag = "Satzart K11", psEndTag = NA)
+getK11ColPositionFromDsch(psFormatDschFile = getFormatDSCHFile(),
+  pnTagCol = 2, psStartTag = "Satzart K11", psEndTag = NA)
 }
 \arguments{
 \item{psFormatDschFile}{path to DSCH-xlsx file}

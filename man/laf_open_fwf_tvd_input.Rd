@@ -4,8 +4,8 @@
 \alias{laf_open_fwf_tvd_input}
 \title{Read TVD-Pedigree from inputfile using LaF::laf_open_fwf()}
 \usage{
-laf_open_fwf_tvd_input(ps_input_file, pvec_col_position = getColPositions(),
-  pb_out = FALSE)
+laf_open_fwf_tvd_input(ps_input_file,
+  pvec_col_position = getK11ColPositionVecFromDsch(), pb_out = FALSE)
 }
 \arguments{
 \item{ps_input_file}{name of the input file}

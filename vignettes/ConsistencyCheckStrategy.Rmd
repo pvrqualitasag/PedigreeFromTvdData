@@ -1,0 +1,79 @@
+---
+title: "Pedigree Checks - Concepts and Strategies"
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Concepts and Strategies For Pedigree Checks}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## Disclaimer
+This vignette describes concepts, strategies and systematics developed for running data consistency checks for pedigree data.
+
+
+## Introduction
+From a theoretical point of view, pedigrees are __Directed Acyclic Graphs__ (DAG), where a graph $G$ is defined by the set of vertices or nodes $V$ and the set of edges $E$. The set of vertices correspond to the set of individuals in the pedigree. Edges correspond to directed relationships from parents to their offspring. In a pedigree, the direction of the edges is always from parents to offspring. A pedigree must not contain any directed cycles, i.e. there cannot be any path corresponding to a series of directed edges linked together where a parent appears after one of its offspring. These two properties 
+
+1. directed edges between parents and offspring
+2. no cycles
+
+together have led to the name DAG.
+
+In a directed graph, we can distinguish between the number of edges that are coming into a node and the number of edges going out of a node. The former number is called `in-degree` and the latter number corresponds to the `out-degree`. For a pedigree, the maximum in-degree for every node is $2$.
+
+Based on the described properties, we can define a set of consistency requirements that must be fullfilled when a pedigree is constructed.
+
+
+## Consistency Requirements
+This section describes consistency requirements that are derived from the properties of a pedigree described in the previous section.
+
+### Properties of a DAG
+The following list of requirements is derived from the properties of a DAG
+
+* Uniqueness of individuals: Considering the fact that a pedigree is a DAG and the definition of the nodes as a set, it follows that nodes must be unique. Hence every individual can only appear once in our pedigree. As a consequence of that, we can use the IDs associated to the nodes as unique mean of identification. In the database-world this corresponds to a primary key, meaning that a primary key uniquely identifies a given record.
+
+* No cycles: The property of a pedigree being acyclic was already described in the previous section
+
+* In-degree of nodes: The maximum in-degree of every node is $2$.
+
+* Parents older than offspring: Parents must be older than offspring
+
+* Parents must have the correct sex
+
+### Other requirements
+There are additional properties which are more related to data-processing issues. Those issues mostly involve the correctnes of certain data-formats.
+
+* correct formats of IDs for individuals and parents
+* correct formats of birthdates
+
+
+## Implementation
+Implementations do depend among many things on the type of data representation of a given pedigree. 
+
+### Data representation
+One of the most commonly used data representation of a pedigree is the so-called node-list or adjacency list. This is a tabular list with columns containing IDs for animals, IDs for parents and additional information such as sex and birthdate. One row of the list corresponds to the available information for a given individual and hence must be unique. Such a row is also called a pedigree record.
+
+### Types of implementation routines
+When it comes to verifying the consistency requirements two type of implementation routines can be imagined
+
+* __checks__ are routines which take a pedigree and a condition given by a specific requirement. The only thing they do is they search the pedigree for entries which do not fullfill the consistency condition. As a result, the check-routines return the set of primary keys found not to fullfill the conditions. From a implementation design point of view it is important to note, that the check-routines work without any side-effects on the pedigree.
+* __transformations__ take a pedigree as input and give as output a different pedigree where one of the following two operations were applied
+    + invalidate or delete a complete pedigree record or 
+    + invalidate or delete a field of the pedigree record
+    
+The descriptions of each check is described in a companion vignette on [Pedigree Checks - Implementations](ConsistencyCheckImplementation.html) which is also available in this package.    
+    
+
+
+## Session Info
+```{r}
+sessionInfo()
+```
+
+
+## Latest Update
+`r paste(Sys.time(),paste0("(", Sys.info()[["user"]],")" ))`
+

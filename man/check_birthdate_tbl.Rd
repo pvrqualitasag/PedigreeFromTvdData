@@ -5,7 +5,7 @@
 \title{Validation of birthdate format using tbl_df pedigree}
 \usage{
 check_birthdate_tbl(ptblPedigree, lLimitValue = getBirthdayConsistencyLimit(),
-  pnBirthdateColIdx)
+  pnBirthdateColIdx = getBirthdateColIdxDsch())
 }
 \arguments{
 \item{ptblPedigree}{pedigree in tbl_df format}

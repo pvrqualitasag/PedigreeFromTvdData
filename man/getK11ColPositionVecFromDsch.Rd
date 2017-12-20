@@ -4,7 +4,8 @@
 \alias{getK11ColPositionVecFromDsch}
 \title{Get K11 Column positions as vector}
 \usage{
-getK11ColPositionVecFromDsch(psFormatDschFile, pnColPosition = 5)
+getK11ColPositionVecFromDsch(psFormatDschFile = getFormatDSCHFile(),
+  pnColPosition = 5)
 }
 \arguments{
 \item{psFormatDschFile}{name of xlsx-file conaining DSCH-formats}

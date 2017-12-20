@@ -82,7 +82,7 @@ correct_tvd_format <- function(ptblPedigreeResult, plFormatBorder, pnIdCol) {
 #' @export check_tvd_id_tbl
 check_tvd_id_tbl<- function(ptblPedigree,
                           plFormatBorder = getTVDIdBorder(),
-                          plIdCols = getTvdIdCols()){
+                          plIdCols = getTvdIdColsDsch()){
   ### # copy argument to result
   tblPedigreeResult <- ptblPedigree
 
@@ -227,7 +227,6 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
 #' day), there are constant limits defined. Whenever a validation
 #' fails, the date is set to NA.
 #'
-
 #' @param ptblPedigree pedigree in tbl_df format
 #' @param lLimitValue list with fixed limits for year, month and date
 #' @param pnBirthdateColIdx column index of birthdates in ptblPedigree
@@ -235,11 +234,11 @@ check_birthdate <- function(plPedigree,lFormatBorder = getBirthdateBorder(), lLi
 #' @export check_birthdate_tbl
 check_birthdate_tbl <- function(ptblPedigree,
                                 lLimitValue   = getBirthdayConsistencyLimit(),
-                                pnBirthdateColIdx){
+                                pnBirthdateColIdx = getBirthdateColIdxDsch()){
   tblPedigreeResult <- ptblPedigree
-  ### # with the new format, birthdate is suddenly char again - convert
+  ### # birthdate seams to be read as char - convert
   if (is.character(tblPedigreeResult[[pnBirthdateColIdx]])){
-    tblPedigreeResult[[pnBirthdateColIdx]] <- as.numeric(tblPedigreeResult[[pnBirthdateColIdx]])
+    tblPedigreeResult[[pnBirthdateColIdx]] <- as.integer(tblPedigreeResult[[pnBirthdateColIdx]])
   }
 
   ### # check whether day is within limits
@@ -272,6 +271,60 @@ check_birthdate_tbl <- function(ptblPedigree,
   return(tblPedigreeResult)
 }
 
+
+### ######################################################### ###
+###
+###
+#' Check that parents are older than their offspring
+#'
+#' @description
+#' Given a pedigree in tbl_df format, all parents that are also
+#' present as animals are filtered, if they are not older than
+#' their offspring.
+#'
+#' @details
+#' From the given pedigree in ptbl_pedigree, the three columns
+#' containing animal-Id, birthdate and a parent-id where parent
+#' can either be mother or father are extracted using `dplyr::select`.
+#' The selected columns are given new names for easier readability
+#' of the remaining code. From the original set of pedigree records,
+#' all parents are selected into a separate tbl_df. Their birthdate
+#' is searched using a `dplyr::inner_join()` back to the orginal
+#' pedigree records. Once the birthdates for the parents are found
+#' we can filter those out which have a birthdate which is closer
+#' to the birthdate of the offspring than a given tolerance value.
+#'
+#' @param ptbl_pedigree pedigree in tbl_df format
+#' @param pn_offspring_col column index for offspring
+#' @param pn_birthday_col column index for birthdates of offspring
+#' @param pn_parent_col column index for parents
+#' @param pn_date_diff_tol minimum difference between birthdates of parents and offspring
+#' @return tbl_df of pedigree records not fullfilling requirements
+check_parent_older_offspring <- function(ptbl_pedigree,
+                                         pn_offspring_col,
+                                         pn_birthday_col,
+                                         pn_parent_col,
+                                         pn_date_diff_tol = 10^4) {
+
+  ### # using pipes, we can link all the steps together
+  tbl_age_check  <- ptbl_pedigree %>% select(pn_offspring_col,
+                                             pn_birthday_col,
+                                             pn_parent_col)
+  ### # assign names
+  names(tbl_age_check) <- c("Animal", "Birthdate", "Parent")
+
+  ### # piping all selections, joins and filters together
+  tbl_inconsistent_result <-
+    tbl_age_check %>%
+    filter(Parent != "") %>%
+    select(Parent) %>%
+    inner_join(tbl_age_check, by = c("Parent" = "Animal")) %>%
+    select(Parent,Birthdate) %>%
+    inner_join(tbl_age_check, by = "Parent") %>%
+    filter((Birthdate.y - Birthdate.x) < pn_date_diff_tol)
+
+  return(tbl_inconsistent_result)
+}
 
 ### ######################################################## ###
 #' Validation of sex
@@ -311,7 +364,7 @@ check_sex <- function(plPedigree, lsex = getConsistencySex()){
 #' Validation of sex format using tbl_df pedigree
 #'
 #'
-#' @param ptblPedigree
+#' @param ptblPedigree pedigree in tbl_df format
 #' @param lsex list of consistency values by default taken from getConsistencySex()
 #' @export check_sex_tbl
 check_sex_tbl <- function(ptblPedigree,
@@ -322,6 +375,15 @@ check_sex_tbl <- function(ptblPedigree,
 #    if(){}
   }
 
+<<<<<<< HEAD
+=======
+
+### ######################################################## ###
+###   Functions below this line are helper function for the  ###
+###   vignette on checking data consistency.                 ###
+###
+#
+>>>>>>> 5782f369f6d7906354abf0a31b22016348f4eb91
 #' Check whether all ids of a given parent (mother or father) have consistent IDs
 #'
 #' Given a pedigree as tbl_df, it is first run through the TVD-ID check using

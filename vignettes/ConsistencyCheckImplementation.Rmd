@@ -1,0 +1,28 @@
+---
+title: "Pedigree Checks - Implementations"
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pedigree Checks - Implementations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Disclaimer
+This vignette describes implementation of checks that are described in the companion vignette on strategies entitled [Pedigree Checks - Concepts and Strategies](ConsistencyCheckStrategy.html). 
+
+## Checks
+The vignette on the strategy defined checks to be routines that search for pedigree records that do not fullfill certain requirement conditions. As the result returned from checks are lists of primary keys of pedigree records, we must ensure that these primary keys are available. This must be done right after reading the pedigree from the input file.
+
+
+
+## Session Info
+```{r}
+sessionInfo()
+```
+
+
+## Latest Update
+`r paste(Sys.time(),paste0("(", Sys.info()[["user"]],")" ))`
+
