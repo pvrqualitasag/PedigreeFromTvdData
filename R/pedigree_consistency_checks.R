@@ -322,7 +322,7 @@ check_sex_tbl <- function(ptblPedigree,
 #    if(){}
   }
 
-  #' Check whether all ids of a given parent (mother or father) have consistent IDs
+#' Check whether all ids of a given parent (mother or father) have consistent IDs
 #'
 #' Given a pedigree as tbl_df, it is first run through the TVD-ID check using
 #' the function PedigreeFromTvdData::check_tvd_id_tbl(). As a result, we get the
