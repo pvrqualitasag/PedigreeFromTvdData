@@ -11,8 +11,6 @@ build_check_pedigree_from_tvd(ps_tvd_file,
 \item{ps_tvd_file}{file containing K11-formatted TVD-data}
 
 \item{pvec_format}{vector with column separator positions of pedigree}
-
-\item{ps_out_file}{output file for validated pedigree}
 }
 \description{
 Read K11-formatted TVD-data to build a pedigree

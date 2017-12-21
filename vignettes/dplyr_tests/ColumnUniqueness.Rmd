@@ -1,0 +1,51 @@
+---
+title: "Uniqueness of columns in tbl_df using dplyr"
+output:
+  html_document:
+    df_print: paged
+---
+
+This document shows certain experiments with finding unique columns in a tbl_df using dplyr. The material is copied from https://stackoverflow.com/questions/22959635/remove-duplicated-rows-using-dplyr. 
+
+We start by generating a random dataframe samples from a given distribution.
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+set.seed(123)
+df <- data.frame(
+  x = sample(0:1, 10, replace = T),
+  y = sample(0:1, 10, replace = T),
+  z = 1:10
+)
+df
+```
+
+Then we just want to keep the rows with unique entries over the columns `x` and `y`.
+
+```{r}
+(df %>% distinct(x, y))
+```
+
+As shown in the result, just columns `x` and `y` are kept. With the additional option `.keep_all = TRUE`, we get a different behavior.
+
+```{r}
+(df %>% distinct(x, y, .keep_all = TRUE))
+```
+
+We try to find which combinations of the grouping variables `x` and `y` occur how many times. 
+
+```{r}
+(df %>% group_by(x, y) %>% summarise(n = n()))
+```
+
+In case, we just want to find those which occur more than once, i.e., which are not unique, we filter on $n$. 
+
+```{r}
+(df %>% group_by(x, y) %>% summarise(n = n()) %>% filter(n > 1))
+```
+
+Another question is whether the whole thing also works with indices instead of names.
+
+```{r}
+(df %>% group_by(.[[1]], .[[2]]) %>% summarise(n = n()) %>% filter(n > 1))
+```

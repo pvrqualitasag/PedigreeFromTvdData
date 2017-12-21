@@ -4,8 +4,7 @@
 \alias{readr_fwf_tvd_input}
 \title{Read TVD-Pedigree from file using readr::read_fwf()}
 \usage{
-readr_fwf_tvd_input(psInputFile, pvecColPosition = getColPositions(),
-  pbOut = FALSE)
+readr_fwf_tvd_input(psInputFile, pvecColPosition, pbOut)
 }
 \arguments{
 \item{psInputFile}{name of the input file}
@@ -18,5 +17,12 @@ readr_fwf_tvd_input(psInputFile, pvecColPosition = getColPositions(),
 tbl_result_pedigree resulting pedigree as tibble
 }
 \description{
-Read TVD-Pedigree from file using readr::read_fwf()
+The content of the fwf-file psInputFile is read using the function
+\code{readr::read_fwf}. The result contains the pedigree information
+as tbl_df.
+}
+\examples{
+s_data_file <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),
+                           package = "PedigreeFromTvdData")
+tbl_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = s_data_file)
 }
