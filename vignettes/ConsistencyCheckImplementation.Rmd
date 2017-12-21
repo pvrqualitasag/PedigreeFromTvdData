@@ -76,6 +76,15 @@ The same for the fathers
                                          pn_parent_col = l_tvd_id_col_dsch$VaterIdCol))
 ```
 
+### Parents sex consistency
+```{r}
+sDataFileSex <- system.file(file.path("extdata","KLDAT_20170524_100_mother_sex.txt"), 
+                             package = "PedigreeFromTvdData")
+tbl_ped_sex <- laf_open_fwf_tvd_input(ps_input_file = sDataFileSex, pb_out = TRUE)
+check_sex_tbl <- function(ptblPedigree = tbl_ped_sex)
+
+```
+
 
 ## Session Info
 ```{r}

@@ -233,18 +233,36 @@ check_parent_older_offspring <- function(ptbl_pedigree,
 #' Validation of sex format using tbl_df pedigree
 #'
 #'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
+#' @importFrom dplyr inner_join
 #' @param ptblPedigree pedigree in tbl_df format
+#' @param ps_geschlecht get column index of sex
 #' @param lsex list of consistency values by default taken from getConsistencySex()
 #' @param pnTvdIdColIdx vector of column indices of TVD-Ids
 #' @export check_sex_tbl
 check_sex_tbl <- function(ptblPedigree,
+                          ps_geschlecht = getSexColIdxDsch(),
                           lsex = getConsistencySex(),
-                          pnTvdIdColIdx = getTvdIdCols()){
-#  tblPedigreeResult <- ptblPedigree
-#  if(!is.na(tblPedigreeResult[,pnTvdIdColIdx$MutterIdCol])){
-#    if(){}
-  }
+                          pnTvdIdColIdx = getTvdIdColsDsch()){
 
+  ### # using pipes, we can link all the steps together
+  tbl_sex_check  <- ptblPedigree %>% select(pnTvdIdColIdx$TierIdCol,
+                                            ps_geschlecht,
+                                            pnTvdIdColIdx$MutterIdCol)
+  ### # assign names
+  names(tbl_sex_check) <- c("Animal", "Geschlecht", "Mutter")
+
+  ### #
+  tbl_inconsistent_result <- tbl_sex_check %>% filter(Mutter != "") %>%
+    select(Mutter) %>%
+    inner_join(tbl_sex_check, by = c("Mutter" = "Animal")) %>%
+    filter(Geschlecht != "2")
+
+  names(tbl_inconsistent_result) <- c("Animal", "Geschlecht", "Mutter")
+  return(tbl_inconsistent_result)
+}
 
 #' @title Check for uniqueness of Animal-IDs in a pedigree
 #'
