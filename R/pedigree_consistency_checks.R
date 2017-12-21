@@ -180,27 +180,7 @@ check_sex <- function(plPedigree, lsex = getConsistencySex()){
 }
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-#' Validation of sex format using tbl_df pedigree
-#'
-#'
-#' @param ptblPedigree pedigree in tbl_df format
-#' @param lsex list of consistency values by default taken from getConsistencySex()
-#' @export check_sex_tbl
-check_sex_tbl <- function(ptblPedigree,
-                          lsex = getConsistencySex(),
-                          pnTvdIdColIdx = getTvdIdCols()){
-#  tblPedigreeResult <- ptblPedigree
-#  if(!is.na(tblPedigreeResult[,pnTvdIdColIdx$MutterIdCol])){
-#    if(){}
-  }
 
-<<<<<<< HEAD
-=======
-
-=======
->>>>>>> 8b75c43563c40087f7b0f4b53e72732c7e3c84ed
 ### ######################################################## ###
 ###   Functions below this line are helper function for the  ###
 ###   vignette on checking data consistency.                 ###
@@ -286,8 +266,3 @@ all_birthdate_consistent <- function(p_tbl_ped, pn_bd_col_idx, p_b_out = FALSE){
   }
   return(l_check_result)
 }
-<<<<<<< HEAD
-=======
->>>>>>> origin/devel
-=======
->>>>>>> 8b75c43563c40087f7b0f4b53e72732c7e3c84ed
