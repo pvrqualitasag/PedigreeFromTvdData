@@ -180,3 +180,89 @@ check_sex <- function(plPedigree, lsex = getConsistencySex()){
 }
 
 
+### ######################################################## ###
+###   Functions below this line are helper function for the  ###
+###   vignette on checking data consistency.                 ###
+###
+#
+#' Check whether all ids of a given parent (mother or father) have consistent IDs
+#'
+#' Given a pedigree as tbl_df, it is first run through the TVD-ID check using
+#' the function PedigreeFromTvdData::check_tvd_id_tbl(). As a result, we get the
+#' checked pedigree. The original pedigree in p_tbl_ped and the checked pedigree
+#' are compared and the result is returned as a list indicating whether the
+#' two pedigrees are consistent and if not with a vector of row-indices where
+#' inconsistencies did occur.
+#'
+#' @param p_tbl_ped original pedigree as tbl_df
+#' @param plIdCols list with column indices for all ids, required for checking
+#' @param pn_parent_col column index of parent to be checked
+#' @param p_b_out flag indicating whether output should be written
+#' @return list indicating result of consistency check and list of row indices with inconsistent IDs
+#' @export all_parent_id_consistent
+all_parent_id_consistent <- function(p_tbl_ped, plIdCols, pn_parent_col, p_b_out = FALSE){
+  ### # initialize a result list
+  l_check_result <- list(b_consistency_check = FALSE, vec_incons_rows = NA)
+  ### # run the check of the pedigree ids
+  tbl_ped_checked <- PedigreeFromTvdData::check_tvd_id_tbl(ptblPedigree = p_tbl_ped,
+                                                           plIdCols = plIdCols)
+
+  ### # check result for parents, start with number of non-NA's in both pedigrees
+  n_not_na_ped <- length(p_tbl_ped[[pn_parent_col]][!is.na(p_tbl_ped[[pn_parent_col]])])
+  n_not_na_ped_checked <-
+    length(tbl_ped_checked[[pn_parent_col]][!is.na(tbl_ped_checked[[pn_parent_col]])])
+  ### # number of non-na records are the same for original and checked pedigree
+  if ( n_not_na_ped == n_not_na_ped_checked ){
+    if (p_b_out) cat(" *** All parent-ids consistent:\n")
+    l_check_result$b_consistency_check <-
+      all(tbl_ped_checked[[pn_parent_col]][!is.na(tbl_ped_checked[[pn_parent_col]])] ==
+            p_tbl_ped[[pn_parent_col]][!is.na(p_tbl_ped[[pn_parent_col]])])
+  } else {
+    ### # row indices of records that are different
+    l_check_result$vec_incons_rows <-
+      which(is.na(tbl_ped_checked[[pn_parent_col]]) & !is.na(p_tbl_ped[[pn_parent_col]]))
+    if (p_b_out) {
+      cat(" *** Parent-Ids different after check:\n")
+      print(l_check_result$vec_incons_rows)
+    }
+  }
+  return(l_check_result)
+}
+
+
+#' check whether all non-NA birthdates are consistent
+#'
+#' Birthdates are checked using check_birthdate_tbl() and the
+#' resulting validated tbl_df pedigree is compared to the
+#' original pedigree. In case that we find differences, we
+#' return a list of row-indices that are not consistent
+#'
+#' @param p_tbl_ped original pedigree as tbl_df
+#' @param pn_bd_col_idx column index of birthdate
+#' @return list of check result and row indices of non-consistent records
+#' @export all_birthdate_consistent
+all_birthdate_consistent <- function(p_tbl_ped, pn_bd_col_idx, p_b_out = FALSE){
+  ### # initialize a result list
+  l_check_result <- list(b_consistency_check = FALSE, vec_incons_rows = NA)
+  ### # run the check of the pedigree ids
+  tbl_ped_checked <- PedigreeFromTvdData::check_birthdate_tbl(ptblPedigree = p_tbl_ped,
+                                                              pnBirthdateColIdx = pn_bd_col_idx)
+
+  ### # number of non-NA birthdates in original and checked pedigrees
+  n_not_na_ped <- length(!is.na(p_tbl_ped[[n_bd_col_idx]]))
+  n_not_na_ped_checked <- length(!is.na(tbl_ped_checked[[n_bd_col_idx]]))
+  ### # if those numbers are the same, and
+  if ((n_not_na_ped_checked == n_not_na_ped) &&
+      all(p_tbl_ped[[n_bd_col_idx]][!is.na(p_tbl_ped[[n_bd_col_idx]])] ==
+          tbl_ped_checked[[n_bd_col_idx]][!is.na(tbl_ped_checked[[n_bd_col_idx]])])) {
+    if (p_b_out) cat("*** Birthdates all consistent\n")
+    l_check_result$b_consistency_check <- TRUE
+  } else {
+    if (p_b_out) cat("*** Some birthdates are not consistent\n")
+    l_check_result$vec_incons_rows <-
+      which(is.na(tbl_ped_checked[[n_bd_col_idx]]) & !is.na(p_tbl_ped[[n_bd_col_idx]]))
+
+  }
+  return(l_check_result)
+}
+>>>>>>> 7924b93d61d9dad562a24141b63c9ac9d47b9851
