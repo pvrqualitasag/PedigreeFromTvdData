@@ -265,4 +265,3 @@ all_birthdate_consistent <- function(p_tbl_ped, pn_bd_col_idx, p_b_out = FALSE){
   }
   return(l_check_result)
 }
->>>>>>> 7924b93d61d9dad562a24141b63c9ac9d47b9851
