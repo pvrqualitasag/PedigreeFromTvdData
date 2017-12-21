@@ -235,6 +235,20 @@ getBirthdateColIdxDsch <- function(psFormatDschFile = getFormatDSCHFile(),
 }
 
 
+#' Get column index for sex with new DSCH-format
+#'
+#' @export getSexColIdxDsch
+getSexColIdxDsch <- function(psFormatDschFile = getFormatDSCHFile(),
+                             pnTagCol = 2,
+                             ps_pattern_geschlecht = "Geschlecht11"){
+  ### # read DSCH format from given xlsx-file
+  tbl_dsch_k11 <- getK11ColPositionFromDsch(psFormatDschFile = psFormatDschFile)
+  ### # return list column positions found using the specified patterns
+  return(grep(pattern = ps_pattern_geschlecht, tbl_dsch_k11[[pnTagCol]]))
+}
+
+
+
 #' Return path to the DSCH-format file
 #'
 #' @return Path to the DSCH-format file
