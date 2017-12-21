@@ -4,19 +4,28 @@
 \alias{laf_open_fwf_tvd_input}
 \title{Read TVD-Pedigree from inputfile using LaF::laf_open_fwf()}
 \usage{
-laf_open_fwf_tvd_input(ps_input_file,
-  pvec_col_position = getK11ColPositionVecFromDsch(), pb_out = FALSE)
+laf_open_fwf_tvd_input(ps_input_file, pvec_col_position, pb_out)
 }
 \arguments{
 \item{ps_input_file}{name of the input file}
 
 \item{pvec_col_position}{vector with column positions}
 
-\item{pbOut}{flag indicating whether output should be written}
+\item{pb_out}{flag indicating whether output should be written}
 }
 \value{
-tibble converted to laf containing the pedigree info
+tbl_df containing the pedigree info read from ps_input_file
 }
 \description{
-Read TVD-Pedigree from inputfile using LaF::laf_open_fwf()
+The content of the fwf-file ps_input_file is read using the function
+\code{LaF::laf_open_fwf()}. Besides the name of the input-file, the
+column types and the vector of column widths must also be specified.
+Column types are hard-coded and set to char. The column-widths are
+taken from the result of the function \code{getK11ColPositionVecFromDsch()}
+by default.
+}
+\examples{
+s_data_file <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),
+                           package = "PedigreeFromTvdData")
+tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(ps_input_file = s_data_file)
 }

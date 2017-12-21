@@ -6,8 +6,14 @@
 ###
 ### ############################################## ###
 
-#' Cleanup, build vignettes, documents and install
+#' @title Cleanup, build vignettes, documents and install
 #'
+#' @importFrom devtools clean_vignettes
+#' @importFrom devtools build_vignettes
+#' @importFrom devtools document
+#' @importFrom devtools install
+#'
+#' @description
 #' Simple utility to clean up old vignette output,
 #' to build vignettes for the current package, to
 #' roxygenize all help-texts and to install the

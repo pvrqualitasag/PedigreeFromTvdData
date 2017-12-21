@@ -7,6 +7,13 @@
 getBirthdateColIdxDsch(psFormatDschFile = getFormatDSCHFile(), pnTagCol = 2,
   ps_pattern_geburt_dat = "Kalbedatum")
 }
+\arguments{
+\item{psFormatDschFile}{name of the DSCH format file}
+
+\item{pnTagCol}{column index of tag values}
+
+\item{ps_pattern_geburt_dat}{tag value to search for}
+}
 \description{
 Get column index for birthdate with new DSCH-format
 }

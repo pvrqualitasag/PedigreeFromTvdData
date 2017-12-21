@@ -54,12 +54,12 @@ There are additional properties which are more related to data-processing issues
 Implementations do depend among many things on the type of data representation of a given pedigree. 
 
 ### Data representation
-One of the most commonly used data representation of a pedigree is the so-called node-list or adjacency list. This is a tabular list with columns containing IDs for animals, IDs for parents and additional information such as sex and birthdate. One row of the list corresponds to the available information for a given individual and hence must be unique. Such a row is also called a pedigree record.
+One of the most commonly used data representation of a pedigree is the so-called __node-list__ or __adjacency-list__. This is a tabular list with columns containing IDs for animals, IDs for parents and additional information such as sex and birthdate. One row of the list corresponds to the available information for a given individual and hence must be unique. Such a row is also called a pedigree record.
 
 ### Types of implementation routines
 When it comes to verifying the consistency requirements two type of implementation routines can be imagined
 
-* __checks__ are routines which take a pedigree and a condition given by a specific requirement. The only thing they do is they search the pedigree for entries which do not fullfill the consistency condition. As a result, the check-routines return the set of primary keys found not to fullfill the conditions. From a implementation design point of view it is important to note, that the check-routines work without any side-effects on the pedigree.
+* __checks__ are routines which take a pedigree and a condition given by a specific requirement. The only thing they do is they search the pedigree for entries which do not fullfill the consistency condition. As a result, the check-routines return the set of primary keys which do not fullfill the conditions used in the check. Besides the set of primary keys, other useful information might also be returned by the check-routines. By convention, the returned result of the check-routines are always in the format of a tbl_df where the first column contains the primary keys. From an implementation design point of view it is important to note, that the check-routines work without any side-effects on the pedigree, i.e., they do not change the pedigree.
 * __transformations__ take a pedigree as input and give as output a different pedigree where one of the following two operations were applied
     + invalidate or delete a complete pedigree record or 
     + invalidate or delete a field of the pedigree record

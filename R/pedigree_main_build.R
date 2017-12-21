@@ -10,7 +10,6 @@
 #' Read K11-formatted TVD-data to build a pedigree
 #'
 #' @param ps_tvd_file file containing K11-formatted TVD-data
-#' @param ps_out_file output file for validated pedigree
 #' @param pvec_format vector with column separator positions of pedigree
 #' @export build_check_pedigree_from_tvd
 build_check_pedigree_from_tvd <- function(ps_tvd_file,

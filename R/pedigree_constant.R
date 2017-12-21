@@ -96,15 +96,18 @@ getConsistencySex <- function(){
 }
 
 
-#' Get Format from DSCH xlsx-file as tbl_df
+#' @title Get Format from DSCH xlsx-file as tbl_df
 #'
+#' @importFrom readxl read_excel
+#'
+#' @description
 #' The data format defined in DSCH (Datenschnittstelle)
 #' Rindvieh.ch is read from an xlsx file and returned
 #' as a tbl_df. The result contains the complete description
 #' of all formats. From that result single format definitions
 #' can be extracted.
 #'
-#' @param sFormatDsch path to DSCH-xlsx file
+#' @param psFormatDschFile path to DSCH-xlsx file
 #' @return tbl_df containing DSCH format definitions
 #' @export getDschFormatTblDf
 getDschFormatTblDf <- function(psFormatDschFile){
@@ -218,6 +221,9 @@ getTvdIdColsDsch <- function(psFormatDschFile = getFormatDSCHFile(),
 
 #' Get column index for birthdate with new DSCH-format
 #'
+#' @param psFormatDschFile name of the DSCH format file
+#' @param pnTagCol column index of tag values
+#' @param ps_pattern_geburt_dat tag value to search for
 #' @export getBirthdateColIdxDsch
 getBirthdateColIdxDsch <- function(psFormatDschFile = getFormatDSCHFile(),
                                    pnTagCol = 2,

@@ -6,8 +6,16 @@
 ###
 ### ######################################### ###
 
-#' Reading TVD data and construct a pedigree
+#' @title Reading TVD data and construct a pedigree
 #'
+#' @description
+#' First attempt to read a pedigree from a fwf-file and storing
+#' the pedigree-information in a nested list of lists.
+#' @section NOTE:
+#' The state of this function is deprecated and hence it
+#' should not be used. When reading large files this takes
+#' a very long time to executed and can therefore not be
+#' used for real pedigree data.
 #' @param  psInputFile input file with TVD-daten
 #' @param  lFormatBorder list of format borders
 #' @param  pbOut flag to indicate whether debugging out should be written to the console
@@ -101,6 +109,7 @@ read_tvd_input <- function(psInputFile,
 #' Substitute blanks and replace empty string by NA
 #'
 #' @param psValue value input
+#' @return String psValue with all blanks removed
 #' @export subBlank
 subBlank <- function(psValue){
   sResult <- gsub(pattern = "[[:blank:]+]",
@@ -113,13 +122,24 @@ subBlank <- function(psValue){
 }
 
 
-#' Read TVD-Pedigree from file using readr::read_fwf()
+#' @title Read TVD-Pedigree from file using readr::read_fwf()
 #'
+#' @importFrom readr read_fwf
+#' @importFrom readr fwf_widths
+#' @description
+#' The content of the fwf-file psInputFile is read using the function
+#' \code{readr::read_fwf}. The result contains the pedigree information
+#' as tbl_df.
 #' @param psInputFile name of the input file
 #' @param pvecColPosition vector with column positions
 #' @param pbOut flag indicating whether output should be written
 #' @return tbl_result_pedigree resulting pedigree as tibble
 #' @export readr_fwf_tvd_input
+#' @usage readr_fwf_tvd_input(psInputFile, pvecColPosition, pbOut)
+#' @examples
+#' s_data_file <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),
+#'                            package = "PedigreeFromTvdData")
+#' tbl_ped <- PedigreeFromTvdData::readr_fwf_tvd_input(psInputFile = s_data_file)
 readr_fwf_tvd_input <- function(psInputFile,
                                 pvecColPosition = getColPositions(),
                                 pbOut = FALSE){
@@ -134,13 +154,27 @@ readr_fwf_tvd_input <- function(psInputFile,
 }
 
 
-#' Read TVD-Pedigree from inputfile using LaF::laf_open_fwf()
+#' @title Read TVD-Pedigree from inputfile using LaF::laf_open_fwf()
 #'
+#' @importFrom LaF laf_open_fwf
+#' @importFrom dplyr tbl_df
+#' @description
+#' The content of the fwf-file ps_input_file is read using the function
+#' \code{LaF::laf_open_fwf()}. Besides the name of the input-file, the
+#' column types and the vector of column widths must also be specified.
+#' Column types are hard-coded and set to char. The column-widths are
+#' taken from the result of the function \code{getK11ColPositionVecFromDsch()}
+#' by default.
 #' @param ps_input_file name of the input file
 #' @param pvec_col_position vector with column positions
-#' @param pbOut flag indicating whether output should be written
-#' @return tibble converted to laf containing the pedigree info
+#' @param pb_out flag indicating whether output should be written
+#' @return tbl_df containing the pedigree info read from ps_input_file
 #' @export laf_open_fwf_tvd_input
+#' @usage laf_open_fwf_tvd_input(ps_input_file, pvec_col_position, pb_out)
+#' @examples
+#' s_data_file <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),
+#'                            package = "PedigreeFromTvdData")
+#' tbl_ped <- PedigreeFromTvdData::laf_open_fwf_tvd_input(ps_input_file = s_data_file)
 laf_open_fwf_tvd_input <- function(ps_input_file,
                                    pvec_col_position = getK11ColPositionVecFromDsch(),
                                    pb_out = FALSE){
@@ -155,11 +189,22 @@ laf_open_fwf_tvd_input <- function(ps_input_file,
   ### # convert laf to tbl_df
   tbl_pedigree_result <- dplyr::tbl_df(laf[ , ])
 
+<<<<<<< HEAD
   ### # check number of records read
   nr_recs_read <- nrow(tbl_pedigree_result)
   if (pb_out)
     cat(" ==> number of records read: ", nr_recs_read, "\n")
 
 
+=======
+  ### # check number of rows read
+  if (pb_out){
+    cat(" ==> number of records read: ", nrow(tbl_pedigree_result), "\n")
+    cat(" ==> number of columns read: ", ncol(tbl_pedigree_result), "\n")
+  }
+
+
+  ### # return pedigree as tbl_df
+>>>>>>> origin/devel
   return(tbl_pedigree_result)
 }
