@@ -4,11 +4,13 @@
 \alias{check_sex_tbl}
 \title{Validation of sex format using tbl_df pedigree}
 \usage{
-check_sex_tbl(ptblPedigree, lsex = getConsistencySex(),
-  pnTvdIdColIdx = getTvdIdCols())
+check_sex_tbl(ptblPedigree, ps_geschlecht = getSexColIdxDsch(),
+  lsex = getConsistencySex(), pnTvdIdColIdx = getTvdIdColsDsch())
 }
 \arguments{
 \item{ptblPedigree}{pedigree in tbl_df format}
+
+\item{ps_geschlecht}{get column index of sex}
 
 \item{lsex}{list of consistency values by default taken from getConsistencySex()}
 
