@@ -181,6 +181,7 @@ check_sex <- function(plPedigree, lsex = getConsistencySex()){
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #' Validation of sex format using tbl_df pedigree
 #'
 #'
@@ -198,12 +199,13 @@ check_sex_tbl <- function(ptblPedigree,
 <<<<<<< HEAD
 =======
 
+=======
+>>>>>>> 8b75c43563c40087f7b0f4b53e72732c7e3c84ed
 ### ######################################################## ###
 ###   Functions below this line are helper function for the  ###
 ###   vignette on checking data consistency.                 ###
 ###
 #
->>>>>>> 5782f369f6d7906354abf0a31b22016348f4eb91
 #' Check whether all ids of a given parent (mother or father) have consistent IDs
 #'
 #' Given a pedigree as tbl_df, it is first run through the TVD-ID check using
@@ -284,5 +286,8 @@ all_birthdate_consistent <- function(p_tbl_ped, pn_bd_col_idx, p_b_out = FALSE){
   }
   return(l_check_result)
 }
+<<<<<<< HEAD
 =======
 >>>>>>> origin/devel
+=======
+>>>>>>> 8b75c43563c40087f7b0f4b53e72732c7e3c84ed

@@ -190,6 +190,7 @@ laf_open_fwf_tvd_input <- function(ps_input_file,
   tbl_pedigree_result <- dplyr::tbl_df(laf[ , ])
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   ### # check number of records read
   nr_recs_read <- nrow(tbl_pedigree_result)
   if (pb_out)
@@ -197,6 +198,8 @@ laf_open_fwf_tvd_input <- function(ps_input_file,
 
 
 =======
+=======
+>>>>>>> 8b75c43563c40087f7b0f4b53e72732c7e3c84ed
   ### # check number of rows read
   if (pb_out){
     cat(" ==> number of records read: ", nrow(tbl_pedigree_result), "\n")
@@ -205,6 +208,9 @@ laf_open_fwf_tvd_input <- function(ps_input_file,
 
 
   ### # return pedigree as tbl_df
+<<<<<<< HEAD
 >>>>>>> origin/devel
+=======
+>>>>>>> 8b75c43563c40087f7b0f4b53e72732c7e3c84ed
   return(tbl_pedigree_result)
 }
