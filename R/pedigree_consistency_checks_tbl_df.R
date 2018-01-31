@@ -248,20 +248,35 @@ check_sex_tbl <- function(ptblPedigree,
                           pnTvdIdColIdx = getTvdIdColsDsch()){
 
   ### # using pipes, we can link all the steps together
-  tbl_sex_check  <- ptblPedigree %>% select(pnTvdIdColIdx$TierIdCol,
+  tbl_sex_check_mother  <- ptblPedigree %>% select(pnTvdIdColIdx$TierIdCol,
                                             ps_geschlecht,
                                             pnTvdIdColIdx$MutterIdCol)
+
+  tbl_sex_check_father  <- ptblPedigree %>% select(pnTvdIdColIdx$TierIdCol,
+                                            ps_geschlecht,
+                                            pnTvdIdColIdx$VaterIdCol)
+
   ### # assign names
-  names(tbl_sex_check) <- c("Animal", "Geschlecht", "Mutter")
+  names(tbl_sex_check_mother) <- c("Animal", "Geschlecht", "Parent")
+  names(tbl_sex_check_father) <- c("Animal", "Geschlecht", "Parent")
 
-  ### #
-  tbl_inconsistent_result <- tbl_sex_check %>% filter(Mutter != "") %>%
-    select(Mutter) %>%
-    inner_join(tbl_sex_check, by = c("Mutter" = "Animal")) %>%
+  ### # mother
+  tbl_inconsistent_result_mother <- tbl_sex_check_mother %>% filter(Parent != "") %>%
+    select(Parent) %>%
+    inner_join(tbl_sex_check_mother, by = c("Parent" = "Animal")) %>%
     filter(Geschlecht != "2")
+  names(tbl_inconsistent_result_mother) <- c("Animal", "Geschlecht", "Parent")
 
-  names(tbl_inconsistent_result) <- c("Animal", "Geschlecht", "Mutter")
+   ### # father
+  tbl_inconsistent_result_father <- tbl_sex_check_father %>% filter(Parent != "") %>%
+    select(Parent) %>%
+    inner_join(tbl_sex_check_father, by = c("Parent" = "Animal")) %>%
+    filter(Geschlecht != "1")
+  names(tbl_inconsistent_result_father) <- c("Animal", "Geschlecht", "Parent")
+
+  tbl_inconsistent_result <- rbind(tbl_inconsistent_result_mother, tbl_inconsistent_result_father)
   return(tbl_inconsistent_result)
+
 }
 
 #' @title Check for uniqueness of Animal-IDs in a pedigree
@@ -401,3 +416,34 @@ all_birthdate_consistent <- function(p_tbl_ped, pn_bd_col_idx, pb_out = FALSE){
   }
   return(l_check_result)
 }
+
+
+
+
+#' Correct Ids in column pnIdCol which do not have the correct format tbl
+#'
+#'
+#' @param ptblPedigreeResult input pedigree to be checked as tibble
+#' @param plFormatBorder list with format borders
+#' @param pnIdCol column to be checked inside of the pedigree
+correct_tvd_format_tbl <- function(p_tbl_ped,
+                                   plFormatBorder = getTVDIdBorder(),
+                                   plIdCols = getTvdIdColsDsch(),
+                                   pnIdCol = pnIdCol) {
+
+  ### # check whether first two positions TierId are letters
+  id_column <- p_tbl_ped %>% select(pnIdCol)
+  names(id_column) <- c("TvdID")
+
+  id_column <- id_column %>% mutate(country = substr(TvdID, plFormatBorder$TVDCountry$lower, plFormatBorder$TVDCountry$upper))
+  vecCountryIdx <- which(is.notletter(id_column$country))
+
+  ### # check whether other positions are numbers TVDNumber
+  id_column <- id_column %>% mutate(number = substr(TvdID, plFormatBorder$TVDNumber$lower, plFormatBorder$TVDNumber$upper))
+  vecNumberIdx <- which(is.notnumber(id_column$number))
+
+  ### # return ids where the format is not correct
+  vecResult <- c(vecCountryIdx,vecNumberIdx)
+  id_column[c(vecResult),]
+  }
+

@@ -55,8 +55,9 @@ tbl_ped_dup_id <- laf_open_fwf_tvd_input(ps_input_file = s_data_file_dup_id, pb_
 Whenever, the check for uniqueness of the IDs is successful the property of the maximum in-degree of every node is also fullfilled. Hence we do not need to write a separate function for a check on the maximum in-degree.
 
 ### Parents older than offspring
-The check whether parents are older than offspring is done with the function `check_parent_older_offspring()` which has to be called for dams and sires separately.
+The check whether parents are older than offspring is done with the function `check_parent_older_offspring()` which has to be called for dams and sires separately. Per default the difference of age between parents and offspring have to be bigger than 1 year `pn_date_diff_tol = 10^4`.
 
+For the morthers
 
 ```{r}
 (l_tvd_id_col_dsch <- getTvdIdColsDsch())
@@ -77,13 +78,86 @@ The same for the fathers
 ```
 
 ### Parents sex consistency
+The check if the sex of the parents are consistent is done with the function `check_sex_tbl()` which has to be called for dams and sires separately. 
+
+For mothers and fathers:
+```{r}
+(tbl_result_consistencysex <- check_sex_tbl(ptblPedigree = tbl_ped_uni_id))
+```
+
+We have created a data set that contains mother with inconsistent sex. This constructed dataset is now used for a further test
 ```{r}
 sDataFileSex <- system.file(file.path("extdata","KLDAT_20170524_100_mother_sex.txt"), 
                              package = "PedigreeFromTvdData")
 tbl_ped_sex <- laf_open_fwf_tvd_input(ps_input_file = sDataFileSex, pb_out = TRUE)
-(tbl_result <- check_sex_tbl(ptblPedigree = tbl_ped_sex))
+(tbl_result_sex <- check_sex_tbl(ptblPedigree = tbl_ped_sex))
 ```
 
+###Correct format of IDs for individuals and parents
+The format of TVD-IDs will be checked: position 1 to 2 have to be letters and the rest numbers.
+This function hast to be call each time to check tvdid of individual, mother and father.
+
+Here is an exemple with the check for individual:
+
+```{r}
+require(PedigreeFromTvdData)
+require(dplyr)
+require(magrittr)
+sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),package = "PedigreeFromTvdData")
+tbl_ped_uni_id <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName, pb_out = TRUE)
+tbl_ped_uni_id <- tbl_ped_uni_id[c(1:100),]
+plFormatBorder = getTVDIdBorder()
+plIdCols = getTvdIdColsDsch()
+
+pnIdCol = plIdCols$TierIdCol
+id_column <- tbl_ped_uni_id %>% select(pnIdCol)
+names(id_column) <- c("TvdID")
+
+id_column <- id_column %>% mutate(country = substr(TvdID, plFormatBorder$TVDCountry$lower, plFormatBorder$TVDCountry$upper))
+vecCountryIdx <- which(is.notletter(id_column$country))
+
+
+id_column <- id_column %>% mutate(number = substr(TvdID, plFormatBorder$TVDNumber$lower, plFormatBorder$TVDNumber$upper))
+vecNumberIdx <- which(is.notnumber(id_column$number))
+
+vecResult <- c(vecCountryIdx,vecNumberIdx)
+id_column[c(vecResult),]
+```
+
+We have created a data set that contains inconsistent IDs format. This constructed dataset is now used for a further test
+```{r}
+sData_NotCorrectId <- system.file(file.path("extdata","KLDAT_20170524_20_notcorrectId.txt"),
+                                  package ="PedigreeFromTvdData")
+tbl_ped_correctFormat <- laf_open_fwf_tvd_input(ps_input_file = sData_NotCorrectId, pb_out = TRUE)
+plFormatBorder = getTVDIdBorder()
+plIdCols = getTvdIdColsDsch()
+
+pnIdCol = plIdCols$TierIdCol
+id_column <- tbl_ped_correctFormat %>% select(pnIdCol)
+names(id_column) <- c("TvdID")
+
+id_column <- id_column %>% mutate(country = substr(TvdID, plFormatBorder$TVDCountry$lower, plFormatBorder$TVDCountry$upper))
+vecCountryIdx <- which(is.notletter(id_column$country))
+
+
+id_column <- id_column %>% mutate(number = substr(TvdID, plFormatBorder$TVDNumber$lower, plFormatBorder$TVDNumber$upper))
+vecNumberIdx <- which(is.notnumber(id_column$number))
+
+vecResult <- c(vecCountryIdx,vecNumberIdx)
+id_column[c(vecResult),]
+
+```
+
+
+###Correct format of bithdates
+The format of birthdates will be checked: days (1-31), months (1-12), years (>1950)
+
+```{r}
+(tbl_result_checkbirthdate <- check_birthdate_tbl(ptblPedigree = tbl_ped_uni_id))
+```
+
+
+##Main-Programm
 
 ## Session Info
 ```{r}

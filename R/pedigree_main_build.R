@@ -21,14 +21,45 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   ### # read pedigree from fwf-file into a tbl_df
   tbl_ped <- laf_open_fwf_tvd_input(ps_input_file = ps_tvd_file,
                                     pvec_col_position = pvec_format)
+  ### ############################################################### ###
+  ### CHECKS ######################################################## ###
+  ### ############################################################### ###
+  ### Properties of a Directed Acyclic Graphs (DAG)
+  ### ############################################################### ###
+  ### # Uniqueness of individuals
+  check_unique_animal_id <- function(ptbl_pedigree = tbl_ped)
 
-  ### # running the checks, first IDs
-  tbl_ped <- check_tvd_id_tbl(ptblPedigree = tbl_ped)
+  ### # No cycles -> no
 
-  ### # checking for birthdate
+  ### # In-degree of nodes -> no
+
+  ### # Parents older than offspring
+  check_parent_older_offspring <- function(ptbl_pedigree = tbl_ped,
+                                             pn_offspring_col,
+                                             pn_birthday_col,
+                                             pn_parent_col,
+                                             pn_date_diff_tol = 10^4)
+
+  ### # Parents must have the correct sex
+  check_sex_tbl <- function(ptblPedigree = tbl_ped)
+  ### ############################################################### ###
+  ### Properties related to data-processing issues
+  ### ############################################################### ###
+  ### # correct formats of IDs for individual
+  tbl_ped <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
+                                    pnIdCol = plIdCols$TierIdCol)
+
+  ### # correct formats of IDs for mother
+  tbl_ped <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
+                                    pnIdCol = plIdCols$MutterIdCol)
+
+  ### # correct formats of IDs for father
+  tbl_ped <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
+                                    pnIdCol = plIdCols$VaterIdCol)
+
+
+  ### # correct formats of birthdates
   tbl_ped <- check_birthdate_tbl(ptblPedigree = tbl_ped)
-
-  ### # more checks can be done here
 
   ### # finally return
   return(tbl_ped)
