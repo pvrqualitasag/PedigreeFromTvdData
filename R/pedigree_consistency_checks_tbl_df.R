@@ -110,42 +110,53 @@ is.notnumber <- function(pId){
 check_birthdate_tbl <- function(ptblPedigree,
                                 lLimitValue   = getBirthdayConsistencyLimit(),
                                 pnBirthdateColIdx = getBirthdateColIdxDsch()){
-  tblPedigreeResult <- ptblPedigree
+
+  tbl_ped_2columns <- ptblPedigree %>% select(V12,V11)
+  names(tbl_ped_2columns) <- c("TvdId","Birthdate")
+
+  tbl_result_birthdate <- NULL
+
   ### # birthdate seams to be read as char - convert
-  if (is.character(tblPedigreeResult[[pnBirthdateColIdx]])){
-    tblPedigreeResult[[pnBirthdateColIdx]] <- as.integer(tblPedigreeResult[[pnBirthdateColIdx]])
+  if (is.character(tbl_ped_2columns[["Birthdate"]])){
+    tbl_ped_2columns[["Birthdate"]] <- as.integer(tbl_ped_2columns[["Birthdate"]])
   }
 
   ### # check whether day is within limits
-  vecDay <- tblPedigreeResult[,pnBirthdateColIdx] %% 100
+  vecDay <- tbl_ped_2columns[,"Birthdate"] %% 100
   vecInvalidDay <- which((vecDay < lLimitValue$cLowestLimitDay |
-                           vecDay > lLimitValue$cHighestLimitDay) &
+                            vecDay > lLimitValue$cHighestLimitDay) &
                            !is.na(vecDay))
   if (length(vecInvalidDay) > 0){
-    tblPedigreeResult[vecInvalidDay,pnBirthdateColIdx] <- NA
+    tbl_result_birthdate <- tbl_ped_2columns[vecInvalidDay,]
   }
 
   ### # month
-  vecMonth <- (tblPedigreeResult[,pnBirthdateColIdx] %/% 100) %% 100
+  vecMonth <- (tbl_ped_2columns[,"Birthdate"] %/% 100) %% 100
   vecInvalidMonth <- which((vecMonth < lLimitValue$cLowestLimitMonth |
-                            vecMonth > lLimitValue$cHighestLimitMonth) &
+                              vecMonth > lLimitValue$cHighestLimitMonth) &
                              !is.na(vecMonth))
   if (length(vecInvalidMonth) > 0){
-    tblPedigreeResult[vecInvalidMonth,pnBirthdateColIdx] <- NA
+    if(nrow(tbl_result_birthdate) == 0){
+      tbl_result_birthdate <- tbl_ped_2columns[vecInvalidMonth,]
+    } else{
+      tbl_result_birthdate <- rbind(tbl_result_birthdate,tbl_ped_2columns[vecInvalidMonth,])
+    }
   }
 
   ### # year
-  vecYear <- (tblPedigreeResult[,pnBirthdateColIdx] %/% 100) %/% 100
+  vecYear <- (tbl_ped_2columns[,"Birthdate"] %/% 100) %/% 100
   vecInvalidYear <- which((vecYear < lLimitValue$cLowestLimitYear |
-                           vecYear > as.numeric(format(Sys.Date(), "%Y")) &
+                             vecYear > as.numeric(format(Sys.Date(), "%Y")) &
                              !is.na(vecYear)))
   if (length(vecInvalidYear) > 0){
-    tblPedigreeResult[vecInvalidYear,pnBirthdateColIdx] <- NA
+    if(nrow(tbl_result_birthdate) == 0){
+      tbl_result_birthdate <- tbl_ped_2columns[vecInvalidYear,]
+    } else{
+      tbl_result_birthdate <- rbind(tbl_result_birthdate,tbl_ped_2columns[vecInvalidYear,])
+    }
   }
-  ### # verified and modified result pedigree is returned
-  return(tblPedigreeResult)
+  return(tbl_result_birthdate)
 }
-
 
 ### ######################################################### ###
 ###
@@ -426,6 +437,7 @@ all_birthdate_consistent <- function(p_tbl_ped, pn_bd_col_idx, pb_out = FALSE){
 #' @param ptblPedigreeResult input pedigree to be checked as tibble
 #' @param plFormatBorder list with format borders
 #' @param pnIdCol column to be checked inside of the pedigree
+#' @export correct_tvd_format_tbl
 correct_tvd_format_tbl <- function(p_tbl_ped,
                                    plFormatBorder = getTVDIdBorder(),
                                    plIdCols = getTvdIdColsDsch(),

@@ -10,8 +10,10 @@ vignette: >
 ---
 
 ```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
-#require(dplyr)
 require(PedigreeFromTvdData)
+require(dplyr)
+require(magrittr)
+
 ```
 
 ## Disclaimer
@@ -51,6 +53,12 @@ s_data_file_dup_id <- system.file(file.path("extdata","KLDAT_20171214_dup_id_100
 tbl_ped_dup_id <- laf_open_fwf_tvd_input(ps_input_file = s_data_file_dup_id, pb_out = TRUE)
 (tbl_non_uni_dup_id <- check_unique_animal_id(tbl_ped_dup_id, pb_out = TRUE))
 ```
+
+If you want to know which records are duplicate then
+```{r}
+(tbl_ped_dup_id %>% filter(V12==tbl_non_uni_dup_id$Animal[1]))
+```
+
 
 Whenever, the check for uniqueness of the IDs is successful the property of the maximum in-degree of every node is also fullfilled. Hence we do not need to write a separate function for a check on the maximum in-degree.
 
@@ -100,28 +108,15 @@ This function hast to be call each time to check tvdid of individual, mother and
 Here is an exemple with the check for individual:
 
 ```{r}
-require(PedigreeFromTvdData)
-require(dplyr)
-require(magrittr)
 sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),package = "PedigreeFromTvdData")
 tbl_ped_uni_id <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName, pb_out = TRUE)
 tbl_ped_uni_id <- tbl_ped_uni_id[c(1:100),]
-plFormatBorder = getTVDIdBorder()
-plIdCols = getTvdIdColsDsch()
 
-pnIdCol = plIdCols$TierIdCol
-id_column <- tbl_ped_uni_id %>% select(pnIdCol)
-names(id_column) <- c("TvdID")
-
-id_column <- id_column %>% mutate(country = substr(TvdID, plFormatBorder$TVDCountry$lower, plFormatBorder$TVDCountry$upper))
-vecCountryIdx <- which(is.notletter(id_column$country))
-
-
-id_column <- id_column %>% mutate(number = substr(TvdID, plFormatBorder$TVDNumber$lower, plFormatBorder$TVDNumber$upper))
-vecNumberIdx <- which(is.notnumber(id_column$number))
-
-vecResult <- c(vecCountryIdx,vecNumberIdx)
-id_column[c(vecResult),]
+lIdCols <- getTvdIdColsDsch()
+(tbl_result_tvdformat <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped_uni_id,
+                                   plFormatBorder = getTVDIdBorder(),
+                                   plIdCols = lIdCols,
+                                   pnIdCol = lIdCols$TierIdCol))
 ```
 
 We have created a data set that contains inconsistent IDs format. This constructed dataset is now used for a further test
@@ -129,25 +124,15 @@ We have created a data set that contains inconsistent IDs format. This construct
 sData_NotCorrectId <- system.file(file.path("extdata","KLDAT_20170524_20_notcorrectId.txt"),
                                   package ="PedigreeFromTvdData")
 tbl_ped_correctFormat <- laf_open_fwf_tvd_input(ps_input_file = sData_NotCorrectId, pb_out = TRUE)
-plFormatBorder = getTVDIdBorder()
-plIdCols = getTvdIdColsDsch()
-
-pnIdCol = plIdCols$TierIdCol
-id_column <- tbl_ped_correctFormat %>% select(pnIdCol)
-names(id_column) <- c("TvdID")
-
-id_column <- id_column %>% mutate(country = substr(TvdID, plFormatBorder$TVDCountry$lower, plFormatBorder$TVDCountry$upper))
-vecCountryIdx <- which(is.notletter(id_column$country))
-
-
-id_column <- id_column %>% mutate(number = substr(TvdID, plFormatBorder$TVDNumber$lower, plFormatBorder$TVDNumber$upper))
-vecNumberIdx <- which(is.notnumber(id_column$number))
-
-vecResult <- c(vecCountryIdx,vecNumberIdx)
-id_column[c(vecResult),]
+lIdCols <- getTvdIdColsDsch()
+(tbl_result_tvdformat <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped_correctFormat,
+                                   plFormatBorder = getTVDIdBorder(),
+                                   plIdCols = lIdCols,
+                                   pnIdCol = lIdCols$TierIdCol))
 
 ```
 
+TO DO: Check influence of too short Ids or records!
 
 ###Correct format of bithdates
 The format of birthdates will be checked: days (1-31), months (1-12), years (>1950)
@@ -156,8 +141,80 @@ The format of birthdates will be checked: days (1-31), months (1-12), years (>19
 (tbl_result_checkbirthdate <- check_birthdate_tbl(ptblPedigree = tbl_ped_uni_id))
 ```
 
+We have created a data set that contains inconsistent Birthdates. This constructed dataset is now used for a further test
 
-##Main-Programm
+```{r}
+sData_NotCorrectBirthdate <- system.file(file.path("extdata","KLDAT_20170524_20_notcorrectBirthdate.txt"),
+                                  package ="PedigreeFromTvdData")
+tbl_ped_NcorrectBirthdate <- laf_open_fwf_tvd_input(ps_input_file = sData_NotCorrectBirthdate, pb_out = TRUE)
+
+(tbl_result_checkbirthdate_nC <- check_birthdate_tbl(ptblPedigree = tbl_ped_NcorrectBirthdate))
+
+```
+
+
+##Test with a big data set
+Checking for unique IDs
+```{r}
+(mb.uniqId <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::check_unique_animal_id(ptbl_pedigree = tbl_ped_uni_id),
+  times = 5, unit = "s"))
+```
+
+Parents older than offspring
+```{r}
+l_tvd_id_col_dsch <- getTvdIdColsDsch()
+n_bd_col_idx <- getBirthdateColIdxDsch()
+(mb.parentOld <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::check_parent_older_offspring(ptbl_pedigree = tbl_ped_uni_id,
+                                                                pn_offspring_col = l_tvd_id_col_dsch$TierIdCol, 
+                                                                pn_birthday_col = n_bd_col_idx, 
+                                                                pn_parent_col = l_tvd_id_col_dsch$MutterIdCol),
+  times = 5, unit = "s"))
+```
+
+Parents sex consistency
+```{r}
+(mb.sexConsistency <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::check_sex_tbl(ptblPedigree = tbl_ped_uni_id),
+  times = 5, unit = "s"))
+```
+
+Correct format of IDs for individuals
+```{r}
+lIdCols <- getTvdIdColsDsch()
+(mb.format <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::correct_tvd_format_tbl(p_tbl_ped = tbl_ped_uni_id,
+                                                          pnIdCol = lIdCols$TierIdCol),
+  times = 5, unit = "s"))
+```
+
+Correct format of bithdates
+```{r}
+(mb.birthdate <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::check_birthdate_tbl(ptblPedigree = tbl_ped_uni_id),
+  times = 5, unit = "s"))
+```
+
+Overview of results
+The following table shows the median times (column MedianTime) in seconds for all function that were used.
+```{r MedTimeRead, echo=FALSE}
+vecMethods <- c("PedigreeFromTvdData::check_unique_animal_id",
+                "PedigreeFromTvdData::check_parent_older_offspring",
+                "PedigreeFromTvdData::check_sex_tbl",
+                "PedigreeFromTvdData::correct_tvd_format_tbl",
+                "PedigreeFromTvdData::check_birthdate_tbl")
+vecMedTimes <- c(mb.uniqId$time[3],
+                 mb.parentOld$time[3],
+                 mb.sexConsistency$time[3],
+                 mb.format$time[3],
+                 mb.birthdate$time[3])
+nMinTime <- vecMedTimes[order(vecMedTimes)][1]
+dfMedTime <- data.frame(Methode = vecMethods,
+                        MedianTime = round(vecMedTimes*10^(-9), digits = 4))
+knitr::kable(dfMedTime)
+```
+
 
 ## Session Info
 ```{r}
