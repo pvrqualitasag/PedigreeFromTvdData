@@ -42,7 +42,7 @@ transform_unique_animal_id <- function(ptbl_pedigree,
   tbl_non_uni_dup_id <- check_unique_animal_id(ptbl_pedigree = tbl_transform_ped)
   ### # debugging output with number of duplicate records
   if (pb_out)
-    cat(" *** Number of records with non unique ids found: ", nrow(tbl_non_uni_dup_id), "\n")
+    cat(" *** Number of records with non unique ids found: ", nrow(tbl_non_uni_dup_id), "\n") # Sophie: Logfile mit alle Transformation oder pro Funktion in Transformation???
   ### # if duplicate records are found, do the transformation by retaining only
   ### #  the unique records.
   if (nrow(tbl_non_uni_dup_id) > 0) {
@@ -50,7 +50,7 @@ transform_unique_animal_id <- function(ptbl_pedigree,
       group_by(.[[pn_ani_id_col_idx]]) %>%
       summarise(n = n()) %>%
       filter((n == 1))
-      #filter(!(n > 1)) #Sophie -> Alle Non-Unique Ids löschen, keine behalten
+      #filter(!(n > 1)) #Sophie -> Alle Non-Unique Ids löschen, keine behalten ????
 
   }
 
