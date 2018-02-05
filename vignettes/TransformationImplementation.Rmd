@@ -28,13 +28,12 @@ Animal-IDs is the primary key. If duplicate for animal-ID have been found. The c
 s_data_file_dup_id <- system.file(file.path("extdata","KLDAT_20171214_dup_id_100.txt"), 
                              package = "PedigreeFromTvdData")
 tbl_ped_dup_id <- laf_open_fwf_tvd_input(ps_input_file = s_data_file_dup_id, pb_out = TRUE)
-(tbl_non_uni_dup_id <- check_unique_animal_id(tbl_ped_dup_id, pb_out = TRUE))
+# (tbl_non_uni_dup_id <- check_unique_animal_id(tbl_ped_dup_id, pb_out = TRUE))
 ```
 
 
 ```{r}
-(tbl_transform_ped <- transform_unique_animal_id(output_check = tbl_non_uni_dup_id,
-                                                 ptbl_pedigree = tbl_ped_dup_id,
+(tbl_transform_ped <- transform_unique_animal_id(ptbl_pedigree = tbl_ped_dup_id,
                                                  pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol,
                                                  pb_out = TRUE))
 ```

@@ -2,8 +2,20 @@
 % Please edit documentation in R/pedigree_transformation_tbl_df.R
 \name{transform_unique_animal_id}
 \alias{transform_unique_animal_id}
-\title{Transformation after heck for uniqueness of Animal-IDs in a pedigree}
+\title{Transformation after check for uniqueness of Animal-IDs in a pedigree}
 \usage{
-transform_unique_animal_id(output_check, ptbl_pedigree,
+transform_unique_animal_id(ptbl_pedigree,
   pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol, pb_out = FALSE)
+}
+\arguments{
+\item{ptbl_pedigree}{pedigree in tbl_df format}
+
+\item{pn_ani_id_col_idx}{column index for animal-ID in pedigree}
+
+\item{pb_out}{flag whether debugging output should be written}
+}
+\description{
+For a given pedigree, we first test whether there are any duplicate records. If
+duplicate records are found, we run a dplyr::filter to retain just the unique
+records.
 }
