@@ -15,7 +15,8 @@ transform_unique_animal_id(ptbl_pedigree,
 \item{pb_out}{flag whether debugging output should be written}
 }
 \description{
-For a given pedigree, we first test whether there are any duplicate records. If
-duplicate records are found, we run a dplyr::filter to retain just the unique
-records.
+For a given pedigree, we first test whether there are any duplicate records,
+using the corresponding check-function for uniqueness of IDs. If
+duplicate records are found, we run a series of dplyr::group_by - dplyr::summarise -
+dplyr::filter - operations to retain just the unique records.
 }

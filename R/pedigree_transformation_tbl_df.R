@@ -16,9 +16,10 @@
 #' @importFrom dplyr filter
 #'
 #' @description
-#' For a given pedigree, we first test whether there are any duplicate records. If
-#' duplicate records are found, we run a dplyr::filter to retain just the unique
-#' records.
+#' For a given pedigree, we first test whether there are any duplicate records,
+#' using the corresponding check-function for uniqueness of IDs. If
+#' duplicate records are found, we run a series of dplyr::group_by - dplyr::summarise -
+#' dplyr::filter - operations to retain just the unique records.
 #'
 #' @param ptbl_pedigree pedigree in tbl_df format
 #' @param pn_ani_id_col_idx column index for animal-ID in pedigree
@@ -41,8 +42,13 @@ transform_unique_animal_id <- function(ptbl_pedigree,
   ### # check whether we have to do a transformation using the check function
   tbl_non_uni_dup_id <- check_unique_animal_id(ptbl_pedigree = tbl_transform_ped)
   ### # debugging output with number of duplicate records
-  if (pb_out)
-    cat(" *** Number of records with non unique ids found: ", nrow(tbl_non_uni_dup_id), "\n") # Sophie: Logfile mit alle Transformation oder pro Funktion in Transformation???
+  if (pb_out) {
+    cat(" *** Records with non unique ids:\n")
+    print(tbl_non_uni_dup_id)
+    # Sophie: Logfile mit alle Transformation oder pro Funktion in Transformation???
+    # Peter: Logfile kann erstellt werden durch Umleitung des Outputs in eine Datei
+  }
+
   ### # if duplicate records are found, do the transformation by retaining only
   ### #  the unique records.
   if (nrow(tbl_non_uni_dup_id) > 0) {
@@ -51,7 +57,6 @@ transform_unique_animal_id <- function(ptbl_pedigree,
       summarise(n = n()) %>%
       filter((n == 1))
       #filter(!(n > 1)) #Sophie -> Alle Non-Unique Ids löschen, keine behalten ????
-
   }
 
   ### # debugging output with number of unique pedigree records after transformation

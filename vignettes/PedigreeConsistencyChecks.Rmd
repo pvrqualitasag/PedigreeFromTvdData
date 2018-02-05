@@ -150,6 +150,14 @@ The corresponding records are:
 tbl_small_ped[c(na_idx),]
 ```
 
+```
+TODO: All material below here must be changed to the new version of the functions
+```
+
+```{r}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
 
 ## Checking birthdates
 Birthdates are validated using the tbd_df pedigree with the new format.
@@ -157,13 +165,18 @@ Birthdates are validated using the tbd_df pedigree with the new format.
 ```{r}
 n_bd_col_idx <- getBirthdateColIdxDsch()
 ### # convert birthdates from string to numeric
+head(tbl_ped_id_checked)
 if (is.character(tbl_ped_id_checked[[n_bd_col_idx]])){
   tbl_ped_id_checked[[n_bd_col_idx]] <- as.integer(tbl_ped_id_checked[[n_bd_col_idx]])
 }
 tbl_ped_id_bd_checked <- check_birthdate_tbl(ptblPedigree = tbl_ped_id_checked,
                                              pnBirthdateColIdx = n_bd_col_idx)
-(l_check_result_bd <- all_birthdate_consistent(p_tbl_ped = tbl_ped_id_checked, 
-                                               pn_bd_col_idx = n_bd_col_idx))
+
+p_tbl_ped = tbl_ped_id_checked
+pn_bd_col_idx = n_bd_col_idx
+
+# (l_check_result_bd <- all_birthdate_consistent(p_tbl_ped = tbl_ped_id_checked, 
+#                                                pn_bd_col_idx = n_bd_col_idx))
 ```
 
 
