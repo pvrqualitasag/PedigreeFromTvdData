@@ -63,3 +63,6 @@ transform_unique_animal_id <- function(ptbl_pedigree,
   ### # return result
   return(tbl_transform_ped)
 }
+
+
+
