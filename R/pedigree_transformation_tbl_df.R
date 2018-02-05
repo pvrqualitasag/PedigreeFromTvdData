@@ -71,3 +71,49 @@ transform_unique_animal_id <- function(ptbl_pedigree,
 
 
 
+### ######################################################### ###
+###
+###
+#' @title Transformation after check if parents are older than their offspring
+#'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
+#' @importFrom dplyr inner_join
+#' @description
+#' Given a pedigree in tbl_df format, all parents that are also
+#' present as animals are invalidated, if they are older than
+#' their offspring.
+#'
+#' @param ptbl_pedigree pedigree in tbl_df format
+#' @param pn_offspring_col column index for offspring
+#' @param pn_birthday_col column index for birthdates of offspring
+#' @param pn_parent_col column index for parents
+#' @param pn_date_diff_tol minimum difference between birthdates of parents and offspring
+#' @return tbl_df of pedigree records not fullfilling requirements
+#' @export transform_check_parent_older_offspring
+transform_check_parent_older_offspring <- function(ptbl_pedigree,
+                                                   pn_offspring_col,
+                                                   pn_birthday_col,
+                                                   pn_parent_col,
+                                                   pn_date_diff_tol = 10^4) {
+
+  ### # assign result that will be returned
+  tbl_transform_ped <- ptbl_pedigree
+
+  ### # check whether we have to do a transformation using the check function
+  tbl_older <- check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
+                                            pn_offspring_col,
+                                            pn_birthday_col,
+                                            pn_parent_col,
+                                            pn_date_diff_tol = 10^4)
+
+
+
+
+
+
+
+
+}
+
