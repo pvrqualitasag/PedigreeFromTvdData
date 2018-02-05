@@ -50,6 +50,8 @@ transform_unique_animal_id <- function(ptbl_pedigree,
       group_by(.[[pn_ani_id_col_idx]]) %>%
       summarise(n = n()) %>%
       filter((n == 1))
+      #filter(!(n > 1)) #Sophie -> Alle Non-Unique Ids löschen, keine behalten
+
   }
 
   ### # debugging output with number of unique pedigree records after transformation
