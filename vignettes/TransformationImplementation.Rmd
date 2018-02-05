@@ -1,0 +1,49 @@
+---
+title: "Pedigree Transformation - Implementations"
+author: "Sophie Kunz"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pedigree Transformation - Implementations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
+require(PedigreeFromTvdData)
+require(dplyr)
+require(magrittr)
+```
+
+## Disclaimer
+This vignette describes implementation of transformation that are described in the companion vignette on strategies entitled [Pedigree Checks - Concepts and Strategies](ConsistencyCheckStrategy.html). 
+
+## Transformations
+The vignette on the strategy defined transformations to be routines that search for pedigree records that do not fullfill certain requirement conditions. Transformations are either delete a complete pedigree record or invalidate with NA a field of the pedigree record.
+
+### Tranformation after cheks of uniqueness of animal-IDs
+Animal-IDs is the primary key. If duplicate for animal-ID have been found. The complete record has to be deleted.
+
+```{r DuplicateId, eval=TRUE, include=FALSE, results='hide'}
+s_data_file_dup_id <- system.file(file.path("extdata","KLDAT_20171214_dup_id_100.txt"), 
+                             package = "PedigreeFromTvdData")
+tbl_ped_dup_id <- laf_open_fwf_tvd_input(ps_input_file = s_data_file_dup_id, pb_out = TRUE)
+(tbl_non_uni_dup_id <- check_unique_animal_id(tbl_ped_dup_id, pb_out = TRUE))
+```
+
+
+```{r}
+(tbl_transform_ped <- transform_unique_animal_id(output_check = tbl_non_uni_dup_id,
+                                                 ptbl_pedigree = tbl_ped_dup_id,
+                                                 pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol,
+                                                 pb_out = TRUE))
+```
+
+
+
+
+```{r}
+```
+
+
+

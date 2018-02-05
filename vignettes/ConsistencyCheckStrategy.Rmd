@@ -65,6 +65,8 @@ When it comes to verifying the consistency requirements two type of implementati
     + invalidate or delete a field of the pedigree record
     
 The descriptions of each check is described in a companion vignette on [Pedigree Checks - Implementations](ConsistencyCheckImplementation.html) which is also available in this package.    
+
+The descriptions of each transformation is described in a companion vignette on [Pedigree Transformation - Implementations](TransformationImplementation.html) which is also available in this package.    
     
 
 
