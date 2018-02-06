@@ -85,11 +85,13 @@ transform_unique_animal_id <- function(ptbl_pedigree,
 #'
 #' @param ptbl_pedigree pedigree in tbl_df format
 #' @param output_check output of function check_unique_animal_id in tbl_df format
+#' @param pb_keep_dup should one record of those with duplicate ids be kept
 #' @param pb_out logfile production with TRUE
 #' @return tbl_transform_ped of pedigree records not fullfilling requirements
 #' @export transform_check_parent_older_offspring
 transform_check_parent_older_offspring <- function(ptbl_pedigree,
                                                    output_check,
+                                                   pb_keep_dup = FALSE,
                                                    pb_out = FALSE) {
 
   ### # assign result that will be returned

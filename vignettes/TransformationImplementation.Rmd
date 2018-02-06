@@ -28,7 +28,7 @@ Animal-IDs are the primary key. If duplicates of animal-IDs have been found, the
 s_data_file_dup_id <- system.file(file.path("extdata","KLDAT_20171214_dup_id_100.txt"), 
                              package = "PedigreeFromTvdData")
 tbl_ped_dup_id <- laf_open_fwf_tvd_input(ps_input_file = s_data_file_dup_id, pb_out = TRUE)
-# (tbl_non_uni_dup_id <- check_unique_animal_id(tbl_ped_dup_id, pb_out = TRUE))
+(tbl_non_uni_dup_id <- check_unique_animal_id(tbl_ped_dup_id, pb_out = TRUE))
 ```
 
 
@@ -37,6 +37,17 @@ tbl_ped_dup_id <- laf_open_fwf_tvd_input(ps_input_file = s_data_file_dup_id, pb_
                                                  pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol,
                                                  pb_out = TRUE))
 ```
+
+The above version of the transformation function `transform_unique_animal_id()` keeps only the records which have a unique ID. The records with duplicate IDs are discarded. It could well be possible that we want to keep one record of those with duplicate records. In that case, we certainly want to keep the one with the most information available.
+
+To implement this approach of keeping one record of those with duplicate IDs, we have to inspect those records with duplicate IDs a bit closer. These records are found as a result of the check-function `check_unique_animal_id()`. We run a join to see what information is available from these records.
+
+```{r}
+tbl_ped_dup_id %>% inner_join(tbl_non_uni_dup_id, by = c("V12" = "Animal"))  %>% select(V5,V11,V12,V16)
+```
+
+The above shown output points to a problem that the information available from the records with duplicate IDs can be ambiguous. For example, birthdates can be different. Without information about the parents, we cannot say which birthdate is correct. The required information about the parents can only become available when we try to merge with the pedigree in ARGUS.
+
 
 ### Transformation after checks, if parents are older than offspring
 If the parent are older than offspring, the parent's birthdate field will be invalidate with NA.
