@@ -173,3 +173,49 @@ transform_check_sex_tbl <- function(ptbl_pedigree,
   return(tbl_transform_ped)
 
 }
+
+
+
+### ######################################################## ###
+#' Transformation after check Correct Ids format in column pnIdCol using tbl
+#'
+#'
+#'
+#' @param ptbl_pedigree input pedigree to be transformed as tibble
+#' @param output_check output of function correct_tvd_format_tbl in tbl_df format
+#' @export transform_correct_tvd_format_tbl
+transform_correct_tvd_format_tbl <- function(ptbl_pedigree,
+                                             output_check,
+                                             pb_out = FALSE){
+  ### # assign result that will be returned
+  tbl_transform_ped <- ptbl_pedigree
+
+  ### # debugging output if ID format is incorrect
+  if (pb_out) {
+    cat(" *** Records with ids incorrectness: \n")
+    print(output_check)
+    cat(" *** Original records shows ids of Animal which after transformation should be deleted: \n")
+    print(ptbl_pedigree %>% inner_join(output_check, by = c("V12" = "TvdID")) %>% select(V12,V16,V5))
+  }
+
+  ### # if records are found, do the transformation by invalidating with NA
+  ### # the tvdid of animal.
+  if (nrow(output_check) > 0) {
+    vec_ani_ids <- c(output_check$TvdID)
+    ### # Line number of the ids are required for replace
+    vec_ani_idx <- sapply(vec_ani_ids, function(x) which(ptbl_pedigree$V12 == x), USE.NAMES = FALSE)
+    tbl_transform_ped <- ptbl_pedigree %>% mutate(V12 = replace(V12, vec_ani_idx, NA))
+  }
+
+  ### # debugging output after transformation
+  if (pb_out){
+    cat(" *** Transformated records where tvd is invalidate for Animal: \n")
+    print(tbl_transform_ped %>% inner_join(output_check, by = c("V12" = "TvdID")) %>% select(V12,V16,V5))
+    #Sophie: Wie kann man die Transformation in diesem Fall kontrollieren?
+  }
+
+  ### # return result
+  return(tbl_transform_ped)
+
+}
+
