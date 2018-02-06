@@ -111,3 +111,47 @@ tbl_ped_uni_id %>% inner_join(tbl_fail_mother_age, by = c("V12" = "Parent")) %>%
                                                             output_check = tbl_fail_mother_age,
                                                             pb_out = TRUE))
 ```
+
+### Tranformation by sex inconsistency
+If the sex of the parent are inconsistent, the parent's sex field will be invalidate with NA.
+
+```{r ParentSexInconsistency, eval=TRUE, include=FALSE, results='hide'}
+sDataFileSex <- system.file(file.path("extdata","KLDAT_20170524_100_mother_sex.txt"), 
+                             package = "PedigreeFromTvdData")
+tbl_ped_sex <- laf_open_fwf_tvd_input(ps_input_file = sDataFileSex, pb_out = TRUE)
+tbl_result_sex <- check_sex_tbl(ptblPedigree = tbl_ped_sex)
+```
+
+```{r}
+(tbl_transform_ped <- transform_check_sex_tbl(ptbl_pedigree = tbl_ped_sex,
+                         output_check = tbl_result_sex,
+                         pb_out = TRUE))
+```
+
+###Transformation by incorrect IDs format
+If the format of TVD-IDs is not correct, the complete record of an animal has to be deleted. If the parent TVD-Ids is not correct, the field TVDids will be with NA invalidated.
+
+```{r NotCorrectTVDFormat, eval=TRUE, include=FALSE, results='hide'}
+sData_NotCorrectId <- system.file(file.path("extdata","KLDAT_20170524_20_notcorrectId.txt"),
+                                  package ="PedigreeFromTvdData")
+tbl_ped_correctFormat <- laf_open_fwf_tvd_input(ps_input_file = sData_NotCorrectId, pb_out = TRUE)
+lIdCols <- getTvdIdColsDsch()
+tbl_result_tvdformat <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped_correctFormat,
+                                   plFormatBorder = getTVDIdBorder(),
+                                   plIdCols = lIdCols,
+                                   pnIdCol = lIdCols$TierIdCol)
+```
+
+Vorsicht: Unterschied wenn das Format bei Tier oder Eltern nicht korrekt ist. Beim Tier das record löschen, bei den Eltern nur das Feld mit NA setzen. Jetzt wird nur das Feld TVD auf NA gesetzt.
+```{r}
+(tbl_transform_ped <- transform_correct_tvd_format_tbl(ptbl_pedigree = tbl_ped_correctFormat,
+                                                       output_check = tbl_result_tvdformat,
+                                                       pb_out = TRUE))
+```
+
+```{r}
+```
+
+```{r}
+```
+
