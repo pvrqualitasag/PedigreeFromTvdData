@@ -21,8 +21,8 @@ This vignette describes implementation of transformation that are described in t
 ## Transformations
 The vignette on the strategy defined transformations to be routines that search for pedigree records that do not fullfill certain requirement conditions. Transformations are either delete a complete pedigree record or invalidate with NA a field of the pedigree record.
 
-### Tranformation after cheks of uniqueness of animal-IDs
-Animal-IDs is the primary key. If duplicate for animal-ID have been found. The complete record has to be deleted.
+### Tranformation after checks of uniqueness of animal-IDs
+Animal-IDs are the primary key. If duplicates of animal-IDs have been found, the complete record has to be deleted. Those records with duplicate animal-IDs which have more information in the other fields of the pedigree record are kept. If the pedigree records with the duplicate animal-IDs are identical the record that is kept is selected randomly.
 
 ```{r DuplicateId, eval=TRUE, include=FALSE, results='hide'}
 s_data_file_dup_id <- system.file(file.path("extdata","KLDAT_20171214_dup_id_100.txt"), 
