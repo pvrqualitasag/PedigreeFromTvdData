@@ -53,6 +53,7 @@ tbl_ped_uni_id <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName, pb_out =
                                          pn_parent_col = l_tvd_id_col_dsch$MutterIdCol))
 ```
 
+### Single animal-IDs
 The result of the above check give us a dataframe containing animals and parents which have wrong birthdates. According to https://stackoverflow.com/questions/27909000/set-certain-values-to-na-with-dplyr, we can use dplyr::mutate and replace. But this shows only how to do it with one ID and not how this could work with a vector of IDs. 
 
 We start with a single ID
@@ -70,6 +71,27 @@ Checking whether the birthdate of the pedigree record for animal with the ID `r 
 tbl_transform_ped %>% filter(V12 == s_single_id) %>% select(V5,V11,V12,V16)
 ```
 
+### Multiple animal-IDs
+The above approach can be used, as soon as we can provide an index vector of all records of which the birthdate must be changed. 
+
+```{r}
+(vec_ani_ids <- c(tbl_fail_mother_age$Animal, tbl_fail_mother_age$Parent))
+vec_ani_idx <- sapply(vec_ani_ids, function(x) which(tbl_ped_uni_id$V12 == x), USE.NAMES = FALSE)
+tbl_transform_ped <- tbl_ped_uni_id %>% mutate(V11 = replace(V11, vec_ani_idx, NA))
+```
+Checking the records
+
+```{r}
+tbl_transform_ped %>% inner_join(tbl_fail_mother_age, by = c("V12" = "Animal")) %>% select(V5,V11,V12,V16)
+tbl_transform_ped %>% inner_join(tbl_fail_mother_age, by = c("V12" = "Parent")) %>% select(V5,V11,V12,V16)
+```
+
+Comparing the transformed pedigree records to the original records shows that birthdates are invalidated.
+
+```{r}
+tbl_ped_uni_id %>% inner_join(tbl_fail_mother_age, by = c("V12" = "Animal")) %>% select(V5,V11,V12,V16)
+tbl_ped_uni_id %>% inner_join(tbl_fail_mother_age, by = c("V12" = "Parent")) %>% select(V5,V11,V12,V16)
+```
 
 ```{r}
 # tbl_transform_ped <- transform_check_parent_older_offspring(ptbl_pedigree = tbl_ped_uni_id,
