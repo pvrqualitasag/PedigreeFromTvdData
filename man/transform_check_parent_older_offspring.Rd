@@ -4,8 +4,8 @@
 \alias{transform_check_parent_older_offspring}
 \title{Transformation after check if parents are older than their offspring}
 \usage{
-transform_check_parent_older_offspring(ptbl_pedigree, pn_offspring_col,
-  pn_birthday_col, pn_parent_col, pn_date_diff_tol = 10^4)
+transform_check_parent_older_offspring(ptbl_pedigree, output_check,
+  pb_out = FALSE)
 }
 \arguments{
 \item{ptbl_pedigree}{pedigree in tbl_df format}

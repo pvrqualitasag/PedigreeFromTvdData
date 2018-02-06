@@ -98,12 +98,6 @@ transform_check_parent_older_offspring <- function(ptbl_pedigree,
   ### # assign result that will be returned
   tbl_transform_ped <- ptbl_pedigree
 
-  ### # Output number of rows in original pedigree for debuggin
-  if (pb_out) {
-    cat(" *** Original pedigree with nr records: ",
-        nrow(tbl_transform_ped), "\n")
-  }
-
   ### # debugging output if parent are younger than offspring
   if (pb_out) {
     cat(" *** Records with to small difference of age: \n")

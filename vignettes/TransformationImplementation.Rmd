@@ -53,7 +53,7 @@ tbl_ped_uni_id <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName, pb_out =
                                          pn_parent_col = l_tvd_id_col_dsch$MutterIdCol))
 ```
 
-The result of the above check give us a dataframe containing animals and parents which have wrong birthdates. According to https://stackoverflow.com/questions/27909000/set-certain-values-to-na-with-dplyr, we can use dplyr::mutate and replace. But this shows only how to do it with one ID and not how this could work with a vector of IDs. 
+The result of the check give us a dataframe containing animals and parents which have wrong birthdates. According to https://stackoverflow.com/questions/27909000/set-certain-values-to-na-with-dplyr, we can use dplyr::mutate and replace. But this shows only how to do it with one ID and not how this could work with a vector of IDs. 
 
 We start with a single ID
 
