@@ -10,19 +10,14 @@ transform_check_parent_older_offspring(ptbl_pedigree, output_check,
 \arguments{
 \item{ptbl_pedigree}{pedigree in tbl_df format}
 
-\item{pn_offspring_col}{column index for offspring}
+\item{output_check}{output of function check_unique_animal_id in tbl_df format}
 
-\item{pn_birthday_col}{column index for birthdates of offspring}
-
-\item{pn_parent_col}{column index for parents}
-
-\item{pn_date_diff_tol}{minimum difference between birthdates of parents and offspring}
+\item{pb_out}{logfile production with TRUE}
 }
 \value{
-tbl_df of pedigree records not fullfilling requirements
+tbl_transform_ped of pedigree records not fullfilling requirements
 }
 \description{
-Given a pedigree in tbl_df format, all parents that are also
-present as animals are invalidated, if they are older than
-their offspring.
+Given a pedigree in tbl_df format, invalidating birthdate of parent and offspring
+where parents are older than their offspring.
 }

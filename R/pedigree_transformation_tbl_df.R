@@ -80,16 +80,13 @@ transform_unique_animal_id <- function(ptbl_pedigree,
 #' @importFrom dplyr filter
 #' @importFrom dplyr inner_join
 #' @description
-#' Given a pedigree in tbl_df format, all parents that are also
-#' present as animals are invalidated, if they are older than
-#' their offspring.
+#' Given a pedigree in tbl_df format, invalidating birthdate of parent and offspring
+#' where parents are older than their offspring.
 #'
 #' @param ptbl_pedigree pedigree in tbl_df format
-#' @param pn_offspring_col column index for offspring
-#' @param pn_birthday_col column index for birthdates of offspring
-#' @param pn_parent_col column index for parents
-#' @param pn_date_diff_tol minimum difference between birthdates of parents and offspring
-#' @return tbl_df of pedigree records not fullfilling requirements
+#' @param output_check output of function check_unique_animal_id in tbl_df format
+#' @param pb_out logfile production with TRUE
+#' @return tbl_transform_ped of pedigree records not fullfilling requirements
 #' @export transform_check_parent_older_offspring
 transform_check_parent_older_offspring <- function(ptbl_pedigree,
                                                    output_check,
@@ -102,18 +99,31 @@ transform_check_parent_older_offspring <- function(ptbl_pedigree,
   if (pb_out) {
     cat(" *** Records with to small difference of age: \n")
     print(output_check)
+    cat(" *** Original records shows birthdates of Animal which after transformation should be invalidated: \n")
+    print(tbl_ped_uni_id %>% inner_join(output_check, by = c("V12" = "Animal")) %>% select(V12,V11))
+    cat(" *** Original records shows birthdates of Parent which after transformation should be invalidated: \n")
+    print(tbl_ped_uni_id %>% inner_join(output_check, by = c("V12" = "Parent")) %>% select(V12,V11))
   }
 
   ### # if records are found, do the transformation by invalidating with NA
   ### # the birthdates of animal and parents.
   if (nrow(output_check) > 0) {
-
+    vec_ani_ids <- c(output_check$Animal, output_check$Parent)
+    ### # Line number of the ids are required for replace
+    vec_ani_idx <- sapply(vec_ani_ids, function(x) which(ptbl_pedigree$V12 == x), USE.NAMES = FALSE)
+    tbl_transform_ped <- ptbl_pedigree %>% mutate(V11 = replace(V11, vec_ani_idx, NA))
   }
 
+  ### # debugging output after transformation
+  if (pb_out){
+    cat(" *** Transformated records where birthdate is invalidate for Animal: \n")
+    print(tbl_transform_ped %>% inner_join(output_check, by = c("V12" = "Animal")) %>% select(V12,V11))
+    cat(" *** Transformated records where birthdate is invalidate for Parent: \n")
+    print(tbl_transform_ped %>% inner_join(output_check, by = c("V12" = "Parent")) %>% select(V12,V11))
+  }
 
-
-
-
+  ### # return result
+  return(tbl_transform_ped)
 
 }
 
