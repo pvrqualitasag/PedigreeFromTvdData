@@ -100,3 +100,26 @@ tbl_ped_uni_id %>% inner_join(tbl_fail_mother_age, by = c("V12" = "Parent")) %>%
                                                             output_check = tbl_fail_mother_age,
                                                             pb_out = TRUE))
 ```
+
+### Parents sex consistency
+If the sex of the parent are inconsistent, the parent's sex field will be invalidate with NA.
+
+```{r ParentSexInconsistency, eval=TRUE, include=FALSE, results='hide'}
+sDataFileSex <- system.file(file.path("extdata","KLDAT_20170524_100_mother_sex.txt"), 
+                             package = "PedigreeFromTvdData")
+tbl_ped_sex <- laf_open_fwf_tvd_input(ps_input_file = sDataFileSex, pb_out = TRUE)
+tbl_result_sex <- check_sex_tbl(ptblPedigree = tbl_ped_sex)
+```
+
+```{r}
+(transform_check_sex_tbl(ptbl_pedigree = tbl_ped_sex,
+                         output_check = tbl_result_sex,
+                         pb_out = TRUE))
+```
+
+
+
+
+```{r}
+```
+
