@@ -138,9 +138,20 @@ Vorsicht: Unterschied wenn das Format bei Tier oder Eltern nicht korrekt ist. Be
                                                        pb_out = TRUE))
 ```
 
-```{r}
+###Transformation by incorrect format of bithdates
+If the format of birthdate is not correct, the birthdate field will be invalidate with NA.
+
+```{r NotCorrectBirthdateFormat, eval=TRUE, include=FALSE, results='hide'}
+sData_NotCorrectBirthdate <- system.file(file.path("extdata","KLDAT_20170524_20_notcorrectBirthdate.txt"),
+                                  package ="PedigreeFromTvdData")
+tbl_ped_NcorrectBirthdate <- laf_open_fwf_tvd_input(ps_input_file = sData_NotCorrectBirthdate, pb_out = TRUE)
+
+tbl_result_checkbirthdate_nC <- check_birthdate_tbl(ptblPedigree = tbl_ped_NcorrectBirthdate)
 ```
 
 ```{r}
+(tbl_transform_ped <- transform_check_birthdate_tbl(ptbl_pedigree = tbl_ped_NcorrectBirthdate,
+                                                    output_check = tbl_result_checkbirthdate_nC,
+                                                    pb_out = TRUE))
 ```
 

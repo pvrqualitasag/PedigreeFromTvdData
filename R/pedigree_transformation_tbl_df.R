@@ -219,3 +219,45 @@ transform_correct_tvd_format_tbl <- function(ptbl_pedigree,
 
 }
 
+
+### ######################################################## ###
+#' Transformation of incorrect birthdate format using tbl_df pedigree
+#'
+#'
+#' @param ptblPedigree pedigree in tbl_df format
+#' @param lLimitValue list with fixed limits for year, month and date
+#' @param pnBirthdateColIdx column index of birthdates in ptblPedigree
+#' @return validated and modified tbl_df pedigree
+#' @export transform_check_birthdate_tbl
+transform_check_birthdate_tbl <- function(ptbl_pedigree,
+                                          output_check,
+                                          pb_out = FALSE){
+
+  ### # assign result that will be returned
+  tbl_transform_ped <- ptbl_pedigree
+
+  ### # debugging output if birthdate format is incorrect
+  if (pb_out) {
+    cat(" *** Records with bithdate incorrectness: \n")
+    print(output_check)
+  }
+
+  ### # if records are found, do the transformation by invalidating with NA
+  ### # the bithdate of animal.
+  if (nrow(output_check) > 0) {
+    vec_ani_ids <- c(output_check$TvdId)
+    ### # Line number of the ids are required for replace
+    vec_ani_idx <- sapply(vec_ani_ids, function(x) which(ptbl_pedigree$V12 == x), USE.NAMES = FALSE)
+    tbl_transform_ped <- ptbl_pedigree %>% mutate(V11 = replace(V11, vec_ani_idx, NA))
+  }
+
+  ### # debugging output after transformation
+  if (pb_out){
+    cat(" *** Transformated records where birthdate is invalidate for Animal: \n")
+    print(tbl_transform_ped %>% inner_join(output_check, by = c("V12" = "TvdId")) %>% select(V12,V11))
+  }
+
+  ### # return result
+  return(tbl_transform_ped)
+
+}
