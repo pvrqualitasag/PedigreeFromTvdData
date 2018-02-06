@@ -92,22 +92,29 @@ transform_unique_animal_id <- function(ptbl_pedigree,
 #' @return tbl_df of pedigree records not fullfilling requirements
 #' @export transform_check_parent_older_offspring
 transform_check_parent_older_offspring <- function(ptbl_pedigree,
-                                                   pn_offspring_col,
-                                                   pn_birthday_col,
-                                                   pn_parent_col,
-                                                   pn_date_diff_tol = 10^4) {
+                                                   output_check,
+                                                   pb_out = FALSE) {
 
   ### # assign result that will be returned
   tbl_transform_ped <- ptbl_pedigree
 
-  ### # check whether we have to do a transformation using the check function
-  tbl_older <- check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
-                                            pn_offspring_col,
-                                            pn_birthday_col,
-                                            pn_parent_col,
-                                            pn_date_diff_tol = 10^4)
+  ### # Output number of rows in original pedigree for debuggin
+  if (pb_out) {
+    cat(" *** Original pedigree with nr records: ",
+        nrow(tbl_transform_ped), "\n")
+  }
 
+  ### # debugging output if parent are younger than offspring
+  if (pb_out) {
+    cat(" *** Records with to small difference of age: \n")
+    print(output_check)
+  }
 
+  ### # if records are found, do the transformation by invalidating with NA
+  ### # the birthdates of animal and parents.
+  if (nrow(output_check) > 0) {
+
+  }
 
 
 
