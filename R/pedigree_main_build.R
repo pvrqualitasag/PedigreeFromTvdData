@@ -22,12 +22,24 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   tbl_ped <- laf_open_fwf_tvd_input(ps_input_file = ps_tvd_file,
                                     pvec_col_position = pvec_format)
   ### ############################################################### ###
-  ### CHECKS ######################################################## ###
+  ### CHECKS & TRANSFORMATION ####################################### ###
   ### ############################################################### ###
   ### Properties of a Directed Acyclic Graphs (DAG)
   ### ############################################################### ###
   ### # Uniqueness of individuals
   tbl_result_checks <- check_unique_animal_id(ptbl_pedigree = tbl_ped)
+  if (nrow(tbl_result_checks) > 0) {
+
+    l_tvd_id_col_dsch <- getTvdIdColsDsch()
+    n_bd_col_idx <- getBirthdateColIdxDsch()
+
+    transform_unique_animal_id(ptbl_pedigree = tbl_ped_uni_id,
+                               output_check = check_parent_older_offspring(ptbl_pedigree = tbl_ped_uni_id,
+                                                                           pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
+                                                                           pn_birthday_col = n_bd_col_idx,
+                                                                           pn_parent_col = l_tvd_id_col_dsch$MutterIdCol),
+                               pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol)
+  }
 
   ### # No cycles -> no
 
@@ -64,8 +76,4 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   ### # finally return
   return(tbl_result_checks)
 }
-
-### ############################################################### ###
-### TRANSFORMATION ################################################ ###
-### ############################################################### ###
 

@@ -50,10 +50,13 @@ transform_unique_animal_id <- function(ptbl_pedigree,
 
   ### # do the transformation by retaining only
   ### #  the unique records.
-  tbl_transform_ped <- tbl_transform_ped %>%
+  if (nrow(output_check) > 0) {
+    tbl_transform_ped <- tbl_transform_ped %>%
       group_by(.[[pn_ani_id_col_idx]]) %>%
       summarise(n = n()) %>%
       filter((n == 1))
+
+  }
 
   ### # debugging output with number of unique pedigree records after transformation
   if (pb_out){
