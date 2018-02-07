@@ -33,7 +33,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
     l_tvd_id_col_dsch <- getTvdIdColsDsch()
     n_bd_col_idx <- getBirthdateColIdxDsch()
 
-    transform_unique_animal_id(ptbl_pedigree = tbl_ped_uni_id,
+    tbl_transform_ped <- transform_unique_animal_id(ptbl_pedigree = tbl_ped_uni_id,
                                output_check = check_parent_older_offspring(ptbl_pedigree = tbl_ped_uni_id,
                                                                            pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
                                                                            pn_birthday_col = n_bd_col_idx,
