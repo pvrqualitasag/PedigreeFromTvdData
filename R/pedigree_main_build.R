@@ -93,9 +93,16 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
 
 
   ### # correct formats of birthdates
-  tbl_result_checks <- check_birthdate_tbl(ptblPedigree = tbl_ped)
+  tbl_result_checks <- check_birthdate_tbl(ptblPedigree = tbl_transform_ped)
 
+  if (!is.null(tbl_result_checks)) {
+    if(nrow(tbl_result_checks) > 0) {
+      tbl_transform_ped <- transform_check_birthdate_tbl(ptbl_pedigree = tbl_transform_ped,
+                                                          output_check = check_birthdate_tbl(ptblPedigree = tbl_transform_ped))
+
+    }
+  }
   ### # finally return
-  return(tbl_result_checks)
+  return(tbl_transform_ped)
 }
 
