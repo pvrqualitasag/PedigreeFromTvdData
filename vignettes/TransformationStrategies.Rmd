@@ -30,4 +30,101 @@ The pedigree is read from a text-file and is stored as a dataframe. Currently we
 
 
 ## Operations
+When looking at the required operations that are needed to transform any given pedigree into a consistent pedigree, only the following two operations are needed.
+
+1. Removing a complete record from a pedigree
+2. Setting one field of a certain record in the pedigee to NA
+
+In what follows the two operations are described in more details
+
+### Removing complete records
+The operation that removes a complete record from a pedigree takes as input a pedigree and a primary key of a record. In our case IDs of animals are used as primary keys. The output of the operation is the pedigree that does no longer contain the specified record. From that description, we can derive the following pre-conditions (in pseudo-code) for the operation
+
+```
+# declarations:
+  pedigree : tbl_df dataframe with pedigree information
+  record_tbd_pk : primary key of record to be deleted
+
+# pre-conditions:
+  pedigree is not null
+  record_tbd_pk is in pedigree[pk_column]
+```
+
+### A simple example - removing one record
+We are reading a simple pedigree into a tbl_df and remove a given record
+
+```{r}
+require(magrittr)
+require(PedigreeFromTvdData)
+### # define name of pedigree file
+sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"), 
+                             package = "PedigreeFromTvdData")
+### # read pedigree
+tbl_pedigree <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName, pb_out = TRUE)
+#head(tbl_pedigree)
+#tail(tbl_pedigree)
+```
+
+Now we specify a primary key of a record that should be deleted
+
+```{r}
+(rec_tbd_pk <- "CH120006405592")
+```
+
+The corresponding record should be deleted
+
+```{r}
+res_tbl_pedigree <- tbl_pedigree %>% dplyr::filter(V12 != rec_tbd_pk)
+
+```
+
+The new pedigree must have one row fewer than the original pedigree and it must not contain the deleted record
+
+```{r}
+dim(tbl_pedigree)
+dim(res_tbl_pedigree)
+```
+
+Now we search for the deleted record and it should not be found anymore.
+
+```{r}
+res_tbl_pedigree %>% dplyr::filter(V12 == rec_tbd_pk)
+```
+
+
+### Removing a series of records
+The above operation of deleting a single record from a pedigree can be done easily using the `dplyr::filter()` function. Now we want to extend the functionality to be able to remove a series of records. The series of records to be deleted is identified by a vector of primary keys, or alternatively by a dataframe that contains the primary keys of the records to be removed.
+
+```{r}
+(vec_rec_tbd_pk <- c("CH120001976905", "CH120006405592", "CH120001807094", "CH120003434748"))
+```
+
+We want to create a operation that discards all records with the above primary keys. One approach is to try it with set-operations. See the following [learn data science blog](https://blog.exploratory.io/filter-data-with-dplyr-76cf5f1a258e) for a more detailed description
+
+```{r}
+res_tbl_pedigree <- tbl_pedigree %>% dplyr::filter(!V12 %in% vec_rec_tbd_pk)
+dim(res_tbl_pedigree)
+```
+
+Die Suche nach den primary keys in `vec_rec_tbd_pk` darf im transformierten Pedigree keine Resultate mehr bringen.
+
+```{r}
+res_tbl_pedigree %>% dplyr::filter(V12 %in% vec_rec_tbd_pk)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
