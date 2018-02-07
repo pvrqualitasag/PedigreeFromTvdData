@@ -50,7 +50,7 @@ The operation that removes a complete record from a pedigree takes as input a pe
   record_tbd_pk is in pedigree[pk_column]
 ```
 
-### A simple example
+### A simple example - removing one record
 We are reading a simple pedigree into a tbl_df and remove a given record
 
 ```{r}
@@ -61,7 +61,8 @@ sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),
                              package = "PedigreeFromTvdData")
 ### # read pedigree
 tbl_pedigree <- laf_open_fwf_tvd_input(ps_input_file = sDataFileName, pb_out = TRUE)
-head(tbl_pedigree)
+#head(tbl_pedigree)
+#tail(tbl_pedigree)
 ```
 
 Now we specify a primary key of a record that should be deleted
@@ -84,10 +85,46 @@ dim(tbl_pedigree)
 dim(res_tbl_pedigree)
 ```
 
-Now we search for the deleted record
+Now we search for the deleted record and it should not be found anymore.
 
 ```{r}
 res_tbl_pedigree %>% dplyr::filter(V12 == rec_tbd_pk)
 ```
+
+
+### Removing a series of records
+The above operation of deleting a single record from a pedigree can be done easily using the `dplyr::filter()` function. Now we want to extend the functionality to be able to remove a series of records. The series of records to be deleted is identified by a vector of primary keys, or alternatively by a dataframe that contains the primary keys of the records to be removed.
+
+```{r}
+(vec_rec_tbd_pk <- c("CH120001976905", "CH120006405592", "CH120001807094", "CH120003434748"))
+```
+
+We want to create a operation that discards all records with the above primary keys. One approach is to try it with set-operations. See the following [learn data science blog](https://blog.exploratory.io/filter-data-with-dplyr-76cf5f1a258e) for a more detailed description
+
+```{r}
+res_tbl_pedigree <- tbl_pedigree %>% dplyr::filter(!V12 %in% vec_rec_tbd_pk)
+dim(res_tbl_pedigree)
+```
+
+Die Suche nach den primary keys in `vec_rec_tbd_pk` darf im transformierten Pedigree keine Resultate mehr bringen.
+
+```{r}
+res_tbl_pedigree %>% dplyr::filter(V12 %in% vec_rec_tbd_pk)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
