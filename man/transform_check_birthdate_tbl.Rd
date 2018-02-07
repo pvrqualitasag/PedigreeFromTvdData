@@ -7,15 +7,12 @@
 transform_check_birthdate_tbl(ptbl_pedigree, output_check, pb_out = FALSE)
 }
 \arguments{
-\item{ptblPedigree}{pedigree in tbl_df format}
+\item{ptbl_pedigree}{pedigree in tbl_df format}
 
-\item{lLimitValue}{list with fixed limits for year, month and date}
+\item{output_check}{output of function correct_tvd_format_tbl in tbl_df format}
 
-\item{pnBirthdateColIdx}{column index of birthdates in ptblPedigree}
+\item{pb_out}{flag whether debugging output should be written}
 }
 \value{
-validated and modified tbl_df pedigree
-}
-\description{
-Transformation of incorrect birthdate format using tbl_df pedigree
+tbl_transform_ped of pedigree records not fullfilling requirements
 }

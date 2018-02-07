@@ -24,9 +24,12 @@
 #'
 #' @param ptbl_pedigree pedigree in tbl_df format
 #' @param pn_ani_id_col_idx column index for animal-ID in pedigree
+#' @param output_check output of function check_unique_animal_id
 #' @param pb_out flag whether debugging output should be written
 #' @export transform_unique_animal_id
+#' @return tbl_transform_ped of pedigree records not fullfilling requirements
 transform_unique_animal_id <- function(ptbl_pedigree,
+                                       output_check,
                                        pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol,
                                        pb_out = FALSE){
 
@@ -37,17 +40,12 @@ transform_unique_animal_id <- function(ptbl_pedigree,
    if (pb_out) {
      cat(" *** Unique ID pedigree transformation on original pedigree with nr records: ",
          nrow(tbl_transform_ped), "\n")
-     # cat(" *** Non-unique Ids found: ", ptbl_pedigree %>% filter(V12==output_check$Animal))
    }
 
   ### # debugging output with number of duplicate records
   if (pb_out) {
-    ### # check whether we have to do a transformation using the check function
-    tbl_non_uni_dup_id <- check_unique_animal_id(ptbl_pedigree = tbl_transform_ped)
     cat(" *** Records with non unique ids:\n")
-    print(tbl_non_uni_dup_id)
-    # Sophie: Logfile mit alle Transformation oder pro Funktion in Transformation???
-    # Peter: Logfile kann erstellt werden durch Umleitung des Outputs in eine Datei
+    print(output_check)
   }
 
   ### # do the transformation by retaining only
@@ -56,12 +54,10 @@ transform_unique_animal_id <- function(ptbl_pedigree,
       group_by(.[[pn_ani_id_col_idx]]) %>%
       summarise(n = n()) %>%
       filter((n == 1))
-      #filter(!(n > 1)) #Sophie -> Alle Non-Unique Ids löschen, keine behalten ????
 
   ### # debugging output with number of unique pedigree records after transformation
   if (pb_out){
     cat(" *** Number of records after transformation: ", nrow(tbl_transform_ped))
-    # cat(" *** Transformation duplicate Ids, none should be found : ", tbl_transform_ped %>% filter(V12==output_check$Animal))
   }
 
   ### # return result
@@ -71,8 +67,6 @@ transform_unique_animal_id <- function(ptbl_pedigree,
 
 
 ### ######################################################### ###
-###
-###
 #' @title Transformation after check if parents are older than their offspring
 #'
 #' @importFrom magrittr %>%
@@ -81,17 +75,15 @@ transform_unique_animal_id <- function(ptbl_pedigree,
 #' @importFrom dplyr inner_join
 #' @description
 #' Given a pedigree in tbl_df format, invalidating birthdate of parent and offspring
-#' where parents are older than their offspring.
+#' when parents are older than their offspring.
 #'
 #' @param ptbl_pedigree pedigree in tbl_df format
 #' @param output_check output of function check_unique_animal_id in tbl_df format
-#' @param pb_keep_dup should one record of those with duplicate ids be kept
-#' @param pb_out logfile production with TRUE
+#' @param pb_out flag whether debugging output should be written
 #' @return tbl_transform_ped of pedigree records not fullfilling requirements
 #' @export transform_check_parent_older_offspring
 transform_check_parent_older_offspring <- function(ptbl_pedigree,
                                                    output_check,
-                                                   pb_keep_dup = FALSE,
                                                    pb_out = FALSE) {
 
   ### # assign result that will be returned
@@ -131,7 +123,7 @@ transform_check_parent_older_offspring <- function(ptbl_pedigree,
 
 
 ### ######################################################## ###
-#' Transformation after check of sex format using tbl_df pedigree
+#' @title Transformation after check of sex format using tbl_df pedigree
 #'
 #'
 #' @importFrom magrittr %>%
@@ -140,7 +132,9 @@ transform_check_parent_older_offspring <- function(ptbl_pedigree,
 #' @importFrom dplyr inner_join
 #' @param ptbl_pedigree pedigree in tbl_df format
 #' @param output_check output of function check_sex_tbl in tbl_df format
+#' @param pb_out flag whether debugging output should be written
 #' @export transform_check_sex_tbl
+#' @return tbl_transform_ped of pedigree records not fullfilling requirements
 transform_check_sex_tbl <- function(ptbl_pedigree,
                                     output_check,
                                     pb_out = FALSE){
@@ -179,13 +173,15 @@ transform_check_sex_tbl <- function(ptbl_pedigree,
 
 
 ### ######################################################## ###
-#' Transformation after check Correct Ids format in column pnIdCol using tbl
+#' @title Transformation after check Correct Ids format in column pnIdCol using tbl
 #'
 #'
 #'
 #' @param ptbl_pedigree input pedigree to be transformed as tibble
 #' @param output_check output of function correct_tvd_format_tbl in tbl_df format
+#' @param pb_out flag whether debugging output should be written
 #' @export transform_correct_tvd_format_tbl
+#' @return tbl_transform_ped of pedigree records not fullfilling requirements
 transform_correct_tvd_format_tbl <- function(ptbl_pedigree,
                                              output_check,
                                              pb_out = FALSE){
@@ -223,14 +219,14 @@ transform_correct_tvd_format_tbl <- function(ptbl_pedigree,
 
 
 ### ######################################################## ###
-#' Transformation of incorrect birthdate format using tbl_df pedigree
+#' @title Transformation of incorrect birthdate format using tbl_df pedigree
 #'
 #'
-#' @param ptblPedigree pedigree in tbl_df format
-#' @param lLimitValue list with fixed limits for year, month and date
-#' @param pnBirthdateColIdx column index of birthdates in ptblPedigree
-#' @return validated and modified tbl_df pedigree
+#' @param ptbl_pedigree pedigree in tbl_df format
+#' @param output_check output of function correct_tvd_format_tbl in tbl_df format
+#' @param pb_out flag whether debugging output should be written
 #' @export transform_check_birthdate_tbl
+#' @return tbl_transform_ped of pedigree records not fullfilling requirements
 transform_check_birthdate_tbl <- function(ptbl_pedigree,
                                           output_check,
                                           pb_out = FALSE){
