@@ -1,0 +1,28 @@
+---
+title: "Strategies for Pedigree Transformations"
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Strategies for Pedigree Transformations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Disclaimer
+This document describes different strategies on how pedigree transformations can be implemented. A general description of strategies related to pedigree checks and transformations is available in a separate vignette on [Pedigree Checks - Concepts and Strategies](ConsistencyCheckStrategy.html). 
+
+
+## Introduction
+Pedigree transformations are functions that take a pedigree as input and check the pedigree for a given consistency criterion. The output of a transformation function is a modified pedigree that fullfills the given consistency criterion.
+
+
+
