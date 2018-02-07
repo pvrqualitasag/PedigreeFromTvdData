@@ -1,6 +1,6 @@
 ---
 title: "Strategies for Pedigree Transformations"
-author: "Peter von Rohr"
+author: "Peter von Rohr and Sophie Kunz"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -106,13 +106,23 @@ res_tbl_pedigree <- tbl_pedigree %>% dplyr::filter(!V12 %in% vec_rec_tbd_pk)
 dim(res_tbl_pedigree)
 ```
 
-Die Suche nach den primary keys in `vec_rec_tbd_pk` darf im transformierten Pedigree keine Resultate mehr bringen.
+The search for the primary keys in `vec_rec_tbd_pk` must not find any results in the transformed pedigree which is shown below.
 
 ```{r}
 res_tbl_pedigree %>% dplyr::filter(V12 %in% vec_rec_tbd_pk)
 ```
 
+### Creating a function
+The above shown operations are fine as proof of concepts, but 
 
+## Session Info
+```{r}
+sessionInfo()
+```
+
+
+## Latest Update
+`r paste(Sys.time(),paste0("(", Sys.info()[["user"]],")" ))`
 
 
 

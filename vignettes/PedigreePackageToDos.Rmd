@@ -29,3 +29,13 @@ A proposed solution is to store dates as date values. See the chapter on [Dates 
 ## Breed
 Breed in TierRassecode has empty space at the end. Some Rassecode have 2 letters and other 3.
 Further by merging, a function has to be implement in order that TVD-Rassecode for a breed equal to the one of Qualitas. Christian Stricker has in the routine evaluation implemented under 'verifyBreed'.
+
+
+## Session Info
+```{r}
+sessionInfo()
+```
+
+
+## Latest Update
+`r paste(Sys.time(),paste0("(", Sys.info()[["user"]],")" ))`
