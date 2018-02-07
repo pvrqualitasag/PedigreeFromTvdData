@@ -155,3 +155,83 @@ tbl_result_checkbirthdate_nC <- check_birthdate_tbl(ptblPedigree = tbl_ped_Ncorr
                                                     pb_out = TRUE))
 ```
 
+##Test with a big data set
+```{r BigDat, eval=TRUE, include=FALSE, results='hide'}
+
+```
+
+
+Tranformation after checks of uniqueness of animal-IDs
+```{r}
+(mb.uniqId <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::transform_unique_animal_id(ptbl_pedigree = tbl_ped_uni_id,
+                                                 pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol),
+  times = 5, unit = "s"))
+```
+
+Transformation after checks, if parents are older than offspring
+```{r}
+(mb.parentOld <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::transform_check_parent_older_offspring(ptbl_pedigree = tbl_ped_uni_id,
+                                                                output_check = tbl_fail_mother_age),
+  times = 5, unit = "s"))
+```
+
+Tranformation by sex inconsistency
+```{r}
+(mb.sexConsistency <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::transform_check_sex_tbl(ptbl_pedigree = tbl_ped_uni_id,
+                                                           output_check = check_sex_tbl(ptblPedigree = tbl_ped_uni_id)),
+  times = 5, unit = "s"))
+```
+
+Transformation by incorrect IDs format
+```{r}
+lIdCols <- getTvdIdColsDsch()
+(mb.format <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::transform_correct_tvd_format_tbl(ptbl_pedigree = tbl_ped_uni_id,
+                                                          output_check = correct_tvd_format_tbl(p_tbl_ped = tbl_ped_uni_id,
+                                   plFormatBorder = getTVDIdBorder(),
+                                   plIdCols = lIdCols,
+                                   pnIdCol = lIdCols$TierIdCol)),
+  times = 5, unit = "s"))
+```
+
+Transformation by incorrect format of bithdates
+```{r}
+(mb.birthdate <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::transform_check_birthdate_tbl(ptbl_pedigree = tbl_ped_uni_id,
+                                                                 output_check = check_birthdate_tbl(ptblPedigree = tbl_ped_uni_id)),
+  times = 5, unit = "s"))
+```
+
+Overview of results
+The following table shows the median times (column MedianTime) in seconds for all function that were used.
+```{r MedTimeRead, echo=FALSE}
+vecMethods <- c("PedigreeFromTvdData::transform_unique_animal_id",
+                "PedigreeFromTvdData::transform_check_parent_older_offspring",
+                "PedigreeFromTvdData::transform_check_sex_tbl",
+                "PedigreeFromTvdData::transform_correct_tvd_format_tbl",
+                "PedigreeFromTvdData::transform_check_birthdate_tbl")
+vecMedTimes <- c(mb.uniqId$time[3],
+                 mb.parentOld$time[3],
+                 mb.sexConsistency$time[3],
+                 mb.format$time[3],
+                 mb.birthdate$time[3])
+nMinTime <- vecMedTimes[order(vecMedTimes)][1]
+dfMedTime <- data.frame(Methode = vecMethods,
+                        MedianTime = round(vecMedTimes*10^(-9), digits = 4))
+knitr::kable(dfMedTime)
+```
+
+
+## Session Info
+```{r}
+sessionInfo()
+```
+
+
+## Latest Update
+`r paste(Sys.time(),paste0("(", Sys.info()[["user"]],")" ))`
+
+
