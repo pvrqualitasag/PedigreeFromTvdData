@@ -1,10 +1,10 @@
 ---
-title: "PedigreeFromTvdData - TODOs"
+title: "CheckList for TODOs"
 author: "Sophie Kunz und Peter von Rohr"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{PedigreeFromTvdData - TODOs}
+  %\VignetteIndexEntry{CheckList for TODOs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
