@@ -5,12 +5,14 @@
 \title{Transformation after check if parents are older than their offspring}
 \usage{
 transform_check_parent_older_offspring(ptbl_pedigree, output_check,
-  pb_out = FALSE)
+  pb_keep_dup = FALSE, pb_out = FALSE)
 }
 \arguments{
 \item{ptbl_pedigree}{pedigree in tbl_df format}
 
 \item{output_check}{output of function check_unique_animal_id in tbl_df format}
+
+\item{pb_keep_dup}{should one record of those with duplicate ids be kept}
 
 \item{pb_out}{logfile production with TRUE}
 }
