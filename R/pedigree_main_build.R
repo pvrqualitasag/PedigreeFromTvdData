@@ -38,7 +38,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   ### # In-degree of nodes -> no
 
   ### # Parents older than offspring
-  tbl_result_checks <- check_parent_older_offspring (ptbl_pedigree = tbl_ped,
+  tbl_result_checks <- check_parent_older_offspring (ptbl_pedigree = tbl_transform_ped,
                                              pn_offspring_col,
                                              pn_birthday_col,
                                              pn_parent_col,
@@ -48,8 +48,8 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
     l_tvd_id_col_dsch <- getTvdIdColsDsch()
     n_bd_col_idx <- getBirthdateColIdxDsch()
 
-    tbl_transform_ped <- transform_check_parent_older_offspring(ptbl_pedigree = tbl_ped,
-                                           output_check = check_parent_older_offspring(ptbl_pedigree = tbl_ped,
+    tbl_transform_ped <- transform_check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
+                                           output_check = check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
                                                                                        pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
                                                                                        pn_birthday_col = n_bd_col_idx,
                                                                                        pn_parent_col = l_tvd_id_col_dsch$MutterIdCol))
