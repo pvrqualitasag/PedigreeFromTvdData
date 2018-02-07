@@ -29,17 +29,12 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   ### # Uniqueness of individuals
   tbl_result_checks <- check_unique_animal_id(ptbl_pedigree = tbl_ped)
   if (nrow(tbl_result_checks) > 0) {
-
-    l_tvd_id_col_dsch <- getTvdIdColsDsch()
-    n_bd_col_idx <- getBirthdateColIdxDsch()
-
     tbl_transform_ped <- transform_unique_animal_id(ptbl_pedigree = tbl_ped,
                                output_check = check_unique_animal_id(ptbl_pedigree = tbl_ped),
                                pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol)
   }
 
   ### # No cycles -> no
-
   ### # In-degree of nodes -> no
 
   ### # Parents older than offspring
@@ -49,6 +44,16 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
                                              pn_parent_col,
                                              pn_date_diff_tol = 10^4)
 
+  if (nrow(tbl_result_checks) > 0) {
+    l_tvd_id_col_dsch <- getTvdIdColsDsch()
+    n_bd_col_idx <- getBirthdateColIdxDsch()
+
+    tbl_transform_ped <- transform_check_parent_older_offspring(ptbl_pedigree = tbl_ped,
+                                           output_check = check_parent_older_offspring(ptbl_pedigree = tbl_ped,
+                                                                                       pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
+                                                                                       pn_birthday_col = n_bd_col_idx,
+                                                                                       pn_parent_col = l_tvd_id_col_dsch$MutterIdCol))
+  }
   ### # Parents must have the correct sex
   tbl_result_checks <- check_sex_tbl(ptblPedigree = tbl_ped)
   ### ############################################################### ###
