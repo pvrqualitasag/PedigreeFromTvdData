@@ -1,0 +1,28 @@
+---
+title: "PedigreeFromTvdData - TODOs"
+author: "Sophie Kunz und Peter von Rohr"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PedigreeFromTvdData - TODOs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Disclaimer
+This document contains issues and problems that are to be solved at a later point in time. Whenever a solution is proposed, the solution can be included into this document.
+
+
+## Data Format of Birthdates
+Currently, dates are stored as integer values. This makes the comparison between dates such as birthdates of parents and offspring rather complicated an inflexible.
+
+A proposed solution is to store dates as date values. See the chapter on [Dates and Times](http://r4ds.had.co.nz/dates-and-times.html) in R for Data Science.
+
