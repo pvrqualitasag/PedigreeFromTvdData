@@ -4,15 +4,20 @@
 \alias{transform_unique_animal_id}
 \title{Transformation after check for uniqueness of Animal-IDs in a pedigree}
 \usage{
-transform_unique_animal_id(ptbl_pedigree,
+transform_unique_animal_id(ptbl_pedigree, output_check,
   pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol, pb_out = FALSE)
 }
 \arguments{
 \item{ptbl_pedigree}{pedigree in tbl_df format}
 
+\item{output_check}{output of function check_unique_animal_id}
+
 \item{pn_ani_id_col_idx}{column index for animal-ID in pedigree}
 
 \item{pb_out}{flag whether debugging output should be written}
+}
+\value{
+tbl_transform_ped of pedigree records not fullfilling requirements
 }
 \description{
 A given pedigree is transformed such that the resulting pedigree

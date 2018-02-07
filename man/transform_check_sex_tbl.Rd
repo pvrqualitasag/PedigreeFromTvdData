@@ -10,7 +10,9 @@ transform_check_sex_tbl(ptbl_pedigree, output_check, pb_out = FALSE)
 \item{ptbl_pedigree}{pedigree in tbl_df format}
 
 \item{output_check}{output of function check_sex_tbl in tbl_df format}
+
+\item{pb_out}{flag whether debugging output should be written}
 }
-\description{
-Transformation after check of sex format using tbl_df pedigree
+\value{
+tbl_transform_ped of pedigree records not fullfilling requirements
 }

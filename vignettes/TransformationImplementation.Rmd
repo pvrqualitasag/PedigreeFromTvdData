@@ -22,23 +22,23 @@ This vignette describes implementation of transformation that are described in t
 The vignette on the strategy defined transformations to be routines that search for pedigree records that do not fullfill certain requirement conditions. Transformations are either delete a complete pedigree record or invalidate with NA a field of the pedigree record.
 
 ### Tranformation after checks of uniqueness of animal-IDs
-Animal-IDs are the primary key. If duplicates of animal-IDs have been found, the complete record has to be deleted. Those records with duplicate animal-IDs which have more information in the other fields of the pedigree record are kept. If the pedigree records with the duplicate animal-IDs are identical the record that is kept is selected randomly.
-
+Animal-IDs are the primary key. If duplicates of animal-IDs have been found, the complete record has to be deleted. 
 ```{r DuplicateId, eval=TRUE, include=FALSE, results='hide'}
 s_data_file_dup_id <- system.file(file.path("extdata","KLDAT_20171214_dup_id_100.txt"), 
                              package = "PedigreeFromTvdData")
 tbl_ped_dup_id <- laf_open_fwf_tvd_input(ps_input_file = s_data_file_dup_id, pb_out = TRUE)
-(tbl_non_uni_dup_id <- check_unique_animal_id(tbl_ped_dup_id, pb_out = TRUE))
+tbl_non_uni_dup_id <- check_unique_animal_id(tbl_ped_dup_id, pb_out = TRUE)
 ```
 
 
 ```{r}
 (tbl_transform_ped <- transform_unique_animal_id(ptbl_pedigree = tbl_ped_dup_id,
+                                                 output_check = tbl_non_uni_dup_id,
                                                  pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol,
                                                  pb_out = TRUE))
 ```
 
-The above version of the transformation function `transform_unique_animal_id()` keeps only the records which have a unique ID. The records with duplicate IDs are discarded. It could well be possible that we want to keep one record of those with duplicate records. In that case, we certainly want to keep the one with the most information available.
+The above version of the transformation function `transform_unique_animal_id()` keeps only the records which have a unique ID. The records with duplicate IDs are discarded. It could well be possible that we want to keep one record of those with duplicate records. In that case, we certainly want to keep the one with the most information available. 
 
 To implement this approach of keeping one record of those with duplicate IDs, we have to inspect those records with duplicate IDs a bit closer. These records are found as a result of the check-function `check_unique_animal_id()`. We run a join to see what information is available from these records.
 
@@ -142,7 +142,7 @@ tbl_result_tvdformat <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped_correctFormat
                                    pnIdCol = lIdCols$TierIdCol)
 ```
 
-Vorsicht: Unterschied wenn das Format bei Tier oder Eltern nicht korrekt ist. Beim Tier das record löschen, bei den Eltern nur das Feld mit NA setzen. Jetzt wird nur das Feld TVD auf NA gesetzt.
+VORSICHT : Unterschied wenn das Format bei Tier oder Eltern nicht korrekt ist. Beim Tier das record löschen, bei den Eltern nur das Feld mit NA setzen. Jetzt wird nur das Feld TVD auf NA gesetzt!!!
 ```{r}
 (tbl_transform_ped <- transform_correct_tvd_format_tbl(ptbl_pedigree = tbl_ped_correctFormat,
                                                        output_check = tbl_result_tvdformat,
@@ -167,11 +167,6 @@ tbl_result_checkbirthdate_nC <- check_birthdate_tbl(ptblPedigree = tbl_ped_Ncorr
 ```
 
 ##Test with a big data set
-```{r BigDat, eval=TRUE, include=FALSE, results='hide'}
-
-```
-
-
 Tranformation after checks of uniqueness of animal-IDs
 ```{r}
 (mb.uniqId <- microbenchmark::microbenchmark(

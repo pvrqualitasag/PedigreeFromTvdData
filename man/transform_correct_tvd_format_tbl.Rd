@@ -10,7 +10,9 @@ transform_correct_tvd_format_tbl(ptbl_pedigree, output_check, pb_out = FALSE)
 \item{ptbl_pedigree}{input pedigree to be transformed as tibble}
 
 \item{output_check}{output of function correct_tvd_format_tbl in tbl_df format}
+
+\item{pb_out}{flag whether debugging output should be written}
 }
-\description{
-Transformation after check Correct Ids format in column pnIdCol using tbl
+\value{
+tbl_transform_ped of pedigree records not fullfilling requirements
 }
