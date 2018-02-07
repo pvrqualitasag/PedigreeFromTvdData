@@ -246,12 +246,15 @@ transform_check_birthdate_tbl <- function(ptbl_pedigree,
 
   ### # if records are found, do the transformation by invalidating with NA
   ### # the bithdate of animal.
-  if (nrow(output_check) > 0) {
-    vec_ani_ids <- c(output_check$TvdId)
-    ### # Line number of the ids are required for replace
-    vec_ani_idx <- sapply(vec_ani_ids, function(x) which(ptbl_pedigree$V12 == x), USE.NAMES = FALSE)
-    tbl_transform_ped <- ptbl_pedigree %>% mutate(V11 = replace(V11, vec_ani_idx, NA))
+  if (!is.null(output_check)) {
+    if(nrow(output_check) > 0) {
+      vec_ani_ids <- c(output_check$TvdId)
+      ### # Line number of the ids are required for replace
+      vec_ani_idx <- sapply(vec_ani_ids, function(x) which(ptbl_pedigree$V12 == x), USE.NAMES = FALSE)
+      tbl_transform_ped <- ptbl_pedigree %>% mutate(V11 = replace(V11, vec_ani_idx, NA))
+    }
   }
+
 
   ### # debugging output after transformation
   if (pb_out){
