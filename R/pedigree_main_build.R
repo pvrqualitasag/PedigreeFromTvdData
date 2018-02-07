@@ -38,24 +38,44 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   ### # In-degree of nodes -> no
 
   ### # Parents older than offspring
-  tbl_result_checks <- check_parent_older_offspring (ptbl_pedigree = tbl_transform_ped,
-                                             pn_offspring_col,
-                                             pn_birthday_col,
-                                             pn_parent_col,
-                                             pn_date_diff_tol = 10^4)
+  ### # 1) Mother
+  l_tvd_id_col_dsch <- getTvdIdColsDsch()
+  n_bd_col_idx <- getBirthdateColIdxDsch()
+  tbl_result_checks <- check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
+                                                       pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
+                                                       pn_birthday_col = n_bd_col_idx,
+                                                       pn_parent_col = l_tvd_id_col_dsch$MutterIdCol)
 
   if (nrow(tbl_result_checks) > 0) {
-    l_tvd_id_col_dsch <- getTvdIdColsDsch()
-    n_bd_col_idx <- getBirthdateColIdxDsch()
-
     tbl_transform_ped <- transform_check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
                                            output_check = check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
                                                                                        pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
                                                                                        pn_birthday_col = n_bd_col_idx,
                                                                                        pn_parent_col = l_tvd_id_col_dsch$MutterIdCol))
   }
+  ### # 2) Father
+  tbl_result_checks <- check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
+                                                    pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
+                                                    pn_birthday_col = n_bd_col_idx,
+                                                    pn_parent_col = l_tvd_id_col_dsch$VaterIdCol)
+
+  if (nrow(tbl_result_checks) > 0) {
+    tbl_transform_ped <- transform_check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
+                                                                output_check = check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
+                                                                                                            pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
+                                                                                                            pn_birthday_col = n_bd_col_idx,
+                                                                                                            pn_parent_col = l_tvd_id_col_dsch$VaterIdCol))
+  }
+
   ### # Parents must have the correct sex
-  tbl_result_checks <- check_sex_tbl(ptblPedigree = tbl_ped)
+  tbl_result_checks <- check_sex_tbl(ptblPedigree = tbl_transform_ped)
+
+  if (nrow(tbl_result_checks) > 0) {
+    tbl_transform_ped <- transform_check_sex_tbl(ptbl_pedigree = tbl_transform_ped,
+                                                  output_check = check_sex_tbl(ptblPedigree = tbl_transform_ped))
+
+  }
+
   ### ############################################################### ###
   ### Properties related to data-processing issues
   ### ############################################################### ###
