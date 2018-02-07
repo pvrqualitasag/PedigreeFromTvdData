@@ -25,4 +25,9 @@ This document describes different strategies on how pedigree transformations can
 Pedigree transformations are functions that take a pedigree as input and check the pedigree for a given consistency criterion. The output of a transformation function is a modified pedigree that fullfills the given consistency criterion.
 
 
+## Data structures
+The pedigree is read from a text-file and is stored as a dataframe. Currently we are using the [tibble](http://tibble.tidyverse.org/)- or tbl_df-version of dataframes. More information about tibbles can also be obtained from the chapter on [tibbles](http://r4ds.had.co.nz/tibbles.html) in [R for DataScience](http://r4ds.had.co.nz/). 
+
+
+## Operations
 
