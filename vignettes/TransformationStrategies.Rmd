@@ -113,7 +113,74 @@ res_tbl_pedigree %>% dplyr::filter(V12 %in% vec_rec_tbd_pk)
 ```
 
 ### Creating a function
-The above shown operations are fine as proof of concepts, but 
+The above shown operations are fine as proof of concepts, but they only become useful when we can put them into a function. So let us give it a try
+
+```{r}
+remove_rec <- function(ptbl_pedigree, 
+                       pvec_rec_tbr_pk, 
+                       pn_pk_col_idx = getTvdIdColsDsch()$TierIdCol){
+  res_tbl_pedigree <- ptbl_pedigree %>% dplyr::filter(!.[[pn_pk_col_idx]] %in% pvec_rec_tbr_pk)
+  return(res_tbl_pedigree)
+}
+```
+
+Testing the above created function `remove_rec()`
+
+```{r}
+res_tbl_pedigree_func <- remove_rec(ptbl_pedigree = tbl_pedigree,
+                                    pvec_rec_tbr_pk = vec_rec_tbd_pk)
+```
+
+The resulting dataframe `res_tbl_pedigree_func` must be identical to what we obtained before the function as the dataframe `res_tbl_pedigree`.
+
+```{r}
+dplyr::setequal(res_tbl_pedigree, res_tbl_pedigree_func)
+```
+
+Searching the deleted records shows
+
+```{r}
+res_tbl_pedigree_func %>% dplyr::filter(V12 %in% vec_rec_tbd_pk)
+```
+
+
+### Setting a field in a record to NA
+The second operation requires more input, because we also have to know which field in a given record must be set to NA. The description in pseudo code is similar to the first operation. 
+
+```
+# declarations:
+  pedigree : tbl_df dataframe with pedigree information
+  record_pk : primary key of record from which a field should be set to NA
+  field_idx : column index of field to be set to NA
+
+# pre-conditions:
+  pedigree is not null
+  record_pk is in pedigree[pk_column]
+  field_idx less than or equal ncol(pedigree)
+```
+
+### A simple example - setting one field of one record to NA
+From the already known pedigree `tbl_pedigree`, we set one field of a given record to NA. The record is identified by its primary key. 
+
+```{r}
+(s_rec_pk <- "CH120003746483")
+```
+
+Then we assume that we want to set the column entitled with "V5" to NA.
+
+```{r}
+(tbl_pedigree_sna <- tbl_pedigree %>% dplyr::mutate(V5 = replace(V5, which(V12 == s_rec_pk), NA)))
+```
+
+We check by comparing the original record for this primary key and the one after applying the operation
+
+```{r}
+tbl_pedigree %>% dplyr::filter(V12 == s_rec_pk) %>% dplyr::select(V5,V11,V12,V16)
+tbl_pedigree_sna %>% dplyr::filter(V12 == s_rec_pk) %>% dplyr::select(V5,V11,V12,V16)
+```
+
+
+
 
 ## Session Info
 ```{r}
