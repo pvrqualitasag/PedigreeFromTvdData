@@ -172,14 +172,70 @@ Then we assume that we want to set the column entitled with "V5" to NA.
 (tbl_pedigree_sna <- tbl_pedigree %>% dplyr::mutate(V5 = replace(V5, which(V12 == s_rec_pk), NA)))
 ```
 
-We check by comparing the original record for this primary key and the one after applying the operation
+We check by comparing the original record for this primary key and the one after applying the operation. First, we start with the original record
 
 ```{r}
 tbl_pedigree %>% dplyr::filter(V12 == s_rec_pk) %>% dplyr::select(V5,V11,V12,V16)
+```
+
+Then we compare it to the modified record
+
+```{r}
 tbl_pedigree_sna %>% dplyr::filter(V12 == s_rec_pk) %>% dplyr::select(V5,V11,V12,V16)
 ```
 
+### Extending this to setting a field to NA in several record
+The several records are again defined by a vector containing the primary keys of the records for which a given field should be set to NA. The idea that we want to use here is to define an index vector of all rows corresponding to the records in which the fields should be set to NA.
 
+```{r}
+vec_rec_pk <- c("CH120001976905", "CH120006405592", "CH120001807094", "CH120003434748")
+vec_row_idx <- sapply(vec_rec_pk, function(x) which(tbl_pedigree$V12 == x), USE.NAMES = FALSE)
+tbl_pedigree_vna <- tbl_pedigree %>% dplyr::mutate(V5 = replace(V5, vec_row_idx, NA))
+```
+
+To check whether the field V5 is set to NA in the desired records, we can run the following checks.
+
+```{r}
+tbl_pedigree_vna %>% dplyr::filter(V12 %in% vec_rec_pk) %>% dplyr::select(V5,V11,V12,V16)
+```
+
+### Setting fields to NA using a function
+Analogously to the first operation, we also want to define a function that implements this operation
+
+```{r}
+set_field_na <- function(ptbl_pedigree, 
+                         pvec_rec_pk, 
+                         pn_field_idx,
+                         pn_pk_col_idx = getTvdIdColsDsch()$TierIdCol){
+  
+  vec_row_idx <- sapply(pvec_rec_pk, function(x) which(ptbl_pedigree[,pn_pk_col_idx] == x), USE.NAMES = FALSE)
+  tbl_pedigree_vna <- ptbl_pedigree %>% dplyr::mutate(.[[pn_pk_col_idx]] := replace(ptbl_pedigree[,pn_pk_col_idx], vec_row_idx, NA))
+  return(tbl_pedigree_vna)
+}
+```
+
+Testing the same operation as above using the function
+```{r}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+```{r}
+tbl_pedigree_vna_func <- set_field_na(ptbl_pedigree = tbl_pedigree, 
+                                      pvec_rec_pk = vec_rec_pk, 
+                                      pn_field_idx = getTvdIdColsDsch()$MutterIdCol)
+```
+
+Checking whether fields are set to NA
+
+```{r}
+tbl_pedigree_vna_func %>% dplyr::filter(V12 %in% vec_rec_pk) %>% dplyr::select(V5,V11,V12,V16)
+```
+
+And the following two pedgirees must be the same
+
+```{r}
+dplyr::setequal(tbl_pedigree_vna, tbl_pedigree_vna_func)
+```
 
 
 ## Session Info
@@ -190,15 +246,6 @@ sessionInfo()
 
 ## Latest Update
 `r paste(Sys.time(),paste0("(", Sys.info()[["user"]],")" ))`
-
-
-
-
-
-
-
-
-
 
 
 
