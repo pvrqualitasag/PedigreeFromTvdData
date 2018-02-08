@@ -51,10 +51,13 @@ transform_unique_animal_id <- function(ptbl_pedigree,
   ### # do the transformation by retaining only
   ### #  the unique records.
   if (nrow(output_check) > 0) {
-    tbl_transform_ped <- tbl_transform_ped %>%
+    tbl_transform_ped_TEST <- tbl_transform_ped %>%
       group_by(.[[pn_ani_id_col_idx]]) %>%
       summarise(n = n()) %>%
       filter((n == 1))
+    names(tbl_transform_ped_TEST) <- c("Animal","n")
+    tbl_transform_ped_TEST <- tbl_transform_ped_TEST[,"Animal"]
+    tbl_transform_ped <- tbl_transform_ped %>% inner_join(tbl_transform_ped_TEST, by = c("V12" = "Animal"))
 
   }
 

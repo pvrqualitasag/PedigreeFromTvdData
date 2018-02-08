@@ -27,11 +27,12 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   ### ############################################################### ###
   ### Properties of a Directed Acyclic Graphs (DAG)
   ### ############################################################### ###
-  ### # Uniqueness of individuals
-  tbl_result_checks <- check_unique_animal_id(ptbl_pedigree = tbl_ped)
+  tbl_transform_ped <- tbl_ped
+   ### # Uniqueness of individuals
+  tbl_result_checks <- check_unique_animal_id(ptbl_pedigree = tbl_transform_ped)
   if (nrow(tbl_result_checks) > 0) {
-    tbl_transform_ped <- transform_unique_animal_id(ptbl_pedigree = tbl_ped,
-                               output_check = check_unique_animal_id(ptbl_pedigree = tbl_ped),
+    tbl_transform_ped <- transform_unique_animal_id(ptbl_pedigree = tbl_transform_ped,
+                               output_check = check_unique_animal_id(ptbl_pedigree = tbl_transform_ped),
                                pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol)
   }
 
