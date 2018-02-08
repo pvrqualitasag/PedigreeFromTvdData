@@ -205,26 +205,54 @@ Analogously to the first operation, we also want to define a function that imple
 ```{r}
 set_field_na <- function(ptbl_pedigree, 
                          pvec_rec_pk, 
-                         pn_field_idx,
+                         ps_field_idx,
                          pn_pk_col_idx = getTvdIdColsDsch()$TierIdCol){
-  
+  quo_field <- dplyr::enquo(ps_field_idx)
   vec_row_idx <- sapply(pvec_rec_pk, function(x) which(ptbl_pedigree[,pn_pk_col_idx] == x), USE.NAMES = FALSE)
-  tbl_pedigree_vna <- ptbl_pedigree %>% dplyr::mutate(.[[pn_pk_col_idx]] := replace(ptbl_pedigree[,pn_pk_col_idx], vec_row_idx, NA))
+  vec_org_val <- ptbl_pedigree %>% dplyr::select(!!quo_field)
+  vec_org_val[vec_row_idx] <- NA
+  tbl_pedigree_vna <- ptbl_pedigree %>% dplyr::mutate(!!quo_field := vec_org_val)
   return(tbl_pedigree_vna)
 }
+
+```
+
+```{r}
+ptbl_pedigree = tbl_pedigree
+pvec_rec_pk = vec_rec_pk
+# ps_field_idx = 
+# quo_field <- dplyr::enquo(V5)
+pn_pk_col_idx = getTvdIdColsDsch()$TierIdCol
+
+(vec_row_idx <- sapply(pvec_rec_pk, function(x) which(ptbl_pedigree[,pn_pk_col_idx] == x), USE.NAMES = FALSE))
+
+
+
+```
+
+```{r}
+
+(vec_org_val <- ptbl_pedigree %>% dplyr::select(V5))
+
+
+```
+
+```{r}
+(vec_org_val[vec_row_idx,])
+
+```
+
+
+```{r}
+(vec_org_val[vec_row_idx,] <- NA)
 ```
 
 Testing the same operation as above using the function
-```{r}
-knitr::opts_chunk$set(eval = FALSE)
-```
+
 
 ```{r}
-tbl_pedigree_vna_func <- set_field_na(ptbl_pedigree = tbl_pedigree, 
-                                      pvec_rec_pk = vec_rec_pk, 
-                                      pn_field_idx = getTvdIdColsDsch()$MutterIdCol)
+tbl_pedigree_vna_func <- set_field_na(tbl_pedigree, vec_rec_pk, V5)
 ```
-
 Checking whether fields are set to NA
 
 ```{r}
