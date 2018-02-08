@@ -12,6 +12,9 @@ build_check_pedigree_from_tvd(ps_tvd_file,
 
 \item{pvec_format}{vector with column separator positions of pedigree}
 }
+\value{
+tbl_transform_ped of pedigree records not fullfilling requirements
+}
 \description{
 Read K11-formatted TVD-data to build a pedigree
 }

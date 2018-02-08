@@ -1,0 +1,59 @@
+---
+title: "Main Pedigree Build"
+author: "Peter von Rohr and Sophie Kunz"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Main Pedigree Build}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Disclaimer
+This document describes a function implementing different functions to check and transform a pedigree. A general description of the strategies is available in a separate vignette on [Pedigree Checks - Concepts and Strategies](ConsistencyCheckStrategy.html). Further description about the consistency checks implementation is available on [Pedigree Checks - Implementations](ConsistencyCheckImplementation.html) and a description about the transformation implementation is available on [Pedigree Transformation - Implementations](TransformationImplementation.html).
+
+```{r}
+sDataFileErrors <- system.file(file.path("extdata","KLDAT_20170524_AllFehler.txt"), 
+                             package = "PedigreeFromTvdData")
+
+(build_check_pedigree_from_tvd(ps_tvd_file = sDataFileErrors,
+                              pvec_format = getK11ColPositionVecFromDsch()))
+```
+
+Time how long is this function running.
+```{r}
+sDataFileName <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"), 
+                             package = "PedigreeFromTvdData")
+
+(mb.main <- microbenchmark::microbenchmark(
+  data.base = PedigreeFromTvdData::build_check_pedigree_from_tvd(ps_tvd_file = sDataFileName,
+                                                                 pvec_format = getK11ColPositionVecFromDsch()),
+  times = 5, unit = "s"))
+```
+
+Overview of results
+The following table shows the median times (column MedianTime) in seconds for the function that was used.
+```{r MedTimeRead, echo=FALSE}
+vecMethods <- c("PedigreeFromTvdData::build_check_pedigree_from_tvd")
+vecMedTimes <- c(mb.main$time[3])
+nMinTime <- vecMedTimes[order(vecMedTimes)][1]
+dfMedTime <- data.frame(Methode = vecMethods,
+                        MedianTime = round(vecMedTimes*10^(-9), digits = 4))
+knitr::kable(dfMedTime)
+```
+
+## Session Info
+```{r}
+sessionInfo()
+```
+
+
+## Latest Update
+`r paste(Sys.time(),paste0("(", Sys.info()[["user"]],")" ))`

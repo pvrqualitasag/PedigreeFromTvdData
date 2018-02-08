@@ -12,6 +12,7 @@
 #' @param ps_tvd_file file containing K11-formatted TVD-data
 #' @param pvec_format vector with column separator positions of pedigree
 #' @export build_check_pedigree_from_tvd
+#' @return tbl_transform_ped of pedigree records not fullfilling requirements
 build_check_pedigree_from_tvd <- function(ps_tvd_file,
                                     pvec_format = getK11ColPositionVecFromDsch()){
   ### # check whether specified tvd-input file exists
@@ -79,18 +80,18 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   ### ############################################################### ###
   ### Properties related to data-processing issues
   ### ############################################################### ###
-  ### # correct formats of IDs for individual
-  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
-                                    pnIdCol = plIdCols$TierIdCol)
-
-  ### # correct formats of IDs for mother
-  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
-                                    pnIdCol = plIdCols$MutterIdCol)
-
-  ### # correct formats of IDs for father
-  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
-                                    pnIdCol = plIdCols$VaterIdCol)
-
+#  ### # correct formats of IDs for individual
+#  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
+#                                    pnIdCol = plIdCols$TierIdCol)
+#
+#  ### # correct formats of IDs for mother
+#  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
+#                                    pnIdCol = plIdCols$MutterIdCol)
+#
+#  ### # correct formats of IDs for father
+#  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
+#                                    pnIdCol = plIdCols$VaterIdCol)
+#
 
   ### # correct formats of birthdates
   tbl_result_checks <- check_birthdate_tbl(ptblPedigree = tbl_transform_ped)
@@ -104,5 +105,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   }
   ### # finally return
   return(tbl_transform_ped)
+  #Sophie: Vielleicht könnte man ein Pedigree mit der Funktion write.csv() in einem File ausschreiben
+  # oder ob wir eine weitere Funktion für das Output schreiben sollten, damit Output in einem bestimmten Format kommt.
 }
 
