@@ -16,6 +16,13 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r PackageSetup, eval=TRUE, include=FALSE, results='hide'}
+require(PedigreeFromTvdData)
+require(dplyr)
+require(magrittr)
+```
+
+
 ## Disclaimer
 This document describes a function implementing different functions to check and transform a pedigree. A general description of the strategies is available in a separate vignette on [Pedigree Checks - Concepts and Strategies](ConsistencyCheckStrategy.html). Further description about the consistency checks implementation is available on [Pedigree Checks - Implementations](ConsistencyCheckImplementation.html) and a description about the transformation implementation is available on [Pedigree Transformation - Implementations](TransformationImplementation.html).
 
@@ -23,9 +30,15 @@ This document describes a function implementing different functions to check and
 sDataFileErrors <- system.file(file.path("extdata","KLDAT_20170524_AllFehler.txt"), 
                              package = "PedigreeFromTvdData")
 
-(build_check_pedigree_from_tvd(ps_tvd_file = sDataFileErrors,
+(tbl_transform_ped <- build_check_pedigree_from_tvd(ps_tvd_file = sDataFileErrors,
                               pvec_format = getK11ColPositionVecFromDsch()))
 ```
+
+Remaining:
+All dupicate are deleted;
+Parent and offspring birthdate are set to NA, if a parent is not older as offspring;
+Animal sex is set to NA, if the sex is incorrect;
+Birthdate is set to NA, if the birthdate format is incorrect.
 
 Time how long is this function running.
 ```{r}
