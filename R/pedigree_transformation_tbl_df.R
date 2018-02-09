@@ -265,6 +265,65 @@ remove_rec <- function(tbl_transform_ped,
 
 
 ### ######################################################## ###
+#' @title Setting one field of a list of records in a pedigree to NA
+#'
+#' @importFrom dplyr enquo
+#' @importFrom dplyr quo_name
+#' @importFrom dplyr mutate
+#' @importFrom dplyr if_else
+#'
+#' @description
+#' Changing certain variables or fields (columns in tbl_df) of
+#' a given set of records is done by a combination of dplyr::mutate
+#' to change the variables and dplyr::if_else() to specify in which
+#' rows the variables should be changed. The re-factoring work to
+#' integrate this operation into a function is done based on the
+#' material available at http://dplyr.tidyverse.org/articles/programming.html
+#'
+#' @details
+#' When previous functions were working with column indices to
+#' identify the variables or fields in the tbl_df, this function
+#' here switched to the use of column names. For a given pedigree,
+#' we have to define utility functions that return the column name
+#' for certain record fields.
+#'
+#' @param ptbl_pedigree pedigree as tbl_df
+#' @param pvec_rec_pk vector of primary keys identifying the records
+#' @param ps_field_name column name in ptbl_pedigree where certain fields must be set to NA
+#' @param ps_pk_name column name where primary keys can be found
+#' @return tbl_pedigree_result pedigree with given fields set to NA
+#' @examples
+#' s_ped_file <- system.file(file.path("extdata","KLDAT_20170524_10000.txt"),
+#'                           package = "PedigreeFromTvdData")
+#' tbl_ped <- laf_open_fwf_tvd_input(ps_input_file = s_ped_file)
+#' vec_rec_tbd_pk <- c("CH120001976905", "CH120006405592", "CH120001807094", "CH120003434748")
+#' tbl_ped_vna <- set_field_na(tbl_ped, vec_rec_pk, V5, V12)
+#' tbl_ped_vna %>% filter(V12 %in% vec_rec_pk) %>% select(V5,V11,V12,V16)
+#' @export set_field_na
+set_field_na <- function(ptbl_pedigree,
+                         pvec_rec_pk,
+                         ps_field_name,
+                         ps_pk_name){
+  ### # create an expression from the column name of primary keys
+  expr <- dplyr::enquo(ps_pk_name)
+  ### # create an expression from the column name where the fields
+  ### #  are that should be set to NA
+  var_expr <- dplyr::enquo(ps_field_name)
+  ### # create the variable name which is used for the lhs of the
+  ### #  assignement
+  var_name <- dplyr::quo_name(var_expr)
+
+  tbl_pedigree_result <-
+    dplyr::mutate(ptbl_pedigree,
+                  !!var_name := dplyr::if_else((!!expr) %in% pvec_rec_pk,
+                                               NA_character_,
+                                               !!var_expr))
+
+  return(tbl_pedigree_result)
+}
+
+
+### ######################################################## ###
 #' @title Transformation of incorrect birthdate format using tbl_df pedigree
 #'
 #'
