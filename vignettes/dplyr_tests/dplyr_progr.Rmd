@@ -1,0 +1,231 @@
+---
+title: "dplyr Programming examples"
+output:
+  html_document:
+    df_print: paged
+---
+
+Examples taken from http://dplyr.tidyverse.org/articles/programming.html
+
+```{r}
+require(dplyr)
+```
+
+
+## Programming recipes
+```{r}
+set.seed(123)
+df1 <- tibble::tibble(x = 1:3, y = 3:1)
+df2 <- tibble::tibble(x = runif(3), y = rnorm(3))
+```
+
+Working with different datasets
+
+```{r}
+a <- 12
+mutate(df1, y = a + x)
+mutate(df2, y = a + x)
+
+```
+
+Avoiding duplication using a function
+
+```{r}
+mutate_y <- function(df){
+  mutate(df, y = a + x)
+}
+
+mutate_y(df1)
+```
+
+Using `.data` inside the function
+
+```{r}
+mutate_y <- function(df){
+  mutate(df, y = .data$a + .data$x)
+}
+
+# mutate_y(df1) # produces an error
+
+```
+
+
+### Different expressions
+Writing functions is difficult, if arguments should take up variable names. Taking indices values is not recommended as this might lead to confusions and might produce bugs which are very difficult to track and to correct.
+
+```{r}
+(df <- tibble(
+  g1 = c(1, 1, 2, 2, 2),
+  g2 = c(1, 2, 1, 2, 1),
+  a = sample(5), 
+  b = sample(5)
+))
+```
+
+Computing summary statistics according to both grouping variables. 
+```{r}
+df %>%
+  group_by(g1) %>%
+  summarise(a = mean(a))
+
+```
+```{r}
+df %>%
+  group_by(g2) %>%
+  summarise(a = mean(a))
+```
+
+This leads to a lot of code duplication. The only thing that changes is the name of the grouping variable. This should be re-factored into a function where the name of the grouping variable should be given as a function argument.
+
+
+```{r}
+my_summarise <- function(df, group_var) {
+  df %>%
+    group_by(!!group_var) %>%
+    summarise(a = mean(a))
+}
+
+my_summarise(df, quo(g1))
+```
+
+
+```{r}
+my_summarise(df, quo(g2))
+```
+
+Run the conversion to quosure in the function, to make the calls look nicer
+
+```{r}
+my_summarise <- function(df, group_by) {
+  group_by <- enquo(group_by)
+  print(group_by)
+
+  df %>%
+    group_by(!!group_by) %>%
+    summarise(a = mean(a))
+}
+my_summarise(df, g1)
+```
+
+
+```{r}
+my_summarise(df, g2)
+```
+
+
+### Different input variable
+Computing three summaries with varying input variables
+
+```{r}
+summarise(df, mean = mean(a), sum = sum(a), n = n())
+```
+
+Same thing but with different input
+
+```{r}
+summarise(df, mean = mean(a*b), sum = sum(a*b), n = n())
+```
+
+The following statements show like a first idea on how the above two chunks might be re-factored into a funcion.
+
+```{r}
+my_var <- quo(a)
+summarise(df, mean = mean(!!my_var), sum = sum(!!my_var), n = n())
+```
+
+The quosure can also be done arount the `summarise()` call
+
+```{r}
+quo(summarise(df, 
+              mean = mean(!!my_var), 
+              sum = sum(!!my_var), 
+              n = n()))
+```
+
+Putting this result into a function and remembering to replace `quo()` by `enquo()`
+
+```{r}
+my_summarise2 <- function(df, expr){
+  expr <- enquo(expr)
+  summarise(df,
+            mean = mean(!!expr),
+            sum  = sum(!!expr),
+            n = n())
+}
+my_summarise2(df, a)
+```
+
+```{r}
+my_summarise2(df, a*b)
+```
+
+
+### Different input and output variables
+Changing the input and the output variables according to the following
+
+```{r}
+mutate(df, mean_a = mean(a), sum_a = sum(a))
+```
+
+```{r}
+mutate(df, mean_b = mean(b), sum_b = sum(b))
+```
+
+Turning this into a function, we need to paste together strings as names and using `quo_name()` to convert the input expressions into strings. Assignment is done by the `:=` helper from `rlang`
+
+```{r}
+my_mutate <- function(df, expr){
+  expr <- enquo(expr)
+  cat("expr\n");print(expr)
+  cat("quo_name(expr)\n");print(quo_name(expr))
+  mean_name <- paste0("mean_", quo_name(expr))
+  sum_name <- paste0("sum_", quo_name(expr))
+  cat("mean_name\n");print(mean_name)
+  cat("sum_name\n");print(sum_name)
+  
+  mutate(df,
+         !!mean_name := mean(!!expr),
+         !!sum_name := sum(!!expr))
+}
+my_mutate(df, a)
+```
+
+```{r}
+my_mutate(df, b)
+```
+
+Trying to get some help for debugging
+
+```{r}
+my_var <- quo(a)
+mutate(df, mean_a = mean(!!my_var))
+```
+
+For checking what happens from the perspective of dplyr, we can do the following
+
+```{r}
+quo(mutate(df, mean_a = mean(!!my_var)))
+```
+
+
+
+### Capturing different variables
+Finally, if `my_summarise()` should accept a varying number of grouping variables, we may have to make the following changes
+
+
+* use the three dots to capture the varying number of arguments
+* use `quos()` to capture the three dots as a list of formulas
+* Use `!!!` instead of `!!` to splice the arguments into `group_by()`
+
+```{r}
+my_summarise3 <- function(df, ...){
+  group_var <- quos(...)
+  
+  df %>%
+    group_by(!!!group_var) %>%
+    summarise(a = mean(a))
+}
+my_summarise3(df, g1, g2)
+```
+
+
