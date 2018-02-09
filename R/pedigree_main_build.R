@@ -34,7 +34,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   tbl_result_checks <- check_unique_animal_id(ptbl_pedigree = tbl_transform_ped)
   if (nrow(tbl_result_checks) > 0) {
     tbl_transform_ped <- transform_unique_animal_id(ptbl_pedigree = tbl_transform_ped,
-                               output_check = check_unique_animal_id(ptbl_pedigree = tbl_transform_ped),
+                               output_check = tbl_result_checks,
                                pn_ani_id_col_idx = l_tvd_id_col_dsch$TierIdCol)
   }
 
@@ -50,10 +50,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
 
   if (nrow(tbl_result_checks) > 0) {
     tbl_transform_ped <- transform_check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
-                                           output_check = check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
-                                                                                       pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
-                                                                                       pn_birthday_col = n_bd_col_idx,
-                                                                                       pn_parent_col = l_tvd_id_col_dsch$MutterIdCol))
+                                           output_check = tbl_result_checks)
   }
   ### # 2) Father
   tbl_result_checks <- check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
@@ -63,10 +60,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
 
   if (nrow(tbl_result_checks) > 0) {
     tbl_transform_ped <- transform_check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
-                                                                output_check = check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
-                                                                                                            pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
-                                                                                                            pn_birthday_col = n_bd_col_idx,
-                                                                                                            pn_parent_col = l_tvd_id_col_dsch$VaterIdCol))
+                                                                output_check = tbl_result_checks)
   }
 
   ### # Parents must have the correct sex
@@ -74,7 +68,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
 
   if (nrow(tbl_result_checks) > 0) {
     tbl_transform_ped <- transform_check_sex_tbl(ptbl_pedigree = tbl_transform_ped,
-                                                  output_check = check_sex_tbl(ptblPedigree = tbl_transform_ped))
+                                                  output_check = tbl_result_checks)
 
   }
 
@@ -86,8 +80,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
                                     pnIdCol = l_tvd_id_col_dsch$TierIdCol)
   if (nrow(tbl_result_checks) > 0) {
     tbl_transform_ped <- transform_correct_tvd_format_tbl(ptbl_pedigree = tbl_transform_ped,
-                                                           output_check = correct_tvd_format_tbl(p_tbl_ped = tbl_transform_ped,
-                                                                                                 pnIdCol = l_tvd_id_col_dsch$TierIdCol))
+                                                           output_check = tbl_result_checks)
   }
 
   ### # correct formats of IDs for mother
@@ -95,8 +88,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
                                     pnIdCol = l_tvd_id_col_dsch$MutterIdCol)
   if (nrow(tbl_result_checks) > 0) {
     tbl_transform_ped <- transform_correct_tvd_format_tbl(ptbl_pedigree = tbl_transform_ped,
-                                                          output_check = correct_tvd_format_tbl(p_tbl_ped = tbl_transform_ped,
-                                                                                                pnIdCol = l_tvd_id_col_dsch$MutterIdCol))
+                                                          output_check = tbl_result_checks)
   }
 
   ### # correct formats of IDs for father
@@ -104,8 +96,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
                                     pnIdCol = l_tvd_id_col_dsch$VaterIdCol)
   if (nrow(tbl_result_checks) > 0) {
     tbl_transform_ped <- transform_correct_tvd_format_tbl(ptbl_pedigree = tbl_transform_ped,
-                                                          output_check = correct_tvd_format_tbl(p_tbl_ped = tbl_transform_ped,
-                                                                                                pnIdCol = l_tvd_id_col_dsch$VaterIdCol))
+                                                          output_check = tbl_result_checks)
   }
 
   ### # correct formats of birthdates
@@ -114,7 +105,7 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   if (!is.null(tbl_result_checks)) {
     if(nrow(tbl_result_checks) > 0) {
       tbl_transform_ped <- transform_check_birthdate_tbl(ptbl_pedigree = tbl_transform_ped,
-                                                          output_check = check_birthdate_tbl(ptblPedigree = tbl_transform_ped))
+                                                          output_check = tbl_result_checks)
 
     }
   }

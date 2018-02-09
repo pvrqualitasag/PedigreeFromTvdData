@@ -70,7 +70,21 @@ The descriptions of each transformation is described in a companion vignette on 
     
 
 ## Vignettes Overview
+* [Reading Fixed Width Formatted Data](ReadFwfData.html): comparison of different methods for reading large amounts of data.
 
+* [Pedigree Checks - Implementations](ConsistencyCheckImplementation.html): description of each implemented check-function.
+
+* [Pedigree Consistency Checks](PedigreeConsistencyChecks.html): time and memory requirement for some check-functions.
+
+* [Strategies for Pedigree Transformations](TransformationStrategies.html): description of different method to delete record or invalidate a field.
+
+* [Pedigree Transformation - Implementations](TransformationImplementation.html): description of each implemented transformation-functions.
+
+* [Main Pedigree Build](MainPedigree.html): description of implementation of each check-funtion and transformation-function in one function to call TVD-Data.
+
+* [CheckList for TODOs](PedigreePackageToDos.html): checklist to keep in mind by merging programmation.
+
+* [User Manual](UserManual.html): Manual.
 
 ## Session Info
 ```{r}
