@@ -200,27 +200,66 @@ transform_correct_tvd_format_tbl <- function(ptbl_pedigree,
     print(output_check)
     cat(" *** Original records shows ids of Animal which after transformation should be deleted: \n")
     print(ptbl_pedigree %>% inner_join(output_check, by = c("V12" = "TvdID")) %>% select(V12,V16,V5))
+    cat(" *** Original records shows ids of Mother which after transformation should be invalidated: \n")
+    print(ptbl_pedigree %>% inner_join(output_check, by = c("V5" = "TvdID")) %>% select(V5))
+    cat(" *** Original records shows ids of Father which after transformation should be invalidated: \n")
+    print(ptbl_pedigree %>% inner_join(output_check, by = c("V16" = "TvdID")) %>% select(V16))
   }
 
   ### # if records are found, do the transformation by invalidating with NA
   ### # the tvdid of animal.
   if (nrow(output_check) > 0) {
     vec_ani_ids <- c(output_check$TvdID)
-    ### # Line number of the ids are required for replace
-    vec_ani_idx <- sapply(vec_ani_ids, function(x) which(ptbl_pedigree$V12 == x), USE.NAMES = FALSE)
-    tbl_transform_ped <- ptbl_pedigree %>% mutate(V12 = replace(V12, vec_ani_idx, NA))
+    if(vec_ani_ids in getTvdIdColsDsch()$TierIdCol){
+      ### # Remove Animal Ids
+      tbl_transform_ped <- remove_rec(ptbl_pedigree,
+                                      pvec_rec_tbr_pk = vec_ani_ids)
+    } else {
+      if(vec_ani_ids in getTvdIdColsDsch()$MutterIdCol){
+        ### # Line number of the ids are required for replace
+        vec_ani_idx <- sapply(vec_ani_ids, function(x) which(ptbl_pedigree$V5 == x), USE.NAMES = FALSE)
+        tbl_transform_ped <- ptbl_pedigree %>% mutate(V5 = replace(V5, vec_ani_idx, NA))
+      }
+      if(vec_ani_ids in getTvdIdColsDsch()$VaterIdCol){
+        ### # Line number of the ids are required for replace
+        vec_ani_idx <- sapply(vec_ani_ids, function(x) which(ptbl_pedigree$V16 == x), USE.NAMES = FALSE)
+        tbl_transform_ped <- ptbl_pedigree %>% mutate(V16 = replace(V16, vec_ani_idx, NA))
+      }
+    }
   }
 
   ### # debugging output after transformation
   if (pb_out){
-    cat(" *** Transformated records where tvd is invalidate for Animal: \n")
-    print(tbl_transform_ped %>% inner_join(output_check, by = c("V12" = "TvdID")) %>% select(V12,V16,V5))
-    #Sophie: Wie kann man die Transformation in diesem Fall kontrollieren?
+    cat(" *** Searching the deleted records shows (nothing should be found): \n")
+    print(tbl_transform_ped %>% dplyr::filter(V12 %in% vec_ani_ids))
+    cat(" *** Transformated records where tvd is invalidate for Mother: \n")
+    print(tbl_transform_ped %>% inner_join(output_check, by = c("V5" = "TvdID")) %>% select(V5))
+    cat(" *** Transformated records where tvd is invalidate for Father: \n")
+    print(tbl_transform_ped %>% inner_join(output_check, by = c("V16" = "TvdID")) %>% select(V16))
   }
 
   ### # return result
   return(tbl_transform_ped)
 
+}
+
+
+### ######################################################## ###
+#' @title Removing a series of records
+#'
+#'
+#' @param ptbl_pedigree pedigree in tbl_df format
+#' @param pvec_rec_tbr_pk
+#' @param pn_pk_col_idx
+#' @export remove_rec
+#' @return tbl_transform_ped of pedigree records not fullfilling requirements
+remove_rec <- function(ptbl_pedigree,
+                       pvec_rec_tbr_pk,
+                       pn_pk_col_idx = getTvdIdColsDsch()$TierIdCol){
+
+  tbl_transform_ped <- ptbl_pedigree %>% dplyr::filter(!.[[pn_pk_col_idx]] %in% pvec_rec_tbr_pk)
+
+  return(tbl_transform_ped)
 }
 
 
