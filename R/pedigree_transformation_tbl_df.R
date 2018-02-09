@@ -210,19 +210,20 @@ transform_correct_tvd_format_tbl <- function(ptbl_pedigree,
   ### # the tvdid of animal.
   if (nrow(output_check) > 0) {
     vec_ani_ids <- c(output_check$TvdID)
-    if(vec_ani_ids in getTvdIdColsDsch()$TierIdCol){
-      ### # Remove Animal Ids
-      tbl_transform_ped <- remove_rec(ptbl_pedigree,
-                                      pvec_rec_tbr_pk = vec_ani_ids)
-    } else {
-      if(vec_ani_ids in getTvdIdColsDsch()$MutterIdCol){
+    for(i in vec_ani_ids){
+      if(i %in% ptbl_pedigree$V12){
+        ### # Remove Animal Ids
+        tbl_transform_ped <- remove_rec(ptbl_pedigree,
+                                        pvec_rec_tbr_pk = i)
+      }
+      if(i %in% ptbl_pedigree$V5){
         ### # Line number of the ids are required for replace
-        vec_ani_idx <- sapply(vec_ani_ids, function(x) which(ptbl_pedigree$V5 == x), USE.NAMES = FALSE)
+        vec_ani_idx <- which(ptbl_pedigree$V5 == i)
         tbl_transform_ped <- ptbl_pedigree %>% mutate(V5 = replace(V5, vec_ani_idx, NA))
       }
-      if(vec_ani_ids in getTvdIdColsDsch()$VaterIdCol){
+      if(i %in% ptbl_pedigree$V16){
         ### # Line number of the ids are required for replace
-        vec_ani_idx <- sapply(vec_ani_ids, function(x) which(ptbl_pedigree$V16 == x), USE.NAMES = FALSE)
+        vec_ani_idx <- which(ptbl_pedigree$V16 == i)
         tbl_transform_ped <- ptbl_pedigree %>% mutate(V16 = replace(V16, vec_ani_idx, NA))
       }
     }
