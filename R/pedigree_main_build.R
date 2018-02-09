@@ -123,14 +123,14 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
 #' @param ps_out_file output file for checked pedigree
 #' @param pvec_format vector with file format borders
 #' @param pb_out flag to indicate whether output should be written
-#' @export write_checked_pedgiree_from_tvd
-write_checked_pedgiree_from_tvd <- function(ps_tvd_file,
+#' @export write_checkedtransformed_pedgiree_from_tvd
+write_checkedtransformed_pedgiree_from_tvd <- function(ps_tvd_file,
                                             ps_out_file = paste0(ps_tvd_file, ".out"),
                                             pvec_format = getK11ColPositionVecFromDsch(),
                                             pb_out = FALSE){
 
   if (pb_out)
-    cat(" *** Starting write_check_pedigree_from_tvd ...", format(Sys.time(), "%Y%m%d%H%M%S"), "\n")
+    cat(" *** Starting write_checkedtransformed_pedgiree_from_tvd ...", format(Sys.time(), "%Y%m%d%H%M%S"), "\n")
 
   ### # build checked pedigree
   tbl_ped_result <- build_check_pedigree_from_tvd(ps_tvd_file = ps_tvd_file, pvec_format = pvec_format)
@@ -143,7 +143,7 @@ write_checked_pedgiree_from_tvd <- function(ps_tvd_file,
   readr::write_csv(x = tbl_ped_result, path = ps_out_file)
 
   if (pb_out)
-    cat(" *** End of write_check_pedigree_from_tvd ...", format(Sys.time(), "%Y%m%d%H%M%S"), "\n")
+    cat(" *** End of write_checkedtransformed_pedgiree_from_tvd ...", format(Sys.time(), "%Y%m%d%H%M%S"), "\n")
 
   return(invisible(TRUE))
 
