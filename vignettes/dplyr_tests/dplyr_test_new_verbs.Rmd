@@ -5,7 +5,7 @@ output: html_notebook
 
 This notebook shows some scratch ideas and experiments with dplyr and the verbs to change certain values within a variable
 
-## A simple example
+## A simple example using case_when
 We get started with a few examples from `?dplyr::case_when` 
 
 ```{r}
@@ -19,6 +19,36 @@ case_when(
 )
 ```
 
+Doing the same thing with a replacement closer to our needs
+
+```{r}
+x <- 1:50
+case_when(
+  x %% 9  == 0 ~ "NA",
+  x %% 35 == 0 ~ "fizz buzz",
+  x %% 5 == 0 ~ "fizz",
+  x %% 7 == 0 ~ "buzz",
+  TRUE ~ as.character(x)
+)
+
+```
+
+Apparantly, we cannot use the "NA" without quotes. Trying with the typed version of NA
+
+```{r}
+x <- 1:50
+case_when(
+  x %% 9  == 0 ~ NA_character_,
+  x %% 35 == 0 ~ "fizz buzz",
+  x %% 5 == 0 ~ "fizz",
+  x %% 7 == 0 ~ "buzz" ,
+  TRUE ~ as.character(x)
+)
+
+```
+
+
+
 ## Usage and Arguments
 ```{r, include=FALSE}
 s_dpcw <- "`dplyr::case_when`"
@@ -26,6 +56,46 @@ s_dpcw_hf <- paste0("?", s_dpcw)
 ```
 
 From the sections __Usage__ and __Arguments__ in the help file of `r s_dpcw_hf`, we can see that `r s_dpcw` can take any number of arguments which is denoted by the three dots. The arguments must be a sequence of two sided formulas. A two-sided formula consists of a LHS and a RHS which are separated by a tilde (`~`). For the purpose of the arguments in `r s_dpcw` 
+
+
+## Vector function
+We are looking at the section __Vector Functions__ in a [RStudio blog post](https://blog.rstudio.com/2016/06/27/dplyr-0-5-0/). The second function in the section on __Vector Functions__ is called `na_if()`. The example used in the blog post is as follows 
+
+
+```{r}
+x <- c(1, 5, 2, -99, -99, 10)
+na_if(x, -99)
+```
+
+The function `na_if()` is certainly useful when we want to replace a single value by NA. But we want to use it for a vector of values leading to
+
+```{r}
+na_if(x, c(1,2))
+```
+
+But the above produces an error. Hence we are searching for a different function. One possible candidate is `if_else()`. The example given in the blog post is
+
+```{r}
+x <- factor(sample(letters[1:5], 10, replace = TRUE))
+if_else(x %in% c("a", "b", "c"), x, factor(NA))
+```
+
+Here an intersting side note is the difference to `ifelse()` in R-base
+
+```{r}
+ifelse(x %in% c("a", "b", "c"), x, factor(NA))
+```
+
+In the version of R-base, the components of `x` are replaced by the levels and are  no longer of type factor.
+
+
+
+
+
+
+
+
+
 
 
 

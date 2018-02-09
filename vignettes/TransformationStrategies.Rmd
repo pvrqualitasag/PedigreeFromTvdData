@@ -199,60 +199,74 @@ To check whether the field V5 is set to NA in the desired records, we can run th
 tbl_pedigree_vna %>% dplyr::filter(V12 %in% vec_rec_pk) %>% dplyr::select(V5,V11,V12,V16)
 ```
 
+### Alternatives to mutate - replace
+When trying to convert the above statements into a function, we found it difficult to come up with a working solution. The following suggestions are based on a [RStudio blog post](https://blog.rstudio.com/2016/06/27/dplyr-0-5-0/). We are first looking into the section __Vector Functions__ and later into the section of __Predicate Functions__ to come up with a usable solution for our problem. 
+
+### Vector Functions
+For that reason, we are trying to use the `dplyr`-verb `case_when()`. 
+
+```{r}
+tbl_pedigree_cw <- tbl_pedigree %>% dplyr::mutate(V5 = dplyr::if_else(V12 %in% vec_rec_pk, NA_character_, V5))
+```
+
+Checking again with the same test
+
+```{r}
+tbl_pedigree_cw %>% dplyr::filter(V12 %in% vec_rec_pk) %>% dplyr::select(V5,V11,V12,V16)
+```
+
+Other records should not have the field V5 set to NA
+
+```{r}
+head(tbl_pedigree_cw)
+```
+
+### Predicate Functions
+Predicate functions such as `mutate_if()` do changes of columns but based on conditions/predicates that are applied to columns not to rows. Hence those are not really helpful here.
+
+
 ### Setting fields to NA using a function
 Analogously to the first operation, we also want to define a function that implements this operation
 
 ```{r}
+#' Setting one field of a list of records in a pedigree to NA
+#' 
+#' @param ptbl_pedigree pedigree as tbl_df
+#' @param pvec_rec_pk vector of primary keys identifying the records
+#' @param ps_field_name column name in ptbl_pedigree where certain fields must be set to NA
+#' @param ps_pk_name column name where primary keys can be found
+#' @return tbl_pedigree_result pedigree with given fields set to NA
 set_field_na <- function(ptbl_pedigree, 
                          pvec_rec_pk, 
-                         ps_field_idx,
-                         pn_pk_col_idx = getTvdIdColsDsch()$TierIdCol){
-  quo_field <- dplyr::enquo(ps_field_idx)
-  vec_row_idx <- sapply(pvec_rec_pk, function(x) which(ptbl_pedigree[,pn_pk_col_idx] == x), USE.NAMES = FALSE)
-  vec_org_val <- ptbl_pedigree %>% dplyr::select(!!quo_field)
-  vec_org_val[vec_row_idx] <- NA
-  tbl_pedigree_vna <- ptbl_pedigree %>% dplyr::mutate(!!quo_field := vec_org_val)
-  return(tbl_pedigree_vna)
+                         ps_field_name,
+                         ps_pk_name){
+  ### # create an expression from the column name of primary keys
+  expr <- dplyr::enquo(ps_pk_name)
+  ### # create an expression from the column name where the fields 
+  ### #  are that should be set to NA
+  var_expr <- dplyr::enquo(ps_field_name)
+  ### # create the variable name which is used for the lhs of the 
+  ### #  assignement
+  var_name <- dplyr::quo_name(var_expr)
+
+  tbl_pedigree_result <-
+    dplyr::mutate(ptbl_pedigree,
+                  !!var_name := dplyr::if_else((!!expr) %in% pvec_rec_pk, NA_character_, !!var_expr))
+  
+  return(tbl_pedigree_result)
 }
+```
 
+The function call looks as follows
+```{r}
+tbl_pedigree_vna_func <- set_field_na(tbl_pedigree, vec_rec_pk, V5, V12)
 ```
 
 ```{r}
-ptbl_pedigree = tbl_pedigree
-pvec_rec_pk = vec_rec_pk
-# ps_field_idx = 
-# quo_field <- dplyr::enquo(V5)
-pn_pk_col_idx = getTvdIdColsDsch()$TierIdCol
-
-(vec_row_idx <- sapply(pvec_rec_pk, function(x) which(ptbl_pedigree[,pn_pk_col_idx] == x), USE.NAMES = FALSE))
-
-
-
+set_field_na(tbl_pedigree, vec_rec_pk, V11, V12)
 ```
 
-```{r}
-
-(vec_org_val <- ptbl_pedigree %>% dplyr::select(V5))
-
-
-```
-
-```{r}
-(vec_org_val[vec_row_idx,])
-
-```
-
-
-```{r}
-(vec_org_val[vec_row_idx,] <- NA)
-```
-
-Testing the same operation as above using the function
-
-
-```{r}
-tbl_pedigree_vna_func <- set_field_na(tbl_pedigree, vec_rec_pk, V5)
-```
+### Checks
 Checking whether fields are set to NA
 
 ```{r}
