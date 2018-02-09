@@ -30,15 +30,22 @@ This document describes a function implementing different functions to check and
 sDataFileErrors <- system.file(file.path("extdata","KLDAT_20170524_AllFehler.txt"), 
                              package = "PedigreeFromTvdData")
 
-(tbl_transform_ped <- build_check_pedigree_from_tvd(ps_tvd_file = sDataFileErrors,
-                              pvec_format = getK11ColPositionVecFromDsch()))
+(tbl_transform_ped <- build_check_pedigree_from_tvd(ps_tvd_file = sDataFileErrors))
 ```
 
 Remaining:
-All dupicate are deleted;
-Parent and offspring birthdate are set to NA, if a parent is not older as offspring;
-Animal sex is set to NA, if the sex is incorrect;
-Birthdate is set to NA, if the birthdate format is incorrect.
+
+* All dupicate are deleted;
+
+* Parent and offspring birthdates are set to NA, if a parent is not older as offspring;
+
+* Animal sex is set to NA, if the sex is incorrect;
+
+* Animal record is deleted, if his TVD format is incorrect;
+
+* Parent is set to NA, if it's TVD format is incorrect;
+
+* Birthdate is set to NA, if the birthdate format is incorrect.
 
 Time how long is this function running.
 ```{r}

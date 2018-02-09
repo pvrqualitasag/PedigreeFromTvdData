@@ -28,12 +28,14 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   ### Properties of a Directed Acyclic Graphs (DAG)
   ### ############################################################### ###
   tbl_transform_ped <- tbl_ped
+  l_tvd_id_col_dsch <- getTvdIdColsDsch()
+  n_bd_col_idx <- getBirthdateColIdxDsch()
    ### # Uniqueness of individuals
   tbl_result_checks <- check_unique_animal_id(ptbl_pedigree = tbl_transform_ped)
   if (nrow(tbl_result_checks) > 0) {
     tbl_transform_ped <- transform_unique_animal_id(ptbl_pedigree = tbl_transform_ped,
                                output_check = check_unique_animal_id(ptbl_pedigree = tbl_transform_ped),
-                               pn_ani_id_col_idx = getTvdIdColsDsch()$TierIdCol)
+                               pn_ani_id_col_idx = l_tvd_id_col_dsch$TierIdCol)
   }
 
   ### # No cycles -> no
@@ -41,8 +43,6 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
 
   ### # Parents older than offspring
   ### # 1) Mother
-  l_tvd_id_col_dsch <- getTvdIdColsDsch()
-  n_bd_col_idx <- getBirthdateColIdxDsch()
   tbl_result_checks <- check_parent_older_offspring(ptbl_pedigree = tbl_transform_ped,
                                                        pn_offspring_col = l_tvd_id_col_dsch$TierIdCol,
                                                        pn_birthday_col = n_bd_col_idx,
@@ -81,18 +81,32 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
   ### ############################################################### ###
   ### Properties related to data-processing issues
   ### ############################################################### ###
-#  ### # correct formats of IDs for individual
-#  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
-#                                    pnIdCol = plIdCols$TierIdCol)
-#
-#  ### # correct formats of IDs for mother
-#  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
-#                                    pnIdCol = plIdCols$MutterIdCol)
-#
-#  ### # correct formats of IDs for father
-#  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped,
-#                                    pnIdCol = plIdCols$VaterIdCol)
-#
+  ### # correct formats of IDs for individual
+  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_transform_ped,
+                                    pnIdCol = l_tvd_id_col_dsch$TierIdCol)
+  if (nrow(tbl_result_checks) > 0) {
+    tbl_transform_ped <- transform_correct_tvd_format_tbl(ptbl_pedigree = tbl_transform_ped,
+                                                           output_check = correct_tvd_format_tbl(p_tbl_ped = tbl_transform_ped,
+                                                                                                 pnIdCol = l_tvd_id_col_dsch$TierIdCol))
+  }
+
+  ### # correct formats of IDs for mother
+  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_transform_ped,
+                                    pnIdCol = l_tvd_id_col_dsch$MutterIdCol)
+  if (nrow(tbl_result_checks) > 0) {
+    tbl_transform_ped <- transform_correct_tvd_format_tbl(ptbl_pedigree = tbl_transform_ped,
+                                                          output_check = correct_tvd_format_tbl(p_tbl_ped = tbl_transform_ped,
+                                                                                                pnIdCol = l_tvd_id_col_dsch$MutterIdCol))
+  }
+
+  ### # correct formats of IDs for father
+  tbl_result_checks <- correct_tvd_format_tbl(p_tbl_ped = tbl_transform_ped,
+                                    pnIdCol = l_tvd_id_col_dsch$VaterIdCol)
+  if (nrow(tbl_result_checks) > 0) {
+    tbl_transform_ped <- transform_correct_tvd_format_tbl(ptbl_pedigree = tbl_transform_ped,
+                                                          output_check = correct_tvd_format_tbl(p_tbl_ped = tbl_transform_ped,
+                                                                                                pnIdCol = l_tvd_id_col_dsch$VaterIdCol))
+  }
 
   ### # correct formats of birthdates
   tbl_result_checks <- check_birthdate_tbl(ptblPedigree = tbl_transform_ped)

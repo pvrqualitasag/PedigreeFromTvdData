@@ -142,7 +142,6 @@ tbl_result_tvdformat <- correct_tvd_format_tbl(p_tbl_ped = tbl_ped_correctFormat
                                    pnIdCol = lIdCols$TierIdCol)
 ```
 
-VORSICHT : Unterschied wenn das Format bei Tier oder Eltern nicht korrekt ist. Beim Tier das record löschen, bei den Eltern nur das Feld mit NA setzen. Jetzt wird nur das Feld TVD auf NA gesetzt!!!
 ```{r}
 (tbl_transform_ped <- transform_correct_tvd_format_tbl(ptbl_pedigree = tbl_ped_correctFormat,
                                                        output_check = tbl_result_tvdformat,

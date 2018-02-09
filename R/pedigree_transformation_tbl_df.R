@@ -211,27 +211,27 @@ transform_correct_tvd_format_tbl <- function(ptbl_pedigree,
   if (nrow(output_check) > 0) {
     vec_ani_ids <- c(output_check$TvdID)
     for(i in vec_ani_ids){
-      if(i %in% ptbl_pedigree$V12){
+      if(i %in% tbl_transform_ped$V12){
         ### # Remove Animal Ids
-        tbl_transform_ped <- remove_rec(ptbl_pedigree,
+        tbl_transform_ped <- remove_rec(tbl_transform_ped,
                                         pvec_rec_tbr_pk = i)
       }
-      if(i %in% ptbl_pedigree$V5){
+      if(i %in% tbl_transform_ped$V5){
         ### # Line number of the ids are required for replace
-        vec_ani_idx <- which(ptbl_pedigree$V5 == i)
-        tbl_transform_ped <- ptbl_pedigree %>% mutate(V5 = replace(V5, vec_ani_idx, NA))
+        vec_ani_idx <- which(tbl_transform_ped$V5 == i)
+        tbl_transform_ped <- tbl_transform_ped %>% mutate(V5 = replace(V5, vec_ani_idx, NA))
       }
-      if(i %in% ptbl_pedigree$V16){
+      if(i %in% tbl_transform_ped$V16){
         ### # Line number of the ids are required for replace
-        vec_ani_idx <- which(ptbl_pedigree$V16 == i)
-        tbl_transform_ped <- ptbl_pedigree %>% mutate(V16 = replace(V16, vec_ani_idx, NA))
+        vec_ani_idx <- which(tbl_transform_ped$V16 == i)
+        tbl_transform_ped <- tbl_transform_ped %>% mutate(V16 = replace(V16, vec_ani_idx, NA))
       }
     }
   }
 
   ### # debugging output after transformation
   if (pb_out){
-    cat(" *** Searching the deleted records shows (nothing should be found): \n")
+    cat(" *** Searching the deleted records shows: \n")
     print(tbl_transform_ped %>% dplyr::filter(V12 %in% vec_ani_ids))
     cat(" *** Transformated records where tvd is invalidate for Mother: \n")
     print(tbl_transform_ped %>% inner_join(output_check, by = c("V5" = "TvdID")) %>% select(V5))
@@ -250,15 +250,15 @@ transform_correct_tvd_format_tbl <- function(ptbl_pedigree,
 #'
 #'
 #' @param ptbl_pedigree pedigree in tbl_df format
-#' @param pvec_rec_tbr_pk
-#' @param pn_pk_col_idx
+#' @param pvec_rec_tbr_pk pvec_rec_tbr_pk
+#' @param pn_pk_col_idx pn_pk_col_idx
 #' @export remove_rec
 #' @return tbl_transform_ped of pedigree records not fullfilling requirements
-remove_rec <- function(ptbl_pedigree,
+remove_rec <- function(tbl_transform_ped,
                        pvec_rec_tbr_pk,
                        pn_pk_col_idx = getTvdIdColsDsch()$TierIdCol){
 
-  tbl_transform_ped <- ptbl_pedigree %>% dplyr::filter(!.[[pn_pk_col_idx]] %in% pvec_rec_tbr_pk)
+  tbl_transform_ped <- tbl_transform_ped %>% dplyr::filter(!.[[pn_pk_col_idx]] %in% pvec_rec_tbr_pk)
 
   return(tbl_transform_ped)
 }
