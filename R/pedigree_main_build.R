@@ -109,9 +109,47 @@ build_check_pedigree_from_tvd <- function(ps_tvd_file,
 
     }
   }
+
   ### # finally return
   return(tbl_transform_ped)
   #Sophie: Vielleicht könnte man ein Pedigree mit der Funktion write.csv() in einem File ausschreiben
   # oder ob wir eine weitere Funktion für das Output schreiben sollten, damit Output in einem bestimmten Format kommt.
 }
+
+
+#' @title Write checked pedigree to an output file
+#'
+#' @param ps_tvd_file tvd input file
+#' @param ps_out_file output file for checked pedigree
+#' @param pvec_format vector with file format borders
+#' @param pb_out flag to indicate whether output should be written
+#' @export write_checked_pedgiree_from_tvd
+write_checked_pedgiree_from_tvd <- function(ps_tvd_file,
+                                            ps_out_file = paste0(ps_tvd_file, ".out"),
+                                            pvec_format = getK11ColPositionVecFromDsch(),
+                                            pb_out = FALSE){
+
+  if (pb_out)
+    cat(" *** Starting write_check_pedigree_from_tvd ...", format(Sys.time(), "%Y%m%d%H%M%S"), "\n")
+
+  ### # build checked pedigree
+  tbl_ped_result <- build_check_pedigree_from_tvd(ps_tvd_file = ps_tvd_file, pvec_format = pvec_format)
+
+  ### # memory usage
+  if (pb_out)
+    cat("Memory usage for pedigree: ", pryr::object_size(tbl_ped_result), "\n")
+
+  ### # write pedigree to output file
+  readr::write_csv(x = tbl_ped_result, path = ps_out_file)
+
+  if (pb_out)
+    cat(" *** End of write_check_pedigree_from_tvd ...", format(Sys.time(), "%Y%m%d%H%M%S"), "\n")
+
+  return(invisible(TRUE))
+
+}
+
+
+
+
 
