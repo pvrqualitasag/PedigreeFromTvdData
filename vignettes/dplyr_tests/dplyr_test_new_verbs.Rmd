@@ -1,0 +1,31 @@
+---
+title: "dplyr - Testing New Verbs"
+output: html_notebook
+---
+
+This notebook shows some scratch ideas and experiments with dplyr and the verbs to change certain values within a variable
+
+## A simple example
+We get started with a few examples from `?dplyr::case_when` 
+
+```{r}
+require(dplyr)
+x <- 1:50
+case_when(
+  x %% 35 == 0 ~ "fizz buzz",
+  x %% 5 == 0 ~ "fizz",
+  x %% 7 == 0 ~ "buzz",
+  TRUE ~ as.character(x)
+)
+```
+
+## Usage and Arguments
+```{r, include=FALSE}
+s_dpcw <- "`dplyr::case_when`"
+s_dpcw_hf <- paste0("?", s_dpcw) 
+```
+
+From the sections __Usage__ and __Arguments__ in the help file of `r s_dpcw_hf`, we can see that `r s_dpcw` can take any number of arguments which is denoted by the three dots. The arguments must be a sequence of two sided formulas. A two-sided formula consists of a LHS and a RHS which are separated by a tilde (`~`). For the purpose of the arguments in `r s_dpcw` 
+
+
+
